@@ -1,6 +1,7 @@
 # Design Decisions
 
-- Repo is private
+- Repository is private
 - No license added yet
-- Focus is repeatable migration playbooks
-- MySQL 8.x → MariaDB 11.x
+- Migration focus: MySQL8 -> MariaDB 11.x
+- CDC not in scope (offline migration)
+- Validation is mandatory before cutover

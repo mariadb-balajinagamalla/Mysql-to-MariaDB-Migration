@@ -1,14 +1,18 @@
 # MySQL to MariaDB Migration
 
 ## Purpose
-Private repository to design, test, and document end-to-end MySQL to MariaDB migration workflows.
+Private repository to design, execute, and validate end-to-end MySQL to MariaDB migrations in a repeatable and auditable manner.
 
 ## Scope
 - Schema migration
 - Data migration
 - User & privilege migration
-- Compatibility validation
-- Rollback planning
+- Authentication plugin Compatibility
+- Va;odatopm & rollback planning
+
+# Supported Versions
+- MySQL: 8.0
+- MariaDB: 11.x (LTS)
 
 ## Tools
 - mariadb-dump / mysqlpump
