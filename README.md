@@ -12,7 +12,7 @@ Private repository to design, execute, and validate end-to-end MySQL to MariaDB 
 - Data migration
 - User & privilege migration
 - Authentication plugin Compatibility
-- Va;odatopm & rollback planning
+- Validation & rollback planning
 
 # Supported Versions
 - MySQL: 8.0
