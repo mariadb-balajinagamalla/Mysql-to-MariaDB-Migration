@@ -14,7 +14,7 @@ from .report import Report, GateStatus, StepStatus
 from .runner import run_step
 from .checks import run_assessment_checks, AssessmentResult
 
-app = typer.Typer(add_completion=False, help="MySQL -> MariaDB migration orchestrator (CI-friendly).")
+app = typer.Typer(add_completion=False, help="MySQL -> MariaDB migration orchestrator\n© 2026 MariaDB plc ")
 
 DEFAULT_OUTDIR = "artifacts"
 DEFAULT_STATE = "state.json"

@@ -1,5 +1,9 @@
 # migrationctl (orchestrator scaffold)
 
+© 2026 MariaDB plc. All rights reserved.
+
+This tool is proprietary software developed and maintained by MariaDB plc. It is provided to customers and partners under approved usage terms.
+
 This is a production-oriented *orchestration layer* for your existing shell scripts.
 It provides:
 
