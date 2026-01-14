@@ -1,0 +1,4 @@
+analytics	10.%	caching_sha2_password
+app_ro	%	caching_sha2_password
+app_rw	%	caching_sha2_password
+root	localhost	caching_sha2_password

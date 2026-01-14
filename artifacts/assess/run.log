@@ -1,0 +1,41 @@
+2026-01-14T12:04:17.252697+00:00 START mode=assessment config=config/source.yaml
+2026-01-14T12:04:17.252935+00:00 RUN precheck -> /Users/balajin/Documents/GitHub/Mysql-to-MariaDB-Migration/scripts/00_precheck.sh
+2026-01-14T12:04:20.312492+00:00 == Precheck runner ==
+2026-01-14T12:04:20.312892+00:00 Host: 127.0.0.1  Port: 13306  User: root
+2026-01-14T12:04:20.312954+00:00 Checks dir: /Users/balajin/Documents/GitHub/Mysql-to-MariaDB-Migration/sql/checks
+2026-01-14T12:04:20.313001+00:00 Outdir: artifacts/assess/precheck
+2026-01-14T12:04:20.313042+00:00 
+2026-01-14T12:04:20.313083+00:00 ---- mysql_version ----
+2026-01-14T12:04:20.313128+00:00 
+2026-01-14T12:04:20.313172+00:00 ---- innodb_settings ----
+2026-01-14T12:04:20.313212+00:00 
+2026-01-14T12:04:20.313273+00:00 ---- auth_plugins ----
+2026-01-14T12:04:20.313330+00:00 
+2026-01-14T12:04:20.313400+00:00 ---- json_columns ----
+2026-01-14T12:04:20.313449+00:00 
+2026-01-14T12:04:20.313488+00:00 ---- compression_encryption ----
+2026-01-14T12:04:20.313524+00:00 (no rows)
+2026-01-14T12:04:20.313559+00:00 
+2026-01-14T12:04:20.313596+00:00 ---- engines_summary ----
+2026-01-14T12:04:20.313643+00:00 
+2026-01-14T12:04:20.313690+00:00 ---- schema_sizes ----
+2026-01-14T12:04:20.313730+00:00 
+2026-01-14T12:04:20.313771+00:00 ---- schema_charsets ----
+2026-01-14T12:04:20.313804+00:00 
+2026-01-14T12:04:20.313836+00:00 ---- mysql8_collations ----
+2026-01-14T12:04:20.313869+00:00 
+2026-01-14T12:04:20.313907+00:00 ---- mysql8_column_collations ----
+2026-01-14T12:04:20.313949+00:00 ... (truncated; full output in artifacts/assess/precheck/mysql8_column_collations.tsv)
+2026-01-14T12:04:20.313984+00:00 
+2026-01-14T12:04:20.314017+00:00 ---- sql_mode ----
+2026-01-14T12:04:20.314050+00:00 
+2026-01-14T12:04:20.314092+00:00 ---- definers_inventory ----
+2026-01-14T12:04:20.314150+00:00 
+2026-01-14T12:04:20.314189+00:00 ---- partitioned_tables ----
+2026-01-14T12:04:20.314224+00:00 (no rows)
+2026-01-14T12:04:20.314257+00:00 
+2026-01-14T12:04:20.314290+00:00 ---- active_plugins ----
+2026-01-14T12:04:20.314322+00:00 
+2026-01-14T12:04:20.314355+00:00 Precheck complete.
+2026-01-14T12:04:20.314387+00:00 TSV outputs: artifacts/assess/precheck/*.tsv
+2026-01-14T12:04:20.316848+00:00 FINISH success=True message=Assessment passed. Ready to plan/run.

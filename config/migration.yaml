@@ -1,0 +1,11 @@
+mode: local 
+
+env:
+  HOST: 127.0.0.1
+  PORT: "13306"
+  USER: root
+  PASS: "Root@1234"
+
+target:
+  type: mariadb
+  version: "11.8.3-1-MariaDB-enterprise"

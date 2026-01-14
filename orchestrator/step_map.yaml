@@ -1,0 +1,68 @@
+# Map orchestrator phases to your existing shell scripts.
+# Each step is:
+#   id: stable id (used in state.json)
+#   name: human readable
+#   script: relative path from repo root
+#   args: optional list of args
+
+modes:
+
+  local:
+    - prerequisites
+    - backup
+    - transform
+
+  offline:
+    - prerequisites
+    - backup
+    - transform
+    - stop_and_swap
+    - import
+    - validate
+
+phases:
+  prerequisites:
+    - id: precheck
+      name: Precheck source variables and blockers
+      script: scripts/00_precheck.sh
+      args: []
+
+    - id: prepare_mysql
+      name: Set innodb_fast_shutdown=0 before shutdown
+      script: scripts/01_prepare_mysql.sh
+      args: []
+
+  backup:
+    - id: backup_mysql_system_db
+      name: Backup mysql system database
+      script: scripts/02_backup_mysql_system_db.sh
+      args: []
+
+  transform:
+    - id: generate_fix_sql
+      name: Generate SQL fixes (auth/json/collations) (optional)
+      script: scripts/03_generate_fix_sql.sh
+      args: []
+
+  stop_and_swap:
+    - id: stop_mysql_and_remove_packages
+      name: Stop MySQL and remove MySQL packages
+      script: scripts/04_stop_mysql_and_remove_packages.sh
+      args: []
+
+  import:
+    - id: install_mariadb
+      name: Install MariaDB
+      script: scripts/05_install_mariadb.sh
+      args: []
+
+    - id: start_upgrade
+      name: Start MariaDB and run mariadb-upgrade
+      script: scripts/06_start_mariadb_and_upgrade.sh
+      args: []
+
+  validate:
+    - id: validate
+      name: Validate after upgrade
+      script: scripts/07_validate.sh
+      args: []

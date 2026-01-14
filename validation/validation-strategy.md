@@ -5,4 +5,4 @@
 3. Business-level sampling
 4. Application connectivity tests
 
-Validation must pass before cutover.
+Validation must pass before cutover
