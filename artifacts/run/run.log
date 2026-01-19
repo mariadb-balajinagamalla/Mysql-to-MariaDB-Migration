@@ -1,0 +1,344 @@
+2026-01-19T18:55:53.834244+00:00 START mode=run config=config/migration.yaml
+2026-01-19T18:55:53.842561+00:00 RUN  precheck (Precheck source variables and blockers) -> scripts/00_precheck.sh
+2026-01-19T18:55:53.842776+00:00 CMD /home/ec2-user/Mysql-to-MariaDB-Migration/scripts/00_precheck.sh
+2026-01-19T18:55:53.851524+00:00 OUT == Precheck runner ==
+2026-01-19T18:55:53.852931+00:00 OUT Host: 127.0.0.1  Port: 3306  User: root
+2026-01-19T18:55:53.854197+00:00 OUT Checks dir: /home/ec2-user/Mysql-to-MariaDB-Migration/sql/checks
+2026-01-19T18:55:53.855516+00:00 OUT Outdir: /home/ec2-user/Mysql-to-MariaDB-Migration/artifacts/precheck
+2026-01-19T18:55:53.856898+00:00 OUT 
+2026-01-19T18:55:53.859856+00:00 OUT ---- mysql_version ----
+2026-01-19T18:55:53.882975+00:00 OUT 8.0.44
+2026-01-19T18:55:53.886446+00:00 OUT 
+2026-01-19T18:55:53.889520+00:00 OUT ---- innodb_settings ----
+2026-01-19T18:55:53.913088+00:00 OUT 1	1
+2026-01-19T18:55:53.916510+00:00 OUT 
+2026-01-19T18:55:53.919226+00:00 OUT ---- auth_plugins ----
+2026-01-19T18:55:53.943344+00:00 OUT analytics	10.%	caching_sha2_password
+2026-01-19T18:55:53.943476+00:00 OUT app_ro	%	caching_sha2_password
+2026-01-19T18:55:53.943511+00:00 OUT app_rw	%	caching_sha2_password
+2026-01-19T18:55:53.943533+00:00 OUT root	localhost	caching_sha2_password
+2026-01-19T18:55:53.947035+00:00 OUT 
+2026-01-19T18:55:53.949760+00:00 OUT ---- json_columns ----
+2026-01-19T18:55:53.974816+00:00 OUT appdb	big_orders	payload	json
+2026-01-19T18:55:53.974940+00:00 OUT json_poc	json_test	payload	json
+2026-01-19T18:55:53.978078+00:00 OUT 
+2026-01-19T18:55:53.980717+00:00 OUT ---- compression_encryption ----
+2026-01-19T18:55:54.006043+00:00 OUT (no rows)
+2026-01-19T18:55:54.007511+00:00 OUT 
+2026-01-19T18:55:54.010298+00:00 OUT ---- engines_summary ----
+2026-01-19T18:55:54.036862+00:00 OUT PERFORMANCE_SCHEMA	111
+2026-01-19T18:55:54.036980+00:00 OUT InnoDB	58
+2026-01-19T18:55:54.037011+00:00 OUT CSV	2
+2026-01-19T18:55:54.040076+00:00 OUT 
+2026-01-19T18:55:54.042857+00:00 OUT ---- schema_sizes ----
+2026-01-19T18:55:54.075343+00:00 OUT appdb	6367.56
+2026-01-19T18:55:54.075470+00:00 OUT sakila	6.45
+2026-01-19T18:55:54.075509+00:00 OUT mysql	2.66
+2026-01-19T18:55:54.075542+00:00 OUT json_poc	0.02
+2026-01-19T18:55:54.075572+00:00 OUT sys	0.02
+2026-01-19T18:55:54.075739+00:00 OUT information_schema	0.00
+2026-01-19T18:55:54.075774+00:00 OUT performance_schema	0.00
+2026-01-19T18:55:54.078629+00:00 OUT 
+2026-01-19T18:55:54.081427+00:00 OUT ---- schema_charsets ----
+2026-01-19T18:55:54.106258+00:00 OUT appdb	utf8mb4	utf8mb4_0900_ai_ci
+2026-01-19T18:55:54.106383+00:00 OUT json_poc	utf8mb4	utf8mb4_0900_ai_ci
+2026-01-19T18:55:54.106416+00:00 OUT sakila	utf8mb4	utf8mb4_0900_ai_ci
+2026-01-19T18:55:54.109651+00:00 OUT 
+2026-01-19T18:55:54.112426+00:00 OUT ---- mysql8_collations ----
+2026-01-19T18:55:54.138135+00:00 OUT appdb	big_orders	utf8mb4_0900_ai_ci
+2026-01-19T18:55:54.138250+00:00 OUT appdb	customers	utf8mb4_0900_ai_ci
+2026-01-19T18:55:54.138282+00:00 OUT appdb	orders	utf8mb4_0900_ai_ci
+2026-01-19T18:55:54.138309+00:00 OUT appdb	seq_1M	utf8mb4_0900_ai_ci
+2026-01-19T18:55:54.138334+00:00 OUT json_poc	json_test	utf8mb4_0900_ai_ci
+2026-01-19T18:55:54.138356+00:00 OUT sakila	actor	utf8mb4_0900_ai_ci
+2026-01-19T18:55:54.138382+00:00 OUT sakila	address	utf8mb4_0900_ai_ci
+2026-01-19T18:55:54.138402+00:00 OUT sakila	category	utf8mb4_0900_ai_ci
+2026-01-19T18:55:54.138430+00:00 OUT sakila	city	utf8mb4_0900_ai_ci
+2026-01-19T18:55:54.138450+00:00 OUT sakila	country	utf8mb4_0900_ai_ci
+2026-01-19T18:55:54.138469+00:00 OUT sakila	customer	utf8mb4_0900_ai_ci
+2026-01-19T18:55:54.138489+00:00 OUT sakila	film	utf8mb4_0900_ai_ci
+2026-01-19T18:55:54.138508+00:00 OUT sakila	film_actor	utf8mb4_0900_ai_ci
+2026-01-19T18:55:54.138527+00:00 OUT sakila	film_category	utf8mb4_0900_ai_ci
+2026-01-19T18:55:54.138553+00:00 OUT sakila	film_text	utf8mb4_0900_ai_ci
+2026-01-19T18:55:54.138577+00:00 OUT sakila	inventory	utf8mb4_0900_ai_ci
+2026-01-19T18:55:54.138596+00:00 OUT sakila	language	utf8mb4_0900_ai_ci
+2026-01-19T18:55:54.138620+00:00 OUT sakila	payment	utf8mb4_0900_ai_ci
+2026-01-19T18:55:54.138656+00:00 OUT sakila	rental	utf8mb4_0900_ai_ci
+2026-01-19T18:55:54.138678+00:00 OUT sakila	staff	utf8mb4_0900_ai_ci
+2026-01-19T18:55:54.138700+00:00 OUT sakila	store	utf8mb4_0900_ai_ci
+2026-01-19T18:55:54.143036+00:00 OUT 
+2026-01-19T18:55:54.144684+00:00 OUT ---- mysql8_column_collations ----
+2026-01-19T18:55:54.172888+00:00 OUT appdb	big_orders	filler	utf8mb4_0900_ai_ci
+2026-01-19T18:55:54.173019+00:00 OUT appdb	customers	email	utf8mb4_0900_ai_ci
+2026-01-19T18:55:54.173054+00:00 OUT appdb	customers	name	utf8mb4_0900_ai_ci
+2026-01-19T18:55:54.173077+00:00 OUT appdb	orders	status	utf8mb4_0900_ai_ci
+2026-01-19T18:55:54.173099+00:00 OUT sakila	actor	first_name	utf8mb4_0900_ai_ci
+2026-01-19T18:55:54.173120+00:00 OUT sakila	actor	last_name	utf8mb4_0900_ai_ci
+2026-01-19T18:55:54.173141+00:00 OUT sakila	actor_info	film_info	utf8mb4_0900_ai_ci
+2026-01-19T18:55:54.173161+00:00 OUT sakila	actor_info	first_name	utf8mb4_0900_ai_ci
+2026-01-19T18:55:54.173180+00:00 OUT sakila	actor_info	last_name	utf8mb4_0900_ai_ci
+2026-01-19T18:55:54.173201+00:00 OUT sakila	address	address	utf8mb4_0900_ai_ci
+2026-01-19T18:55:54.173220+00:00 OUT sakila	address	address2	utf8mb4_0900_ai_ci
+2026-01-19T18:55:54.173240+00:00 OUT sakila	address	district	utf8mb4_0900_ai_ci
+2026-01-19T18:55:54.173259+00:00 OUT sakila	address	phone	utf8mb4_0900_ai_ci
+2026-01-19T18:55:54.173278+00:00 OUT sakila	address	postal_code	utf8mb4_0900_ai_ci
+2026-01-19T18:55:54.173297+00:00 OUT sakila	category	name	utf8mb4_0900_ai_ci
+2026-01-19T18:55:54.173316+00:00 OUT sakila	city	city	utf8mb4_0900_ai_ci
+2026-01-19T18:55:54.173335+00:00 OUT sakila	country	country	utf8mb4_0900_ai_ci
+2026-01-19T18:55:54.173354+00:00 OUT sakila	customer	email	utf8mb4_0900_ai_ci
+2026-01-19T18:55:54.173373+00:00 OUT sakila	customer	first_name	utf8mb4_0900_ai_ci
+2026-01-19T18:55:54.173392+00:00 OUT sakila	customer	last_name	utf8mb4_0900_ai_ci
+2026-01-19T18:55:54.173411+00:00 OUT sakila	customer_list	address	utf8mb4_0900_ai_ci
+2026-01-19T18:55:54.173430+00:00 OUT sakila	customer_list	city	utf8mb4_0900_ai_ci
+2026-01-19T18:55:54.173449+00:00 OUT sakila	customer_list	country	utf8mb4_0900_ai_ci
+2026-01-19T18:55:54.173468+00:00 OUT sakila	customer_list	name	utf8mb4_0900_ai_ci
+2026-01-19T18:55:54.173487+00:00 OUT sakila	customer_list	notes	utf8mb4_0900_ai_ci
+2026-01-19T18:55:54.173506+00:00 OUT sakila	customer_list	phone	utf8mb4_0900_ai_ci
+2026-01-19T18:55:54.173526+00:00 OUT sakila	customer_list	zip code	utf8mb4_0900_ai_ci
+2026-01-19T18:55:54.173545+00:00 OUT sakila	film	description	utf8mb4_0900_ai_ci
+2026-01-19T18:55:54.173563+00:00 OUT sakila	film	rating	utf8mb4_0900_ai_ci
+2026-01-19T18:55:54.173582+00:00 OUT sakila	film	special_features	utf8mb4_0900_ai_ci
+2026-01-19T18:55:54.173601+00:00 OUT sakila	film	title	utf8mb4_0900_ai_ci
+2026-01-19T18:55:54.173620+00:00 OUT sakila	film_list	actors	utf8mb4_0900_ai_ci
+2026-01-19T18:55:54.173639+00:00 OUT sakila	film_list	category	utf8mb4_0900_ai_ci
+2026-01-19T18:55:54.173659+00:00 OUT sakila	film_list	description	utf8mb4_0900_ai_ci
+2026-01-19T18:55:54.173679+00:00 OUT sakila	film_list	rating	utf8mb4_0900_ai_ci
+2026-01-19T18:55:54.173699+00:00 OUT sakila	film_list	title	utf8mb4_0900_ai_ci
+2026-01-19T18:55:54.173717+00:00 OUT sakila	film_text	description	utf8mb4_0900_ai_ci
+2026-01-19T18:55:54.173736+00:00 OUT sakila	film_text	title	utf8mb4_0900_ai_ci
+2026-01-19T18:55:54.173755+00:00 OUT sakila	language	name	utf8mb4_0900_ai_ci
+2026-01-19T18:55:54.173774+00:00 OUT sakila	nicer_but_slower_film_list	actors	utf8mb4_0900_ai_ci
+2026-01-19T18:55:54.173793+00:00 OUT sakila	nicer_but_slower_film_list	category	utf8mb4_0900_ai_ci
+2026-01-19T18:55:54.173817+00:00 OUT sakila	nicer_but_slower_film_list	description	utf8mb4_0900_ai_ci
+2026-01-19T18:55:54.173839+00:00 OUT sakila	nicer_but_slower_film_list	rating	utf8mb4_0900_ai_ci
+2026-01-19T18:55:54.173858+00:00 OUT sakila	nicer_but_slower_film_list	title	utf8mb4_0900_ai_ci
+2026-01-19T18:55:54.173877+00:00 OUT sakila	sales_by_film_category	category	utf8mb4_0900_ai_ci
+2026-01-19T18:55:54.173896+00:00 OUT sakila	sales_by_store	manager	utf8mb4_0900_ai_ci
+2026-01-19T18:55:54.173922+00:00 OUT sakila	sales_by_store	store	utf8mb4_0900_ai_ci
+2026-01-19T18:55:54.173942+00:00 OUT sakila	staff	email	utf8mb4_0900_ai_ci
+2026-01-19T18:55:54.173966+00:00 OUT sakila	staff	first_name	utf8mb4_0900_ai_ci
+2026-01-19T18:55:54.173986+00:00 OUT sakila	staff	last_name	utf8mb4_0900_ai_ci
+2026-01-19T18:55:54.176080+00:00 OUT ... (truncated; full output in /home/ec2-user/Mysql-to-MariaDB-Migration/artifacts/precheck/mysql8_column_collations.tsv)
+2026-01-19T18:55:54.177493+00:00 OUT 
+2026-01-19T18:55:54.180311+00:00 OUT ---- sql_mode ----
+2026-01-19T18:55:54.204860+00:00 OUT ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION
+2026-01-19T18:55:54.208298+00:00 OUT 
+2026-01-19T18:55:54.211039+00:00 OUT ---- definers_inventory ----
+2026-01-19T18:55:54.240409+00:00 OUT ROUTINE	root@localhost	7
+2026-01-19T18:55:54.240537+00:00 OUT TRIGGER	root@localhost	6
+2026-01-19T18:55:54.240571+00:00 OUT VIEW	root@localhost	7
+2026-01-19T18:55:54.243951+00:00 OUT 
+2026-01-19T18:55:54.246669+00:00 OUT ---- partitioned_tables ----
+2026-01-19T18:55:54.274505+00:00 OUT (no rows)
+2026-01-19T18:55:54.276040+00:00 OUT 
+2026-01-19T18:55:54.278752+00:00 OUT ---- active_plugins ----
+2026-01-19T18:55:54.307000+00:00 OUT ARCHIVE	ACTIVE
+2026-01-19T18:55:54.307133+00:00 OUT binlog	ACTIVE
+2026-01-19T18:55:54.307166+00:00 OUT BLACKHOLE	ACTIVE
+2026-01-19T18:55:54.307198+00:00 OUT caching_sha2_password	ACTIVE
+2026-01-19T18:55:54.307223+00:00 OUT CSV	ACTIVE
+2026-01-19T18:55:54.307247+00:00 OUT daemon_keyring_proxy_plugin	ACTIVE
+2026-01-19T18:55:54.307269+00:00 OUT InnoDB	ACTIVE
+2026-01-19T18:55:54.307291+00:00 OUT INNODB_BUFFER_PAGE	ACTIVE
+2026-01-19T18:55:54.307312+00:00 OUT INNODB_BUFFER_PAGE_LRU	ACTIVE
+2026-01-19T18:55:54.307333+00:00 OUT INNODB_BUFFER_POOL_STATS	ACTIVE
+2026-01-19T18:55:54.307354+00:00 OUT INNODB_CACHED_INDEXES	ACTIVE
+2026-01-19T18:55:54.307374+00:00 OUT INNODB_CMP	ACTIVE
+2026-01-19T18:55:54.307395+00:00 OUT INNODB_CMPMEM	ACTIVE
+2026-01-19T18:55:54.307414+00:00 OUT INNODB_CMPMEM_RESET	ACTIVE
+2026-01-19T18:55:54.307434+00:00 OUT INNODB_CMP_PER_INDEX	ACTIVE
+2026-01-19T18:55:54.307453+00:00 OUT INNODB_CMP_PER_INDEX_RESET	ACTIVE
+2026-01-19T18:55:54.307475+00:00 OUT INNODB_CMP_RESET	ACTIVE
+2026-01-19T18:55:54.307495+00:00 OUT INNODB_COLUMNS	ACTIVE
+2026-01-19T18:55:54.307515+00:00 OUT INNODB_FT_BEING_DELETED	ACTIVE
+2026-01-19T18:55:54.307534+00:00 OUT INNODB_FT_CONFIG	ACTIVE
+2026-01-19T18:55:54.307553+00:00 OUT INNODB_FT_DEFAULT_STOPWORD	ACTIVE
+2026-01-19T18:55:54.307573+00:00 OUT INNODB_FT_DELETED	ACTIVE
+2026-01-19T18:55:54.307592+00:00 OUT INNODB_FT_INDEX_CACHE	ACTIVE
+2026-01-19T18:55:54.307721+00:00 OUT INNODB_FT_INDEX_TABLE	ACTIVE
+2026-01-19T18:55:54.307741+00:00 OUT INNODB_INDEXES	ACTIVE
+2026-01-19T18:55:54.307761+00:00 OUT INNODB_METRICS	ACTIVE
+2026-01-19T18:55:54.307781+00:00 OUT INNODB_SESSION_TEMP_TABLESPACES	ACTIVE
+2026-01-19T18:55:54.307801+00:00 OUT INNODB_TABLES	ACTIVE
+2026-01-19T18:55:54.307830+00:00 OUT INNODB_TABLESPACES	ACTIVE
+2026-01-19T18:55:54.307850+00:00 OUT INNODB_TABLESTATS	ACTIVE
+2026-01-19T18:55:54.307870+00:00 OUT INNODB_TEMP_TABLE_INFO	ACTIVE
+2026-01-19T18:55:54.307892+00:00 OUT INNODB_TRX	ACTIVE
+2026-01-19T18:55:54.307911+00:00 OUT INNODB_VIRTUAL	ACTIVE
+2026-01-19T18:55:54.307930+00:00 OUT MEMORY	ACTIVE
+2026-01-19T18:55:54.307950+00:00 OUT MRG_MYISAM	ACTIVE
+2026-01-19T18:55:54.307969+00:00 OUT MyISAM	ACTIVE
+2026-01-19T18:55:54.307988+00:00 OUT mysqlx	ACTIVE
+2026-01-19T18:55:54.308008+00:00 OUT mysqlx_cache_cleaner	ACTIVE
+2026-01-19T18:55:54.308027+00:00 OUT mysql_native_password	ACTIVE
+2026-01-19T18:55:54.308046+00:00 OUT ngram	ACTIVE
+2026-01-19T18:55:54.308066+00:00 OUT PERFORMANCE_SCHEMA	ACTIVE
+2026-01-19T18:55:54.308086+00:00 OUT sha256_password	ACTIVE
+2026-01-19T18:55:54.308106+00:00 OUT sha2_cache_cleaner	ACTIVE
+2026-01-19T18:55:54.308125+00:00 OUT TempTable	ACTIVE
+2026-01-19T18:55:54.310326+00:00 OUT 
+2026-01-19T18:55:54.315117+00:00 OUT Precheck complete.
+2026-01-19T18:55:54.316772+00:00 OUT TSV outputs: /home/ec2-user/Mysql-to-MariaDB-Migration/artifacts/precheck/*.tsv
+2026-01-19T18:55:54.319218+00:00 RUN  prepare_mysql (Set innodb_fast_shutdown=0 before shutdown) -> scripts/01_prepare_mysql.sh
+2026-01-19T18:55:54.319522+00:00 CMD /home/ec2-user/Mysql-to-MariaDB-Migration/scripts/01_prepare_mysql.sh
+2026-01-19T18:55:54.323794+00:00 OUT Setting innodb_fast_shutdown=0 (required before major upgrade)
+2026-01-19T18:55:54.346153+00:00 OUT Done.
+2026-01-19T18:55:54.347272+00:00 RUN  backup_mysql_system_db (Backup mysql system database) -> scripts/02_backup_mysql_system_db.sh
+2026-01-19T18:55:54.347567+00:00 CMD /home/ec2-user/Mysql-to-MariaDB-Migration/scripts/02_backup_mysql_system_db.sh
+2026-01-19T18:55:54.354800+00:00 OUT Dumping mysql system database from 127.0.0.1:3306 ...
+2026-01-19T18:55:54.653089+00:00 OUT Wrote: /home/ec2-user/Mysql-to-MariaDB-Migration/artifacts/backup/mysql-system-db.sql
+2026-01-19T18:55:54.654334+00:00 RUN  generate_fix_sql (Generate SQL fixes (auth/json/collations) (optional)) -> scripts/03_generate_fix_sql.sh
+2026-01-19T18:55:54.654635+00:00 CMD /home/ec2-user/Mysql-to-MariaDB-Migration/scripts/03_generate_fix_sql.sh
+2026-01-19T18:55:54.661922+00:00 OUT == Generating user plugin fix SQL ==
+2026-01-19T18:55:54.684395+00:00 OUT Wrote: /home/ec2-user/Mysql-to-MariaDB-Migration/outputs/fix_users_to_native_password.sql
+2026-01-19T18:55:54.684528+00:00 OUT NOTE: Replace <SET_PASSWORD_HERE> manually or wire from secrets.
+2026-01-19T18:55:54.684561+00:00 OUT 
+2026-01-19T18:55:54.684594+00:00 OUT == Generating JSON-to-LONGTEXT conversion SQL (optional) ==
+2026-01-19T18:55:54.708225+00:00 OUT Wrote: /home/ec2-user/Mysql-to-MariaDB-Migration/outputs/fix_json_to_longtext.sql
+2026-01-19T18:55:54.708369+00:00 OUT Only apply if you truly need TEXT storage for compatibility.
+2026-01-19T18:55:54.709462+00:00 RUN  stop_mysql_and_remove_packages (Stop MySQL and remove MySQL packages) -> scripts/04_stop_mysql_and_remove_packages.sh
+2026-01-19T18:55:54.709762+00:00 CMD /home/ec2-user/Mysql-to-MariaDB-Migration/scripts/04_stop_mysql_and_remove_packages.sh
+2026-01-19T18:55:54.714636+00:00 OUT Stopping MySQL service...
+2026-01-19T18:55:55.375317+00:00 OUT 
+2026-01-19T18:55:55.375502+00:00 OUT Installed MySQL / Percona packages:
+2026-01-19T18:55:55.523172+00:00 OUT mysql-community-common-8.0.44-1.el9.x86_64
+2026-01-19T18:55:55.523307+00:00 OUT mysql-community-client-plugins-8.0.44-1.el9.x86_64
+2026-01-19T18:55:55.523336+00:00 OUT mysql-community-libs-8.0.44-1.el9.x86_64
+2026-01-19T18:55:55.523358+00:00 OUT mysql-community-client-8.0.44-1.el9.x86_64
+2026-01-19T18:55:55.523379+00:00 OUT mysql-community-icu-data-files-8.0.44-1.el9.x86_64
+2026-01-19T18:55:55.523399+00:00 OUT mysql-community-server-8.0.44-1.el9.x86_64
+2026-01-19T18:55:55.523418+00:00 OUT mysql80-community-release-el9-5.noarch
+2026-01-19T18:55:55.523446+00:00 OUT 
+2026-01-19T18:55:55.523467+00:00 OUT IMPORTANT:
+2026-01-19T18:55:55.523487+00:00 OUT This step is DESTRUCTIVE.
+2026-01-19T18:55:55.523507+00:00 OUT Review the list above carefully.
+2026-01-19T18:55:55.523526+00:00 OUT 
+2026-01-19T18:55:55.523545+00:00 OUT To actually remove packages, edit this script and UNCOMMENT:
+2026-01-19T18:55:55.523566+00:00 OUT   sudo rpm -e --nodeps <package-name>
+2026-01-19T18:55:55.524757+00:00 RUN  install_mariadb (Install MariaDB) -> scripts/05_install_mariadb.sh
+2026-01-19T18:55:55.525045+00:00 CMD /home/ec2-user/Mysql-to-MariaDB-Migration/scripts/05_install_mariadb.sh
+2026-01-19T18:55:55.530026+00:00 OUT Installing MariaDB Server and Client...
+2026-01-19T18:55:55.940298+00:00 OUT Last metadata expiration check: 1 day, 18:28:19 ago on Sun Jan 18 00:27:36 2026.
+2026-01-19T18:55:55.977811+00:00 OUT No match for argument: MariaDB-server
+2026-01-19T18:55:55.985391+00:00 OUT No match for argument: MariaDB-client
+2026-01-19T18:55:56.003221+00:00 OUT Error: Unable to find a match: MariaDB-server MariaDB-client
+2026-01-19T18:55:56.049650+00:00 FINISH success=False message=Run failed at step: install_mariadb
+2026-01-19T19:06:30.234447+00:00 START mode=run config=config/migration.yaml
+2026-01-19T19:06:30.241888+00:00 SKIP precheck (Precheck source variables and blockers) - already DONE
+2026-01-19T19:06:30.242978+00:00 SKIP prepare_mysql (Set innodb_fast_shutdown=0 before shutdown) - already DONE
+2026-01-19T19:06:30.244007+00:00 SKIP backup_mysql_system_db (Backup mysql system database) - already DONE
+2026-01-19T19:06:30.246255+00:00 SKIP generate_fix_sql (Generate SQL fixes (auth/json/collations) (optional)) - already DONE
+2026-01-19T19:06:30.247158+00:00 SKIP stop_mysql_and_remove_packages (Stop MySQL and remove MySQL packages) - already DONE
+2026-01-19T19:06:30.248190+00:00 RUN  install_mariadb (Install MariaDB) -> scripts/05_install_mariadb.sh
+2026-01-19T19:06:30.248432+00:00 CMD /home/ec2-user/Mysql-to-MariaDB-Migration/scripts/05_install_mariadb.sh
+2026-01-19T19:06:30.257258+00:00 OUT Installing MariaDB Server and Client...
+2026-01-19T19:06:30.257466+00:00 OUT 
+2026-01-19T19:06:30.257502+00:00 OUT ERROR: MariaDB Enterprise repo not configured (MARIADB_ES_TOKEN not set).
+2026-01-19T19:06:30.257528+00:00 OUT        Without the Enterprise repo, packages like MariaDB-server / MariaDB-client won't be found.
+2026-01-19T19:06:30.257551+00:00 OUT 
+2026-01-19T19:06:30.257572+00:00 OUT Fix:
+2026-01-19T19:06:30.257593+00:00 OUT   export MARIADB_ES_TOKEN='<your token>'
+2026-01-19T19:06:30.257613+00:00 OUT   export MARIADB_ES_VERSION='11.8'   # optional
+2026-01-19T19:06:30.257633+00:00 OUT   then re-run this step.
+2026-01-19T19:06:30.258718+00:00 FINISH success=False message=Run failed at step: install_mariadb
+2026-01-19T19:13:46.562230+00:00 START mode=run config=config/migration.yaml
+2026-01-19T19:13:46.569540+00:00 SKIP precheck (Precheck source variables and blockers) - already DONE
+2026-01-19T19:13:46.570553+00:00 SKIP prepare_mysql (Set innodb_fast_shutdown=0 before shutdown) - already DONE
+2026-01-19T19:13:46.571460+00:00 SKIP backup_mysql_system_db (Backup mysql system database) - already DONE
+2026-01-19T19:13:46.573418+00:00 SKIP generate_fix_sql (Generate SQL fixes (auth/json/collations) (optional)) - already DONE
+2026-01-19T19:13:46.574321+00:00 SKIP stop_mysql_and_remove_packages (Stop MySQL and remove MySQL packages) - already DONE
+2026-01-19T19:13:46.575253+00:00 RUN  install_mariadb (Install MariaDB) -> scripts/05_install_mariadb.sh
+2026-01-19T19:13:46.575478+00:00 CMD /home/ec2-user/Mysql-to-MariaDB-Migration/scripts/05_install_mariadb.sh
+2026-01-19T19:13:46.583175+00:00 OUT Installing MariaDB Server and Client...
+2026-01-19T19:13:46.584667+00:00 OUT Configuring MariaDB Enterprise repo (version 11.8)...
+2026-01-19T19:13:46.896442+00:00 OUT curl: (22) The requested URL returned error: 404
+2026-01-19T19:13:46.901547+00:00 FINISH success=False message=Run failed at step: install_mariadb
+2026-01-19T19:29:30.629340+00:00 START mode=run config=config/migration.yaml
+2026-01-19T19:29:30.636882+00:00 SKIP precheck (Precheck source variables and blockers) - already DONE
+2026-01-19T19:29:30.637900+00:00 SKIP prepare_mysql (Set innodb_fast_shutdown=0 before shutdown) - already DONE
+2026-01-19T19:29:30.639993+00:00 SKIP backup_mysql_system_db (Backup mysql system database) - already DONE
+2026-01-19T19:29:30.640953+00:00 SKIP generate_fix_sql (Generate SQL fixes (auth/json/collations) (optional)) - already DONE
+2026-01-19T19:29:30.641935+00:00 SKIP stop_mysql_and_remove_packages (Stop MySQL and remove MySQL packages) - already DONE
+2026-01-19T19:29:30.642864+00:00 RUN  install_mariadb (Install MariaDB) -> scripts/05_install_mariadb.sh
+2026-01-19T19:29:30.643098+00:00 CMD /home/ec2-user/Mysql-to-MariaDB-Migration/scripts/05_install_mariadb.sh
+2026-01-19T19:29:30.651748+00:00 OUT Installing MariaDB Server and Client...
+2026-01-19T19:29:30.703875+00:00 OUT Installing from RPM tarball URL:
+2026-01-19T19:29:30.704012+00:00 OUT   https://dlm.mariadb.com/4546115/mariadb-enterprise-server/11.8.5-2/pkgtar/mariadb-enterprise-11.8.5-2-rhel-9-x86_64-rpms.tar
+2026-01-19T19:29:30.709129+00:00 OUT   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+2026-01-19T19:29:30.709250+00:00 OUT                                  Dload  Upload   Total   Spent    Left  Speed
+2026-01-19T19:29:30.709290+00:00 OUT 
+2026-01-19T19:29:30.834279+00:00 OUT   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+2026-01-19T19:29:31.220080+00:00 OUT   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+2026-01-19T19:29:31.220262+00:00 OUT   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+2026-01-19T19:29:31.465714+00:00 OUT 
+2026-01-19T19:29:31.465871+00:00 OUT   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+2026-01-19T19:29:31.796798+00:00 OUT 
+2026-01-19T19:29:31.796966+00:00 OUT   0     0    0     0    0     0      0      0 --:--:--  0:00:01 --:--:--     0
+2026-01-19T19:29:32.003173+00:00 OUT 
+2026-01-19T19:29:32.102260+00:00 OUT   0     0    0     0    0     0      0      0 --:--:--  0:00:01 --:--:--     0
+2026-01-19T19:29:32.102442+00:00 OUT   0     0    0     0    0     0      0      0 --:--:--  0:00:01 --:--:--     0
+2026-01-19T19:29:32.452797+00:00 OUT 
+2026-01-19T19:29:32.452979+00:00 OUT 100 10543  100 10543    0     0   6046      0  0:00:01  0:00:01 --:--:--  6046
+2026-01-19T19:29:32.459321+00:00 OUT tar: This does not look like a tar archive
+2026-01-19T19:29:32.459456+00:00 OUT tar: Skipping to next header
+2026-01-19T19:29:32.459490+00:00 OUT tar: Exiting with failure status due to previous errors
+2026-01-19T19:29:32.462357+00:00 FINISH success=False message=Run failed at step: install_mariadb
+2026-01-19T19:38:49.901208+00:00 START mode=run config=config/migration.yaml
+2026-01-19T19:38:49.908743+00:00 SKIP precheck (Precheck source variables and blockers) - already DONE
+2026-01-19T19:38:49.909817+00:00 SKIP prepare_mysql (Set innodb_fast_shutdown=0 before shutdown) - already DONE
+2026-01-19T19:38:49.910854+00:00 SKIP backup_mysql_system_db (Backup mysql system database) - already DONE
+2026-01-19T19:38:49.913037+00:00 SKIP generate_fix_sql (Generate SQL fixes (auth/json/collations) (optional)) - already DONE
+2026-01-19T19:38:49.913961+00:00 SKIP stop_mysql_and_remove_packages (Stop MySQL and remove MySQL packages) - already DONE
+2026-01-19T19:38:49.914921+00:00 RUN  install_mariadb (Install MariaDB) -> scripts/05_install_mariadb.sh
+2026-01-19T19:38:49.915190+00:00 CMD /home/ec2-user/Mysql-to-MariaDB-Migration/scripts/05_install_mariadb.sh
+2026-01-19T19:38:49.924472+00:00 OUT Installing MariaDB Server and Client...
+2026-01-19T19:38:49.975345+00:00 OUT Installing from RPM tarball URL:
+2026-01-19T19:38:49.975485+00:00 OUT   https://dlm.mariadb.com/4546115/mariadb-enterprise-server/11.8.5-2/pkgtar/mariadb-enterprise-11.8.5-2-rhel-9-x86_64-rpms.tar
+2026-01-19T19:38:49.981247+00:00 OUT   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+2026-01-19T19:38:49.981387+00:00 OUT                                  Dload  Upload   Total   Spent    Left  Speed
+2026-01-19T19:38:49.981427+00:00 OUT 
+2026-01-19T19:38:50.281080+00:00 OUT   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+2026-01-19T19:38:50.281241+00:00 OUT   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+2026-01-19T19:38:50.522909+00:00 OUT 
+2026-01-19T19:38:50.523073+00:00 OUT   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+2026-01-19T19:38:50.806840+00:00 OUT 
+2026-01-19T19:38:50.807015+00:00 OUT   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+2026-01-19T19:38:51.013831+00:00 OUT 
+2026-01-19T19:38:51.090612+00:00 OUT   0     0    0     0    0     0      0      0 --:--:--  0:00:01 --:--:--     0
+2026-01-19T19:38:51.090785+00:00 OUT   0     0    0     0    0     0      0      0 --:--:--  0:00:01 --:--:--     0
+2026-01-19T19:38:51.383752+00:00 OUT 
+2026-01-19T19:38:51.383941+00:00 OUT 100 10543  100 10543    0     0   7517      0  0:00:01  0:00:01 --:--:--  7517
+2026-01-19T19:38:51.389175+00:00 OUT tar: This does not look like a tar archive
+2026-01-19T19:38:51.389298+00:00 OUT tar: Skipping to next header
+2026-01-19T19:38:51.389352+00:00 OUT tar: Exiting with failure status due to previous errors
+2026-01-19T19:38:51.392063+00:00 FINISH success=False message=Run failed at step: install_mariadb
+2026-01-19T19:48:32.376930+00:00 START mode=run config=config/migration.yaml
+2026-01-19T19:48:32.384461+00:00 SKIP precheck (Precheck source variables and blockers) - already DONE
+2026-01-19T19:48:32.385645+00:00 SKIP prepare_mysql (Set innodb_fast_shutdown=0 before shutdown) - already DONE
+2026-01-19T19:48:32.386687+00:00 SKIP backup_mysql_system_db (Backup mysql system database) - already DONE
+2026-01-19T19:48:32.387894+00:00 SKIP generate_fix_sql (Generate SQL fixes (auth/json/collations) (optional)) - already DONE
+2026-01-19T19:48:32.389109+00:00 SKIP stop_mysql_and_remove_packages (Stop MySQL and remove MySQL packages) - already DONE
+2026-01-19T19:48:32.390188+00:00 RUN  install_mariadb (Install MariaDB) -> scripts/05_install_mariadb.sh
+2026-01-19T19:48:32.390436+00:00 CMD /home/ec2-user/Mysql-to-MariaDB-Migration/scripts/05_install_mariadb.sh
+2026-01-19T19:48:32.398219+00:00 OUT Installing MariaDB Server and Client...
+2026-01-19T19:48:32.398421+00:00 OUT Configuring MariaDB Enterprise repo via mariadb_es_repo_setup (version 11.8)...
+2026-01-19T19:48:33.571712+00:00 OUT 
+2026-01-19T19:48:33.571855+00:00 OUT # [error] Could not identify OS type or version.
+2026-01-19T19:48:33.571890+00:00 OUT 
+2026-01-19T19:48:33.571925+00:00 OUT # [error] 
+2026-01-19T19:48:33.571958+00:00 OUT MariaDB Enterprise Repository supports these Linux OSs, on x86_64 and aarch64:
+2026-01-19T19:48:33.571988+00:00 OUT     * RHEL/Rocky 8 & 9 (rhel)
+2026-01-19T19:48:33.572016+00:00 OUT     * 22.04 LTS (jammy), & 24.04 LTS (noble)
+2026-01-19T19:48:33.572045+00:00 OUT     * Debian 11 (bullseye), Debian 12 (bookworm), and Debian 13 (trixie)
+2026-01-19T19:48:33.572073+00:00 OUT     * SLES 15 (sles)
+2026-01-19T19:48:33.572100+00:00 OUT 
+2026-01-19T19:48:33.572128+00:00 OUT on x86_64 only, ES 10.5 and 10.6:
+2026-01-19T19:48:33.572155+00:00 OUT     * SLES 12
+2026-01-19T19:48:33.572182+00:00 OUT 
+2026-01-19T19:48:33.572208+00:00 OUT on ppc64le:
+2026-01-19T19:48:33.572235+00:00 OUT     * RHEL 9
+2026-01-19T19:48:33.572261+00:00 OUT 
+2026-01-19T19:48:33.572288+00:00 OUT More information on supported OSs here:
+2026-01-19T19:48:33.572316+00:00 OUT     https://mariadb.com/docs/server/architecture/topologies/compatibility
+2026-01-19T19:48:33.572344+00:00 OUT 
+2026-01-19T19:48:33.576318+00:00 FINISH success=False message=Run failed at step: install_mariadb

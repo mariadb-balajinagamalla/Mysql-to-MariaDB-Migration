@@ -1,8 +1,8 @@
 # Source config for assessment (read-only)
 client:
-  mysql_bin: /opt/homebrew/opt/mysql@8.4/bin/mysql 
+  mysql_bin: mysql 
   host: 127.0.0.1
-  port: 13306
+  port: 3306
   user: root
 
 # Prefer passwords via environment variables in CI:

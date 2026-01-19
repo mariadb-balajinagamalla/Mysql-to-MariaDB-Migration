@@ -1,36 +1,68 @@
 {
-  "created_at": "2026-01-14T19:42:04.781284+00:00",
+  "created_at": "2026-01-19T18:55:53.833993+00:00",
   "steps": {
     "backup_mysql_system_db": {
       "meta": {
         "args": [],
         "output_tail": [
-          "Dumping mysql system database from 127.0.0.1:13306 ...",
-          "Wrote: /Users/balajin/Documents/GitHub/Mysql-to-MariaDB-Migration/artifacts/backup/mysql-system-db.sql"
+          "Dumping mysql system database from 127.0.0.1:3306 ...",
+          "Wrote: /home/ec2-user/Mysql-to-MariaDB-Migration/artifacts/backup/mysql-system-db.sql"
         ],
         "returncode": 0,
         "script": "scripts/02_backup_mysql_system_db.sh"
       },
       "status": "DONE",
-      "updated_at": "2026-01-14T19:42:29.560760+00:00"
+      "updated_at": "2026-01-19T18:55:54.653572+00:00"
     },
     "generate_fix_sql": {
       "meta": {
         "args": [],
         "output_tail": [
           "== Generating user plugin fix SQL ==",
-          "Wrote: /Users/balajin/Documents/GitHub/Mysql-to-MariaDB-Migration/outputs/fix_users_to_native_password.sql",
+          "Wrote: /home/ec2-user/Mysql-to-MariaDB-Migration/outputs/fix_users_to_native_password.sql",
           "NOTE: Replace <SET_PASSWORD_HERE> manually or wire from secrets.",
           "",
           "== Generating JSON-to-LONGTEXT conversion SQL (optional) ==",
-          "Wrote: /Users/balajin/Documents/GitHub/Mysql-to-MariaDB-Migration/outputs/fix_json_to_longtext.sql",
+          "Wrote: /home/ec2-user/Mysql-to-MariaDB-Migration/outputs/fix_json_to_longtext.sql",
           "Only apply if you truly need TEXT storage for compatibility."
         ],
         "returncode": 0,
         "script": "scripts/03_generate_fix_sql.sh"
       },
       "status": "DONE",
-      "updated_at": "2026-01-14T19:42:30.058576+00:00"
+      "updated_at": "2026-01-19T18:55:54.708684+00:00"
+    },
+    "install_mariadb": {
+      "meta": {
+        "args": [],
+        "output_tail": [
+          "Installing MariaDB Server and Client...",
+          "Configuring MariaDB Enterprise repo via mariadb_es_repo_setup (version 11.8)...",
+          "",
+          "# [error] Could not identify OS type or version.",
+          "",
+          "# [error] ",
+          "MariaDB Enterprise Repository supports these Linux OSs, on x86_64 and aarch64:",
+          "    * RHEL/Rocky 8 & 9 (rhel)",
+          "    * 22.04 LTS (jammy), & 24.04 LTS (noble)",
+          "    * Debian 11 (bullseye), Debian 12 (bookworm), and Debian 13 (trixie)",
+          "    * SLES 15 (sles)",
+          "",
+          "on x86_64 only, ES 10.5 and 10.6:",
+          "    * SLES 12",
+          "",
+          "on ppc64le:",
+          "    * RHEL 9",
+          "",
+          "More information on supported OSs here:",
+          "    https://mariadb.com/docs/server/architecture/topologies/compatibility",
+          ""
+        ],
+        "returncode": 1,
+        "script": "scripts/05_install_mariadb.sh"
+      },
+      "status": "FAILED",
+      "updated_at": "2026-01-19T19:48:33.575510+00:00"
     },
     "precheck": {
       "meta": {
@@ -85,13 +117,13 @@
           "TempTable\tACTIVE",
           "",
           "Precheck complete.",
-          "TSV outputs: /Users/balajin/Documents/GitHub/Mysql-to-MariaDB-Migration/artifacts/precheck/*.tsv"
+          "TSV outputs: /home/ec2-user/Mysql-to-MariaDB-Migration/artifacts/precheck/*.tsv"
         ],
         "returncode": 0,
         "script": "scripts/00_precheck.sh"
       },
       "status": "DONE",
-      "updated_at": "2026-01-14T19:42:08.314254+00:00"
+      "updated_at": "2026-01-19T18:55:54.317460+00:00"
     },
     "prepare_mysql": {
       "meta": {
@@ -104,7 +136,35 @@
         "script": "scripts/01_prepare_mysql.sh"
       },
       "status": "DONE",
-      "updated_at": "2026-01-14T19:42:08.495593+00:00"
+      "updated_at": "2026-01-19T18:55:54.346562+00:00"
+    },
+    "stop_mysql_and_remove_packages": {
+      "meta": {
+        "args": [],
+        "output_tail": [
+          "Stopping MySQL service...",
+          "",
+          "Installed MySQL / Percona packages:",
+          "mysql-community-common-8.0.44-1.el9.x86_64",
+          "mysql-community-client-plugins-8.0.44-1.el9.x86_64",
+          "mysql-community-libs-8.0.44-1.el9.x86_64",
+          "mysql-community-client-8.0.44-1.el9.x86_64",
+          "mysql-community-icu-data-files-8.0.44-1.el9.x86_64",
+          "mysql-community-server-8.0.44-1.el9.x86_64",
+          "mysql80-community-release-el9-5.noarch",
+          "",
+          "IMPORTANT:",
+          "This step is DESTRUCTIVE.",
+          "Review the list above carefully.",
+          "",
+          "To actually remove packages, edit this script and UNCOMMENT:",
+          "  sudo rpm -e --nodeps <package-name>"
+        ],
+        "returncode": 0,
+        "script": "scripts/04_stop_mysql_and_remove_packages.sh"
+      },
+      "status": "DONE",
+      "updated_at": "2026-01-19T18:55:55.523947+00:00"
     }
   },
   "version": 1

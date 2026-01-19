@@ -1,4 +1,4 @@
--- MySQL dump 10.13  Distrib 8.4.7, for macos15.7 (arm64)
+-- MySQL dump 10.13  Distrib 8.0.44, for Linux (x86_64)
 --
 -- Host: 127.0.0.1    Database: mysql
 -- ------------------------------------------------------
@@ -1068,4 +1068,4 @@ CREATE TABLE IF NOT EXISTS `slow_log` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-01-15  1:12:29
+-- Dump completed on 2026-01-19 18:55:54

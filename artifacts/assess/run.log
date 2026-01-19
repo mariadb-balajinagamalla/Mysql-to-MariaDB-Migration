@@ -1,41 +1,190 @@
-2026-01-14T12:04:17.252697+00:00 START mode=assessment config=config/source.yaml
-2026-01-14T12:04:17.252935+00:00 RUN precheck -> /Users/balajin/Documents/GitHub/Mysql-to-MariaDB-Migration/scripts/00_precheck.sh
-2026-01-14T12:04:20.312492+00:00 == Precheck runner ==
-2026-01-14T12:04:20.312892+00:00 Host: 127.0.0.1  Port: 13306  User: root
-2026-01-14T12:04:20.312954+00:00 Checks dir: /Users/balajin/Documents/GitHub/Mysql-to-MariaDB-Migration/sql/checks
-2026-01-14T12:04:20.313001+00:00 Outdir: artifacts/assess/precheck
-2026-01-14T12:04:20.313042+00:00 
-2026-01-14T12:04:20.313083+00:00 ---- mysql_version ----
-2026-01-14T12:04:20.313128+00:00 
-2026-01-14T12:04:20.313172+00:00 ---- innodb_settings ----
-2026-01-14T12:04:20.313212+00:00 
-2026-01-14T12:04:20.313273+00:00 ---- auth_plugins ----
-2026-01-14T12:04:20.313330+00:00 
-2026-01-14T12:04:20.313400+00:00 ---- json_columns ----
-2026-01-14T12:04:20.313449+00:00 
-2026-01-14T12:04:20.313488+00:00 ---- compression_encryption ----
-2026-01-14T12:04:20.313524+00:00 (no rows)
-2026-01-14T12:04:20.313559+00:00 
-2026-01-14T12:04:20.313596+00:00 ---- engines_summary ----
-2026-01-14T12:04:20.313643+00:00 
-2026-01-14T12:04:20.313690+00:00 ---- schema_sizes ----
-2026-01-14T12:04:20.313730+00:00 
-2026-01-14T12:04:20.313771+00:00 ---- schema_charsets ----
-2026-01-14T12:04:20.313804+00:00 
-2026-01-14T12:04:20.313836+00:00 ---- mysql8_collations ----
-2026-01-14T12:04:20.313869+00:00 
-2026-01-14T12:04:20.313907+00:00 ---- mysql8_column_collations ----
-2026-01-14T12:04:20.313949+00:00 ... (truncated; full output in artifacts/assess/precheck/mysql8_column_collations.tsv)
-2026-01-14T12:04:20.313984+00:00 
-2026-01-14T12:04:20.314017+00:00 ---- sql_mode ----
-2026-01-14T12:04:20.314050+00:00 
-2026-01-14T12:04:20.314092+00:00 ---- definers_inventory ----
-2026-01-14T12:04:20.314150+00:00 
-2026-01-14T12:04:20.314189+00:00 ---- partitioned_tables ----
-2026-01-14T12:04:20.314224+00:00 (no rows)
-2026-01-14T12:04:20.314257+00:00 
-2026-01-14T12:04:20.314290+00:00 ---- active_plugins ----
-2026-01-14T12:04:20.314322+00:00 
-2026-01-14T12:04:20.314355+00:00 Precheck complete.
-2026-01-14T12:04:20.314387+00:00 TSV outputs: artifacts/assess/precheck/*.tsv
-2026-01-14T12:04:20.316848+00:00 FINISH success=True message=Assessment passed. Ready to plan/run.
+2026-01-19T18:48:27.807735+00:00 START mode=assessment config=config/source.yaml
+2026-01-19T18:48:27.808073+00:00 RUN precheck -> /home/ec2-user/Mysql-to-MariaDB-Migration/scripts/00_precheck.sh
+2026-01-19T18:48:27.837216+00:00 == Precheck runner ==
+2026-01-19T18:48:27.837382+00:00 Host: 127.0.0.1  Port: 3306  User: root
+2026-01-19T18:48:27.837416+00:00 Checks dir: /home/ec2-user/Mysql-to-MariaDB-Migration/sql/checks
+2026-01-19T18:48:27.837441+00:00 Outdir: artifacts/assess/precheck
+2026-01-19T18:48:27.837463+00:00 
+2026-01-19T18:48:27.837484+00:00 ---- mysql_version ----
+2026-01-19T18:48:27.837519+00:00 ERROR: mysql failed for mysql_version (see artifacts/assess/precheck/precheck.err)
+2026-01-19T18:53:54.015814+00:00 START mode=assessment config=config/source.yaml
+2026-01-19T18:53:54.016124+00:00 RUN precheck -> /home/ec2-user/Mysql-to-MariaDB-Migration/scripts/00_precheck.sh
+2026-01-19T18:53:54.532226+00:00 == Precheck runner ==
+2026-01-19T18:53:54.532368+00:00 Host: 127.0.0.1  Port: 3306  User: root
+2026-01-19T18:53:54.532398+00:00 Checks dir: /home/ec2-user/Mysql-to-MariaDB-Migration/sql/checks
+2026-01-19T18:53:54.532422+00:00 Outdir: artifacts/assess/precheck
+2026-01-19T18:53:54.532443+00:00 
+2026-01-19T18:53:54.532465+00:00 ---- mysql_version ----
+2026-01-19T18:53:54.532499+00:00 8.0.44
+2026-01-19T18:53:54.532520+00:00 
+2026-01-19T18:53:54.532539+00:00 ---- innodb_settings ----
+2026-01-19T18:53:54.532558+00:00 1	1
+2026-01-19T18:53:54.532576+00:00 
+2026-01-19T18:53:54.532603+00:00 ---- auth_plugins ----
+2026-01-19T18:53:54.532623+00:00 analytics	10.%	caching_sha2_password
+2026-01-19T18:53:54.532641+00:00 app_ro	%	caching_sha2_password
+2026-01-19T18:53:54.532660+00:00 app_rw	%	caching_sha2_password
+2026-01-19T18:53:54.532678+00:00 root	localhost	caching_sha2_password
+2026-01-19T18:53:54.532697+00:00 
+2026-01-19T18:53:54.532715+00:00 ---- json_columns ----
+2026-01-19T18:53:54.532734+00:00 appdb	big_orders	payload	json
+2026-01-19T18:53:54.532753+00:00 json_poc	json_test	payload	json
+2026-01-19T18:53:54.532772+00:00 
+2026-01-19T18:53:54.532790+00:00 ---- compression_encryption ----
+2026-01-19T18:53:54.532808+00:00 (no rows)
+2026-01-19T18:53:54.532827+00:00 
+2026-01-19T18:53:54.532845+00:00 ---- engines_summary ----
+2026-01-19T18:53:54.532864+00:00 PERFORMANCE_SCHEMA	111
+2026-01-19T18:53:54.532882+00:00 InnoDB	58
+2026-01-19T18:53:54.532900+00:00 CSV	2
+2026-01-19T18:53:54.532919+00:00 
+2026-01-19T18:53:54.532937+00:00 ---- schema_sizes ----
+2026-01-19T18:53:54.532956+00:00 appdb	6367.56
+2026-01-19T18:53:54.532976+00:00 sakila	6.45
+2026-01-19T18:53:54.532994+00:00 mysql	2.66
+2026-01-19T18:53:54.533012+00:00 json_poc	0.02
+2026-01-19T18:53:54.533031+00:00 sys	0.02
+2026-01-19T18:53:54.533049+00:00 information_schema	0.00
+2026-01-19T18:53:54.533068+00:00 performance_schema	0.00
+2026-01-19T18:53:54.533086+00:00 
+2026-01-19T18:53:54.533104+00:00 ---- schema_charsets ----
+2026-01-19T18:53:54.533123+00:00 appdb	utf8mb4	utf8mb4_0900_ai_ci
+2026-01-19T18:53:54.533142+00:00 json_poc	utf8mb4	utf8mb4_0900_ai_ci
+2026-01-19T18:53:54.533160+00:00 sakila	utf8mb4	utf8mb4_0900_ai_ci
+2026-01-19T18:53:54.533178+00:00 
+2026-01-19T18:53:54.533197+00:00 ---- mysql8_collations ----
+2026-01-19T18:53:54.533216+00:00 appdb	big_orders	utf8mb4_0900_ai_ci
+2026-01-19T18:53:54.533234+00:00 appdb	customers	utf8mb4_0900_ai_ci
+2026-01-19T18:53:54.533252+00:00 appdb	orders	utf8mb4_0900_ai_ci
+2026-01-19T18:53:54.533271+00:00 appdb	seq_1M	utf8mb4_0900_ai_ci
+2026-01-19T18:53:54.533290+00:00 json_poc	json_test	utf8mb4_0900_ai_ci
+2026-01-19T18:53:54.533309+00:00 sakila	actor	utf8mb4_0900_ai_ci
+2026-01-19T18:53:54.533327+00:00 sakila	address	utf8mb4_0900_ai_ci
+2026-01-19T18:53:54.533346+00:00 sakila	category	utf8mb4_0900_ai_ci
+2026-01-19T18:53:54.533364+00:00 sakila	city	utf8mb4_0900_ai_ci
+2026-01-19T18:53:54.533382+00:00 sakila	country	utf8mb4_0900_ai_ci
+2026-01-19T18:53:54.533400+00:00 sakila	customer	utf8mb4_0900_ai_ci
+2026-01-19T18:53:54.533419+00:00 sakila	film	utf8mb4_0900_ai_ci
+2026-01-19T18:53:54.533437+00:00 sakila	film_actor	utf8mb4_0900_ai_ci
+2026-01-19T18:53:54.533460+00:00 sakila	film_category	utf8mb4_0900_ai_ci
+2026-01-19T18:53:54.533489+00:00 sakila	film_text	utf8mb4_0900_ai_ci
+2026-01-19T18:53:54.533508+00:00 sakila	inventory	utf8mb4_0900_ai_ci
+2026-01-19T18:53:54.533527+00:00 sakila	language	utf8mb4_0900_ai_ci
+2026-01-19T18:53:54.533546+00:00 sakila	payment	utf8mb4_0900_ai_ci
+2026-01-19T18:53:54.533564+00:00 sakila	rental	utf8mb4_0900_ai_ci
+2026-01-19T18:53:54.533583+00:00 sakila	staff	utf8mb4_0900_ai_ci
+2026-01-19T18:53:54.533601+00:00 sakila	store	utf8mb4_0900_ai_ci
+2026-01-19T18:53:54.533620+00:00 
+2026-01-19T18:53:54.533638+00:00 ---- mysql8_column_collations ----
+2026-01-19T18:53:54.533656+00:00 appdb	big_orders	filler	utf8mb4_0900_ai_ci
+2026-01-19T18:53:54.533675+00:00 appdb	customers	email	utf8mb4_0900_ai_ci
+2026-01-19T18:53:54.533694+00:00 appdb	customers	name	utf8mb4_0900_ai_ci
+2026-01-19T18:53:54.533713+00:00 appdb	orders	status	utf8mb4_0900_ai_ci
+2026-01-19T18:53:54.533731+00:00 sakila	actor	first_name	utf8mb4_0900_ai_ci
+2026-01-19T18:53:54.533750+00:00 sakila	actor	last_name	utf8mb4_0900_ai_ci
+2026-01-19T18:53:54.533769+00:00 sakila	actor_info	film_info	utf8mb4_0900_ai_ci
+2026-01-19T18:53:54.533787+00:00 sakila	actor_info	first_name	utf8mb4_0900_ai_ci
+2026-01-19T18:53:54.533806+00:00 sakila	actor_info	last_name	utf8mb4_0900_ai_ci
+2026-01-19T18:53:54.533824+00:00 sakila	address	address	utf8mb4_0900_ai_ci
+2026-01-19T18:53:54.533843+00:00 sakila	address	address2	utf8mb4_0900_ai_ci
+2026-01-19T18:53:54.533862+00:00 sakila	address	district	utf8mb4_0900_ai_ci
+2026-01-19T18:53:54.533880+00:00 sakila	address	phone	utf8mb4_0900_ai_ci
+2026-01-19T18:53:54.533899+00:00 sakila	address	postal_code	utf8mb4_0900_ai_ci
+2026-01-19T18:53:54.533917+00:00 sakila	category	name	utf8mb4_0900_ai_ci
+2026-01-19T18:53:54.533936+00:00 sakila	city	city	utf8mb4_0900_ai_ci
+2026-01-19T18:53:54.533954+00:00 sakila	country	country	utf8mb4_0900_ai_ci
+2026-01-19T18:53:54.533973+00:00 sakila	customer	email	utf8mb4_0900_ai_ci
+2026-01-19T18:53:54.533991+00:00 sakila	customer	first_name	utf8mb4_0900_ai_ci
+2026-01-19T18:53:54.534010+00:00 sakila	customer	last_name	utf8mb4_0900_ai_ci
+2026-01-19T18:53:54.534028+00:00 sakila	customer_list	address	utf8mb4_0900_ai_ci
+2026-01-19T18:53:54.534047+00:00 sakila	customer_list	city	utf8mb4_0900_ai_ci
+2026-01-19T18:53:54.534065+00:00 sakila	customer_list	country	utf8mb4_0900_ai_ci
+2026-01-19T18:53:54.534084+00:00 sakila	customer_list	name	utf8mb4_0900_ai_ci
+2026-01-19T18:53:54.534102+00:00 sakila	customer_list	notes	utf8mb4_0900_ai_ci
+2026-01-19T18:53:54.534120+00:00 sakila	customer_list	phone	utf8mb4_0900_ai_ci
+2026-01-19T18:53:54.534139+00:00 sakila	customer_list	zip code	utf8mb4_0900_ai_ci
+2026-01-19T18:53:54.534157+00:00 sakila	film	description	utf8mb4_0900_ai_ci
+2026-01-19T18:53:54.534176+00:00 sakila	film	rating	utf8mb4_0900_ai_ci
+2026-01-19T18:53:54.534204+00:00 sakila	film	special_features	utf8mb4_0900_ai_ci
+2026-01-19T18:53:54.534224+00:00 sakila	film	title	utf8mb4_0900_ai_ci
+2026-01-19T18:53:54.534243+00:00 sakila	film_list	actors	utf8mb4_0900_ai_ci
+2026-01-19T18:53:54.534261+00:00 sakila	film_list	category	utf8mb4_0900_ai_ci
+2026-01-19T18:53:54.534279+00:00 sakila	film_list	description	utf8mb4_0900_ai_ci
+2026-01-19T18:53:54.534298+00:00 sakila	film_list	rating	utf8mb4_0900_ai_ci
+2026-01-19T18:53:54.534317+00:00 sakila	film_list	title	utf8mb4_0900_ai_ci
+2026-01-19T18:53:54.534335+00:00 sakila	film_text	description	utf8mb4_0900_ai_ci
+2026-01-19T18:53:54.534353+00:00 sakila	film_text	title	utf8mb4_0900_ai_ci
+2026-01-19T18:53:54.534372+00:00 sakila	language	name	utf8mb4_0900_ai_ci
+2026-01-19T18:53:54.534391+00:00 sakila	nicer_but_slower_film_list	actors	utf8mb4_0900_ai_ci
+2026-01-19T18:53:54.534410+00:00 sakila	nicer_but_slower_film_list	category	utf8mb4_0900_ai_ci
+2026-01-19T18:53:54.534430+00:00 sakila	nicer_but_slower_film_list	description	utf8mb4_0900_ai_ci
+2026-01-19T18:53:54.534448+00:00 sakila	nicer_but_slower_film_list	rating	utf8mb4_0900_ai_ci
+2026-01-19T18:53:54.534467+00:00 sakila	nicer_but_slower_film_list	title	utf8mb4_0900_ai_ci
+2026-01-19T18:53:54.534485+00:00 sakila	sales_by_film_category	category	utf8mb4_0900_ai_ci
+2026-01-19T18:53:54.534507+00:00 sakila	sales_by_store	manager	utf8mb4_0900_ai_ci
+2026-01-19T18:53:54.534526+00:00 sakila	sales_by_store	store	utf8mb4_0900_ai_ci
+2026-01-19T18:53:54.534546+00:00 sakila	staff	email	utf8mb4_0900_ai_ci
+2026-01-19T18:53:54.534564+00:00 sakila	staff	first_name	utf8mb4_0900_ai_ci
+2026-01-19T18:53:54.534583+00:00 sakila	staff	last_name	utf8mb4_0900_ai_ci
+2026-01-19T18:53:54.534601+00:00 ... (truncated; full output in artifacts/assess/precheck/mysql8_column_collations.tsv)
+2026-01-19T18:53:54.534621+00:00 
+2026-01-19T18:53:54.534639+00:00 ---- sql_mode ----
+2026-01-19T18:53:54.534658+00:00 ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION
+2026-01-19T18:53:54.534676+00:00 
+2026-01-19T18:53:54.534695+00:00 ---- definers_inventory ----
+2026-01-19T18:53:54.534713+00:00 ROUTINE	root@localhost	7
+2026-01-19T18:53:54.534732+00:00 TRIGGER	root@localhost	6
+2026-01-19T18:53:54.534750+00:00 VIEW	root@localhost	7
+2026-01-19T18:53:54.534768+00:00 
+2026-01-19T18:53:54.534787+00:00 ---- partitioned_tables ----
+2026-01-19T18:53:54.534805+00:00 (no rows)
+2026-01-19T18:53:54.534824+00:00 
+2026-01-19T18:53:54.534843+00:00 ---- active_plugins ----
+2026-01-19T18:53:54.534861+00:00 ARCHIVE	ACTIVE
+2026-01-19T18:53:54.534880+00:00 binlog	ACTIVE
+2026-01-19T18:53:54.534899+00:00 BLACKHOLE	ACTIVE
+2026-01-19T18:53:54.534917+00:00 caching_sha2_password	ACTIVE
+2026-01-19T18:53:54.534937+00:00 CSV	ACTIVE
+2026-01-19T18:53:54.534955+00:00 daemon_keyring_proxy_plugin	ACTIVE
+2026-01-19T18:53:54.534974+00:00 InnoDB	ACTIVE
+2026-01-19T18:53:54.534993+00:00 INNODB_BUFFER_PAGE	ACTIVE
+2026-01-19T18:53:54.535011+00:00 INNODB_BUFFER_PAGE_LRU	ACTIVE
+2026-01-19T18:53:54.535030+00:00 INNODB_BUFFER_POOL_STATS	ACTIVE
+2026-01-19T18:53:54.535049+00:00 INNODB_CACHED_INDEXES	ACTIVE
+2026-01-19T18:53:54.535067+00:00 INNODB_CMP	ACTIVE
+2026-01-19T18:53:54.535085+00:00 INNODB_CMPMEM	ACTIVE
+2026-01-19T18:53:54.535105+00:00 INNODB_CMPMEM_RESET	ACTIVE
+2026-01-19T18:53:54.535124+00:00 INNODB_CMP_PER_INDEX	ACTIVE
+2026-01-19T18:53:54.535144+00:00 INNODB_CMP_PER_INDEX_RESET	ACTIVE
+2026-01-19T18:53:54.535162+00:00 INNODB_CMP_RESET	ACTIVE
+2026-01-19T18:53:54.535181+00:00 INNODB_COLUMNS	ACTIVE
+2026-01-19T18:53:54.535199+00:00 INNODB_FT_BEING_DELETED	ACTIVE
+2026-01-19T18:53:54.535217+00:00 INNODB_FT_CONFIG	ACTIVE
+2026-01-19T18:53:54.535236+00:00 INNODB_FT_DEFAULT_STOPWORD	ACTIVE
+2026-01-19T18:53:54.535255+00:00 INNODB_FT_DELETED	ACTIVE
+2026-01-19T18:53:54.535274+00:00 INNODB_FT_INDEX_CACHE	ACTIVE
+2026-01-19T18:53:54.535292+00:00 INNODB_FT_INDEX_TABLE	ACTIVE
+2026-01-19T18:53:54.535311+00:00 INNODB_INDEXES	ACTIVE
+2026-01-19T18:53:54.535329+00:00 INNODB_METRICS	ACTIVE
+2026-01-19T18:53:54.535347+00:00 INNODB_SESSION_TEMP_TABLESPACES	ACTIVE
+2026-01-19T18:53:54.535366+00:00 INNODB_TABLES	ACTIVE
+2026-01-19T18:53:54.535385+00:00 INNODB_TABLESPACES	ACTIVE
+2026-01-19T18:53:54.535403+00:00 INNODB_TABLESTATS	ACTIVE
+2026-01-19T18:53:54.535422+00:00 INNODB_TEMP_TABLE_INFO	ACTIVE
+2026-01-19T18:53:54.535441+00:00 INNODB_TRX	ACTIVE
+2026-01-19T18:53:54.535459+00:00 INNODB_VIRTUAL	ACTIVE
+2026-01-19T18:53:54.535478+00:00 MEMORY	ACTIVE
+2026-01-19T18:53:54.535496+00:00 MRG_MYISAM	ACTIVE
+2026-01-19T18:53:54.535515+00:00 MyISAM	ACTIVE
+2026-01-19T18:53:54.535535+00:00 mysqlx	ACTIVE
+2026-01-19T18:53:54.535554+00:00 mysqlx_cache_cleaner	ACTIVE
+2026-01-19T18:53:54.535573+00:00 mysql_native_password	ACTIVE
+2026-01-19T18:53:54.535593+00:00 ngram	ACTIVE
+2026-01-19T18:53:54.535720+00:00 PERFORMANCE_SCHEMA	ACTIVE
+2026-01-19T18:53:54.535743+00:00 sha256_password	ACTIVE
+2026-01-19T18:53:54.535763+00:00 sha2_cache_cleaner	ACTIVE
+2026-01-19T18:53:54.535783+00:00 TempTable	ACTIVE
+2026-01-19T18:53:54.535803+00:00 
+2026-01-19T18:53:54.535821+00:00 Precheck complete.
+2026-01-19T18:53:54.535841+00:00 TSV outputs: artifacts/assess/precheck/*.tsv
+2026-01-19T18:53:54.541463+00:00 FINISH success=True message=Assessment passed. Ready to plan/run.

@@ -1,0 +1,151 @@
+{
+  "schema_version": 1,
+  "run_id": "20260119T194832Z",
+  "mode": "run",
+  "config_path": "config/migration.yaml",
+  "started_at": "2026-01-19T19:48:32.376897+00:00",
+  "finished_at": "2026-01-19T19:48:33.576303+00:00",
+  "success": false,
+  "message": "Run failed at step: install_mariadb",
+  "source": {},
+  "target": {},
+  "gates": [],
+  "warnings": [],
+  "inventory": {},
+  "plan": {
+    "mode": "offline",
+    "phases": [
+      "prerequisites",
+      "backup",
+      "transform",
+      "stop_and_swap",
+      "import",
+      "validate"
+    ],
+    "steps": [
+      {
+        "id": "precheck",
+        "name": "Precheck source variables and blockers",
+        "script": "scripts/00_precheck.sh",
+        "args": []
+      },
+      {
+        "id": "prepare_mysql",
+        "name": "Set innodb_fast_shutdown=0 before shutdown",
+        "script": "scripts/01_prepare_mysql.sh",
+        "args": []
+      },
+      {
+        "id": "backup_mysql_system_db",
+        "name": "Backup mysql system database",
+        "script": "scripts/02_backup_mysql_system_db.sh",
+        "args": []
+      },
+      {
+        "id": "generate_fix_sql",
+        "name": "Generate SQL fixes (auth/json/collations) (optional)",
+        "script": "scripts/03_generate_fix_sql.sh",
+        "args": []
+      },
+      {
+        "id": "stop_mysql_and_remove_packages",
+        "name": "Stop MySQL and remove MySQL packages",
+        "script": "scripts/04_stop_mysql_and_remove_packages.sh",
+        "args": []
+      },
+      {
+        "id": "install_mariadb",
+        "name": "Install MariaDB",
+        "script": "scripts/05_install_mariadb.sh",
+        "args": []
+      },
+      {
+        "id": "start_upgrade",
+        "name": "Start MariaDB and run mariadb-upgrade",
+        "script": "scripts/06_start_mariadb_and_upgrade.sh",
+        "args": []
+      },
+      {
+        "id": "validate",
+        "name": "Validate after upgrade",
+        "script": "scripts/07_validate.sh",
+        "args": []
+      }
+    ]
+  },
+  "steps": [
+    {
+      "id": "precheck",
+      "name": "Precheck source variables and blockers",
+      "status": "SKIPPED",
+      "details": {
+        "reason": "already_done"
+      }
+    },
+    {
+      "id": "prepare_mysql",
+      "name": "Set innodb_fast_shutdown=0 before shutdown",
+      "status": "SKIPPED",
+      "details": {
+        "reason": "already_done"
+      }
+    },
+    {
+      "id": "backup_mysql_system_db",
+      "name": "Backup mysql system database",
+      "status": "SKIPPED",
+      "details": {
+        "reason": "already_done"
+      }
+    },
+    {
+      "id": "generate_fix_sql",
+      "name": "Generate SQL fixes (auth/json/collations) (optional)",
+      "status": "SKIPPED",
+      "details": {
+        "reason": "already_done"
+      }
+    },
+    {
+      "id": "stop_mysql_and_remove_packages",
+      "name": "Stop MySQL and remove MySQL packages",
+      "status": "SKIPPED",
+      "details": {
+        "reason": "already_done"
+      }
+    },
+    {
+      "id": "install_mariadb",
+      "name": "Install MariaDB",
+      "status": "FAILED",
+      "details": {
+        "script": "scripts/05_install_mariadb.sh",
+        "args": [],
+        "returncode": 1,
+        "output_tail": [
+          "Installing MariaDB Server and Client...",
+          "Configuring MariaDB Enterprise repo via mariadb_es_repo_setup (version 11.8)...",
+          "",
+          "# [error] Could not identify OS type or version.",
+          "",
+          "# [error] ",
+          "MariaDB Enterprise Repository supports these Linux OSs, on x86_64 and aarch64:",
+          "    * RHEL/Rocky 8 & 9 (rhel)",
+          "    * 22.04 LTS (jammy), & 24.04 LTS (noble)",
+          "    * Debian 11 (bullseye), Debian 12 (bookworm), and Debian 13 (trixie)",
+          "    * SLES 15 (sles)",
+          "",
+          "on x86_64 only, ES 10.5 and 10.6:",
+          "    * SLES 12",
+          "",
+          "on ppc64le:",
+          "    * RHEL 9",
+          "",
+          "More information on supported OSs here:",
+          "    https://mariadb.com/docs/server/architecture/topologies/compatibility",
+          ""
+        ]
+      }
+    }
+  ]
+}

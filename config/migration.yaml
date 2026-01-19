@@ -1,8 +1,8 @@
-mode: local 
+mode: offline 
 
 env:
   HOST: 127.0.0.1
-  PORT: "13306"
+  PORT: "3306"
   USER: root
   PASS: "Root@1234"
 

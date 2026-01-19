@@ -1,17 +1,17 @@
 {
   "schema_version": 1,
-  "run_id": "20260114T120417Z",
+  "run_id": "20260119T185354Z",
   "mode": "assessment",
   "config_path": "config/source.yaml",
-  "started_at": "2026-01-14T12:04:17.252679+00:00",
-  "finished_at": "2026-01-14T12:04:20.316839+00:00",
+  "started_at": "2026-01-19T18:53:54.015764+00:00",
+  "finished_at": "2026-01-19T18:53:54.541440+00:00",
   "success": true,
   "message": "Assessment passed. Ready to plan/run.",
   "source": {
     "type": "mysql",
     "version": "8.0.44",
     "host": "127.0.0.1",
-    "port": 13306
+    "port": 3306
   },
   "target": {
     "type": "mariadb",
@@ -39,6 +39,14 @@
     }
   ],
   "warnings": [
+    {
+      "name": "innodb_fast_shutdown_not_0",
+      "severity": "MEDIUM",
+      "details": {
+        "value": "1",
+        "required_before_shutdown": 0
+      }
+    },
     {
       "name": "mysql_sha_or_caching_auth_users",
       "severity": "HIGH",

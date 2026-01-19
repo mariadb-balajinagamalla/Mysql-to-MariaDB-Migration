@@ -1,13 +1,13 @@
 == Precheck runner ==
-Host: 127.0.0.1  Port: 13306  User: root
-Checks dir: /Users/balajin/Documents/GitHub/Mysql-to-MariaDB-Migration/sql/checks
-Outdir: /Users/balajin/Documents/GitHub/Mysql-to-MariaDB-Migration/artifacts/precheck
+Host: 127.0.0.1  Port: 3306  User: root
+Checks dir: /home/ec2-user/Mysql-to-MariaDB-Migration/sql/checks
+Outdir: /home/ec2-user/Mysql-to-MariaDB-Migration/artifacts/precheck
 
 ---- mysql_version ----
 8.0.44
 
 ---- innodb_settings ----
-1	0
+1	1
 
 ---- auth_plugins ----
 analytics	10.%	caching_sha2_password
@@ -115,7 +115,7 @@ sakila	sales_by_store	store	utf8mb4_0900_ai_ci
 sakila	staff	email	utf8mb4_0900_ai_ci
 sakila	staff	first_name	utf8mb4_0900_ai_ci
 sakila	staff	last_name	utf8mb4_0900_ai_ci
-... (truncated; full output in /Users/balajin/Documents/GitHub/Mysql-to-MariaDB-Migration/artifacts/precheck/mysql8_column_collations.tsv)
+... (truncated; full output in /home/ec2-user/Mysql-to-MariaDB-Migration/artifacts/precheck/mysql8_column_collations.tsv)
 
 ---- sql_mode ----
 ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION
@@ -175,4 +175,4 @@ sha2_cache_cleaner	ACTIVE
 TempTable	ACTIVE
 
 Precheck complete.
-TSV outputs: /Users/balajin/Documents/GitHub/Mysql-to-MariaDB-Migration/artifacts/precheck/*.tsv
+TSV outputs: /home/ec2-user/Mysql-to-MariaDB-Migration/artifacts/precheck/*.tsv

@@ -1,13 +1,13 @@
 == Precheck runner ==
-Host: 127.0.0.1  Port: 13306  User: root
-Checks dir: /Users/balajin/Documents/GitHub/Mysql-to-MariaDB-Migration/sql/checks
+Host: 127.0.0.1  Port: 3306  User: root
+Checks dir: /home/ec2-user/Mysql-to-MariaDB-Migration/sql/checks
 Outdir: artifacts/assess/precheck
 
 ---- mysql_version ----
 8.0.44
 
 ---- innodb_settings ----
-1	0
+1	1
 
 ---- auth_plugins ----
 analytics	10.%	caching_sha2_password
