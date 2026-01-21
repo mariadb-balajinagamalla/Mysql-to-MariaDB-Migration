@@ -2,25 +2,30 @@
 set -euo pipefail
 
 MARIADB_BIN="${MARIADB_BIN:-mariadb}"
-HOST="${HOST:-127.0.0.1}"
-PORT="${PORT:-3306}"
-USER="${USER:-root}"
+SOCKET="${SOCKET:-/var/lib/mysql/mysql.sock}"
 
-PASS="${PASS:-}"
-if [[ -n "$PASS" && -z "${MYSQL_PWD:-}" ]]; then
-  export MYSQL_PWD="$PASS"
-fi
-
-AUTH=(-h"$HOST" -P"$PORT" -u"$USER")
-OPTS=(--batch --skip-column-names)
-
-echo "MariaDB version:"
-"$MARIADB_BIN" "${AUTH[@]}" -e "SELECT VERSION();"
+echo "MariaDB version (socket-based validation):"
+sudo "$MARIADB_BIN" \
+  --socket="$SOCKET" \
+  -u root \
+  --batch --skip-column-names \
+  -e "SELECT VERSION();"
 
 echo
-echo "User authentication plugins after upgrade:"
-"$MARIADB_BIN" "${AUTH[@]}" "${OPTS[@]}" \
+echo "User authentication plugins:"
+sudo "$MARIADB_BIN" \
+  --socket="$SOCKET" \
+  -u root \
+  --batch --skip-column-names \
   -e "SELECT user, host, plugin FROM mysql.user ORDER BY user, host;"
 
 echo
-echo "Validation complete."
+echo "Storage engines:"
+sudo "$MARIADB_BIN" \
+  --socket="$SOCKET" \
+  -u root \
+  --batch --skip-column-names \
+  -e "SHOW ENGINES;"
+
+echo
+echo "Validation complete (socket-first)."

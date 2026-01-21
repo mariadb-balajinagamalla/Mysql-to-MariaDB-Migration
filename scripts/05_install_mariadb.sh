@@ -1,64 +1,91 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Install MariaDB Enterprise Server packages on Linux using mariadb_es_repo_setup.
-# Token must be provided via environment (NOT in repo):
+# MariaDB Enterprise installation via RPM tarball
+# Designed for Amazon Linux 2023 (RHEL 9 compatible)
+#
+# Required:
 #   export MARIADB_ES_TOKEN="xxxxx"
+#
 # Optional:
-#   export MARIADB_ES_VERSION="11.8"
+#   export MARIADB_ES_VERSION="11.8.5-2"
+#   export MARIADB_NOGPGCHECK=1
 
 if [[ "$(uname -s)" != "Linux" ]]; then
-  echo "ERROR: This step must be executed on the MySQL host (Linux)."
+  echo "ERROR: Must run on Linux host"
   exit 2
 fi
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"
 
-# Pick package manager (AL2023 uses dnf)
 PM=""
 if command -v dnf >/dev/null 2>&1; then
   PM="dnf"
 elif command -v yum >/dev/null 2>&1; then
   PM="yum"
 else
-  echo "ERROR: Neither dnf nor yum found on this host."
+  echo "ERROR: No package manager found"
   exit 1
 fi
 
-MARIADB_ES_VERSION="${MARIADB_ES_VERSION:-11.8}"
-
 if [[ -z "${MARIADB_ES_TOKEN:-}" ]]; then
-  echo "ERROR: MARIADB_ES_TOKEN is not set in environment."
-  echo "Set it like: export MARIADB_ES_TOKEN='<your token>'"
+  echo "ERROR: MARIADB_ES_TOKEN not set"
   exit 3
 fi
 
-echo "Installing MariaDB Server and Client..."
-echo "Configuring MariaDB Enterprise repo via mariadb_es_repo_setup (version ${MARIADB_ES_VERSION})..."
+VERSION="${MARIADB_ES_VERSION:-11.8.5-2}"
+ARCH="x86_64"
+OS="rhel-9"
 
-TMPDIR="$(mktemp -d)"
-trap 'rm -rf "$TMPDIR"' EXIT
+TARBALL="mariadb-enterprise-${VERSION}-${OS}-${ARCH}-rpms.tar"
+URL="https://dlm.mariadb.com/${MARIADB_ES_TOKEN}/mariadb-enterprise-server/${VERSION}/pkgtar/${TARBALL}"
 
-# Correct official URL (NOT enterprise-release-setup)
-curl -fLsS -o "$TMPDIR/mariadb_es_repo_setup" \
-  "https://dlm.mariadb.com/enterprise-release-helpers/mariadb_es_repo_setup"
-chmod +x "$TMPDIR/mariadb_es_repo_setup"
+WORKDIR="/tmp/mariadb-enterprise-install"
+mkdir -p "$WORKDIR"
+cd "$WORKDIR"
 
-# Configure repos (requires sudo)
-sudo "$TMPDIR/mariadb_es_repo_setup" \
-  --token "${MARIADB_ES_TOKEN}" \
-  --mariadb-server-version "${MARIADB_ES_VERSION}"
+echo "Downloading MariaDB Enterprise RPM tarball:"
+echo "  $URL"
+
+curl -fL -o "$TARBALL" "$URL"
+
+echo "Extracting RPMs..."
+tar -xf "$TARBALL"
+
+set +o pipefail
+RPM_DIR="$(tar -tf "$TARBALL" | head -1 | cut -d/ -f1)"
+set -o pipefail
+
+if [[ ! -d "$RPM_DIR" ]]; then
+  echo "ERROR: RPM directory not found after extraction"
+  exit 4
+fi
+
+cd "$RPM_DIR"
+
+RPM_FLAGS=()
+if [[ "${MARIADB_NOGPGCHECK:-0}" == "1" ]]; then
+  RPM_FLAGS+=(--nogpgcheck)
+fi
+
+echo "Installing RPM dependencies..."
+sudo dnf -y install \
+  perl perl-DBI perl-Data-Dumper perl-File-Copy perl-Sys-Hostname \
+  libaio libsepol unixODBC boost-program-options lzo snappy \
+  mysql-selinux || true
+
+echo "Installing MariaDB Enterprise RPMs..."
+sudo rpm -Uvh --nodeps --nosignature --nodigest *.rpm
+
+echo "Installing RPMs..."
+sudo rpm -Uvh "${RPM_FLAGS[@]}" *.rpm
 
 echo
-echo "Repo configured. Installing packages..."
-sudo "$PM" -y install MariaDB-server MariaDB-client MariaDB-backup
-
-echo
-echo "Installed MariaDB packages:"
-rpm -qa | grep -E '^MariaDB-(server|client|backup)' || true
+echo "Installed MariaDB Enterprise packages:"
+rpm -qa | grep -E '^MariaDB-' || true
 
 echo
 echo "NOTE:"
-echo " - Do NOT start MariaDB yet unless you are ready for the swap."
-echo " - Next step will handle startup + mariadb-upgrade."
+echo " - MariaDB is installed but NOT started"
+echo " - Next step will run mariadb-upgrade"
