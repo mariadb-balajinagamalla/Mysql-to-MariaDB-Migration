@@ -1,6 +1,21 @@
 {
   "created_at": "2026-01-19T18:55:53.833993+00:00",
   "steps": {
+    "backup_application_databases": {
+      "meta": {
+        "args": [],
+        "output_tail": [
+          "==> Backup application databases (exclude system schemas)",
+          "Discovering application schemas...",
+          "WARNING: option --ssl-verify-server-cert is disabled, because of an insecure passwordless login.",
+          "ERROR 1698 (28000): Access denied for user 'root'@'localhost'"
+        ],
+        "returncode": 1,
+        "script": "scripts/02b_backup_application_databases.sh"
+      },
+      "status": "FAILED",
+      "updated_at": "2026-01-22T17:36:48.929332+00:00"
+    },
     "backup_mysql_system_db": {
       "meta": {
         "args": [],
@@ -13,6 +28,19 @@
       },
       "status": "DONE",
       "updated_at": "2026-01-19T18:55:54.653572+00:00"
+    },
+    "bootstrap_migration_user": {
+      "meta": {
+        "args": [],
+        "output_tail": [
+          "==> Bootstrap migration user (socket-based, non-interactive)",
+          "ERROR: socket not found: /var/lib/mysql/mysql.sock"
+        ],
+        "returncode": 2,
+        "script": "scripts/02a_bootstrap_migration_user.sh"
+      },
+      "status": "FAILED",
+      "updated_at": "2026-01-22T17:48:54.506026+00:00"
     },
     "generate_fix_sql": {
       "meta": {
@@ -166,6 +194,67 @@
       },
       "status": "DONE",
       "updated_at": "2026-01-19T18:55:54.346562+00:00"
+    },
+    "restore_mysql_system_db": {
+      "meta": {
+        "args": [],
+        "output_tail": [
+          "  `Create_priv` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',",
+          "  `Drop_priv` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',",
+          "  `Reload_priv` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',",
+          "  `Shutdown_priv` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',",
+          "  `Process_priv` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',",
+          "  `File_priv` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',",
+          "  `Grant_priv` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',",
+          "  `References_priv` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',",
+          "  `Index_priv` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',",
+          "  `Alter_priv` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',",
+          "  `Show_db_priv` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',",
+          "  `Super_priv` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',",
+          "  `Create_tmp_table_priv` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',",
+          "  `Lock_tables_priv` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',",
+          "  `Execute_priv` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',",
+          "  `Repl_slave_priv` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',",
+          "  `Repl_client_priv` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',",
+          "  `Create_view_priv` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',",
+          "  `Show_view_priv` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',",
+          "  `Create_routine_priv` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',",
+          "  `Alter_routine_priv` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',",
+          "  `Create_user_priv` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',",
+          "  `Event_priv` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',",
+          "  `Trigger_priv` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',",
+          "  `Create_tablespace_priv` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',",
+          "  `ssl_type` enum('','ANY','X509','SPECIFIED') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT '',",
+          "  `ssl_cipher` blob NOT NULL,",
+          "  `x509_issuer` blob NOT NULL,",
+          "  `x509_subject` blob NOT NULL,",
+          "  `max_questions` int unsigned NOT NULL DEFAULT '0',",
+          "  `max_updates` int unsigned NOT NULL DEFAULT '0',",
+          "  `max_connections` int unsigned NOT NULL DEFAULT '0',",
+          "  `max_user_connections` int unsigned NOT NULL DEFAULT '0',",
+          "  `plugin` char(64) COLLATE utf8mb3_bin NOT NULL DEFAULT 'caching_sha2_password',",
+          "  `authentication_string` text COLLATE utf8mb3_bin,",
+          "  `password_expired` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',",
+          "  `password_last_changed` timestamp NULL DEFAULT NULL,",
+          "  `password_lifetime` smallint unsigned DEFAULT NULL,",
+          "  `account_locked` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',",
+          "  `Create_role_priv` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',",
+          "  `Drop_role_priv` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',",
+          "  `Password_reuse_history` smallint unsigned DEFAULT NULL,",
+          "  `Password_reuse_time` smallint unsigned DEFAULT NULL,",
+          "  `Password_require_current` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,",
+          "  `User_attributes` json DEFAULT NULL,",
+          "  PRIMARY KEY (`Host`,`User`)",
+          ") /*!50100 TABLESPACE `mysql` */ ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin STATS_PERSISTENT=0 ROW_FORMAT=DYNAMIC COMMENT='Users and global privileges'",
+          "--------------",
+          "",
+          "ERROR 1050 (42S01) at line 950: Table 'user' already exists"
+        ],
+        "returncode": 1,
+        "script": "scripts/08_restore_mysql_system_db.sh"
+      },
+      "status": "FAILED",
+      "updated_at": "2026-01-22T17:24:01.022940+00:00"
     },
     "start_upgrade": {
       "meta": {

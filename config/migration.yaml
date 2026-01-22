@@ -5,7 +5,8 @@ env:
   PORT: "3306"
   USER: root
   PASS: "Root@1234"
+  SOCKET: /var/lib/mysql/mysql.sock
 
 target:
   type: mariadb
-  version: "11.8.3-1-MariaDB-enterprise"
+  version: "11.8.5-2-MariaDB-enterprise"

@@ -2630,3 +2630,179 @@
 2026-01-21T18:40:32.245560+00:00 OUT 
 2026-01-21T18:40:32.245692+00:00 OUT Validation complete (socket-first).
 2026-01-21T18:40:32.246994+00:00 FINISH success=True message=Run completed successfully.
+2026-01-22T17:11:12.962034+00:00 START mode=run config=config/migration.yaml
+2026-01-22T17:11:12.971544+00:00 SKIP precheck (Precheck source variables and blockers) - already DONE
+2026-01-22T17:11:12.972727+00:00 SKIP prepare_mysql (Set innodb_fast_shutdown=0 before shutdown) - already DONE
+2026-01-22T17:11:12.973692+00:00 SKIP backup_mysql_system_db (Backup mysql system database) - already DONE
+2026-01-22T17:11:12.974656+00:00 SKIP generate_fix_sql (Generate SQL fixes (auth/json/collations) (optional)) - already DONE
+2026-01-22T17:11:12.975762+00:00 SKIP stop_mysql_and_remove_packages (Stop MySQL and remove MySQL packages) - already DONE
+2026-01-22T17:11:12.976635+00:00 SKIP install_mariadb (Install MariaDB) - already DONE
+2026-01-22T17:11:12.977595+00:00 SKIP start_upgrade (Start MariaDB and run mariadb-upgrade) - already DONE
+2026-01-22T17:11:12.978557+00:00 RUN  restore_mysql_system_db (Restore mysql system database backup (socket-first)) -> scripts/08_restore_mysql_system_db.sh
+2026-01-22T17:11:12.978804+00:00 CMD /home/ec2-user/Mysql-to-MariaDB-Migration/scripts/08_restore_mysql_system_db.sh
+2026-01-22T17:11:12.982889+00:00 OUT ==> Restore mysql system database (socket-first)
+2026-01-22T17:11:12.983075+00:00 OUT ERROR: socket not found: /var/lib/mysql/mysql.sock
+2026-01-22T17:11:12.984519+00:00 FINISH success=False message=Run failed at step: restore_mysql_system_db
+2026-01-22T17:15:21.454979+00:00 START mode=run config=config/migration.yaml
+2026-01-22T17:15:21.464553+00:00 SKIP precheck (Precheck source variables and blockers) - already DONE
+2026-01-22T17:15:21.465513+00:00 SKIP prepare_mysql (Set innodb_fast_shutdown=0 before shutdown) - already DONE
+2026-01-22T17:15:21.466882+00:00 SKIP backup_mysql_system_db (Backup mysql system database) - already DONE
+2026-01-22T17:15:21.468612+00:00 SKIP generate_fix_sql (Generate SQL fixes (auth/json/collations) (optional)) - already DONE
+2026-01-22T17:15:21.469149+00:00 SKIP stop_mysql_and_remove_packages (Stop MySQL and remove MySQL packages) - already DONE
+2026-01-22T17:15:21.470287+00:00 SKIP install_mariadb (Install MariaDB) - already DONE
+2026-01-22T17:15:21.472042+00:00 SKIP start_upgrade (Start MariaDB and run mariadb-upgrade) - already DONE
+2026-01-22T17:15:21.473076+00:00 RUN  restore_mysql_system_db (Restore mysql system database backup (socket-first)) -> scripts/08_restore_mysql_system_db.sh
+2026-01-22T17:15:21.473424+00:00 CMD /home/ec2-user/Mysql-to-MariaDB-Migration/scripts/08_restore_mysql_system_db.sh
+2026-01-22T17:15:21.477762+00:00 OUT ==> Restore mysql system database (socket-first)
+2026-01-22T17:15:21.498042+00:00 OUT ERROR: socket not found.
+2026-01-22T17:15:21.498207+00:00 OUT Diagnostics:
+2026-01-22T17:15:21.556694+00:00 OUT ● mariadb.service - MariaDB 11.8.5-2 database server
+2026-01-22T17:15:21.556836+00:00 OUT      Loaded: loaded (/usr/lib/systemd/system/mariadb.service; disabled; preset: disabled)
+2026-01-22T17:15:21.556873+00:00 OUT     Drop-In: /etc/systemd/system/mariadb.service.d
+2026-01-22T17:15:21.556897+00:00 OUT              └─migrated-from-my.cnf-settings.conf
+2026-01-22T17:15:21.556920+00:00 OUT      Active: active (running) since Wed 2026-01-21 18:17:31 UTC; 22h ago
+2026-01-22T17:15:21.556942+00:00 OUT        Docs: man:mariadbd(8)
+2026-01-22T17:15:21.556964+00:00 OUT              https://mariadb.com/kb/en/library/systemd/
+2026-01-22T17:15:21.556985+00:00 OUT     Process: 2052223 ExecStartPre=/bin/sh -c [ ! -e /usr/bin/galera_recovery ] && VAR= ||   VAR=`/usr/bin/galera_recovery`; [ $? -eq 0 ]   && echo _WSREP_START_POSITION=$VAR > /run/mariadb/wsrep-start-position || exit 1 (code=exited, status=0/SUCCESS)
+2026-01-22T17:15:21.557012+00:00 OUT     Process: 2052359 ExecStartPost=/bin/rm -f /run/mariadb/wsrep-start-position /run/mariadb/wsrep-new-cluster (code=exited, status=0/SUCCESS)
+2026-01-22T17:15:21.557033+00:00 OUT    Main PID: 2052308 (mariadbd)
+2026-01-22T17:15:21.557052+00:00 OUT      Status: "Taking your SQL requests now..."
+2026-01-22T17:15:21.557072+00:00 OUT       Tasks: 16 (limit: 124785)
+2026-01-22T17:15:21.557091+00:00 OUT      Memory: 120.6M
+2026-01-22T17:15:21.557110+00:00 OUT         CPU: 21.425s
+2026-01-22T17:15:21.557131+00:00 OUT      CGroup: /system.slice/mariadb.service
+2026-01-22T17:15:21.557151+00:00 OUT              └─2052308 /usr/sbin/mariadbd
+2026-01-22T17:15:21.557171+00:00 OUT 
+2026-01-22T17:15:21.557191+00:00 OUT Jan 21 18:17:29 ip-172-31-27-200.ap-south-1.compute.internal mariadbd[2052308]: 2026-01-21 18:17:29 server_audit: MariaDB Audit Plugin version 2.7.0 STARTED.
+2026-01-22T17:15:21.557301+00:00 OUT Jan 21 18:17:29 ip-172-31-27-200.ap-south-1.compute.internal mariadbd[2052308]: 2026-01-21 18:17:29 server_audit: Query cache is enabled with the TABLE events. Some table reads can be veiled.
+2026-01-22T17:15:21.557347+00:00 OUT Jan 21 18:17:29 ip-172-31-27-200.ap-south-1.compute.internal mariadbd[2052308]: 2026-01-21 18:17:29 0 [Note] Plugin 'wsrep-provider' is disabled.
+2026-01-22T17:15:21.557373+00:00 OUT Jan 21 18:17:30 ip-172-31-27-200.ap-south-1.compute.internal mariadbd[2052308]: 2026-01-21 18:17:30 0 [Note] Server socket created on IP: '0.0.0.0', port: '3306'.
+2026-01-22T17:15:21.557393+00:00 OUT Jan 21 18:17:30 ip-172-31-27-200.ap-south-1.compute.internal mariadbd[2052308]: 2026-01-21 18:17:30 0 [Note] Server socket created on IP: '::', port: '3306'.
+2026-01-22T17:15:21.557414+00:00 OUT Jan 21 18:17:30 ip-172-31-27-200.ap-south-1.compute.internal mariadbd[2052308]: 2026-01-21 18:17:30 0 [Note] mariadbd: Event Scheduler: Loaded 0 events
+2026-01-22T17:15:21.557434+00:00 OUT Jan 21 18:17:30 ip-172-31-27-200.ap-south-1.compute.internal mariadbd[2052308]: 2026-01-21 18:17:30 0 [Note] /usr/sbin/mariadbd: ready for connections.
+2026-01-22T17:15:21.557454+00:00 OUT Jan 21 18:17:30 ip-172-31-27-200.ap-south-1.compute.internal mariadbd[2052308]: Version: '11.8.5-2-MariaDB-enterprise'  socket: '/var/lib/mysql/mysql.sock'  port: 3306  MariaDB Enterprise Server
+2026-01-22T17:15:21.557481+00:00 OUT Jan 21 18:17:31 ip-172-31-27-200.ap-south-1.compute.internal systemd[1]: Started mariadb.service - MariaDB 11.8.5-2 database server.
+2026-01-22T17:15:21.557501+00:00 OUT Jan 21 18:23:13 ip-172-31-27-200.ap-south-1.compute.internal mariadbd[2052308]: 2026-01-21 18:23:13 20 [Warning] Access denied for user 'root'@'localhost'
+2026-01-22T17:15:21.559045+00:00 OUT Known socket candidates:
+2026-01-22T17:15:21.562564+00:00 FINISH success=False message=Run failed at step: restore_mysql_system_db
+2026-01-22T17:20:23.342337+00:00 START mode=run config=config/migration.yaml
+2026-01-22T17:20:23.351768+00:00 SKIP precheck (Precheck source variables and blockers) - already DONE
+2026-01-22T17:20:23.352717+00:00 SKIP prepare_mysql (Set innodb_fast_shutdown=0 before shutdown) - already DONE
+2026-01-22T17:20:23.353583+00:00 SKIP backup_mysql_system_db (Backup mysql system database) - already DONE
+2026-01-22T17:20:23.354355+00:00 SKIP generate_fix_sql (Generate SQL fixes (auth/json/collations) (optional)) - already DONE
+2026-01-22T17:20:23.355263+00:00 SKIP stop_mysql_and_remove_packages (Stop MySQL and remove MySQL packages) - already DONE
+2026-01-22T17:20:23.356169+00:00 SKIP install_mariadb (Install MariaDB) - already DONE
+2026-01-22T17:20:23.357115+00:00 SKIP start_upgrade (Start MariaDB and run mariadb-upgrade) - already DONE
+2026-01-22T17:20:23.357993+00:00 RUN  restore_mysql_system_db (Restore mysql system database backup (socket-first)) -> scripts/08_restore_mysql_system_db.sh
+2026-01-22T17:20:23.358229+00:00 CMD /home/ec2-user/Mysql-to-MariaDB-Migration/scripts/08_restore_mysql_system_db.sh
+2026-01-22T17:20:23.362181+00:00 OUT ==> Restore mysql system database (socket-first)
+2026-01-22T17:20:23.442176+00:00 OUT Waiting for socket: /var/lib/mysql/mysql.sock
+2026-01-22T17:20:23.536448+00:00 OUT Using socket: /var/lib/mysql/mysql.sock
+2026-01-22T17:20:23.616929+00:00 OUT --------------
+2026-01-22T17:20:23.617079+00:00 OUT DROP TABLE IF EXISTS `columns_priv`
+2026-01-22T17:20:23.617113+00:00 OUT --------------
+2026-01-22T17:20:23.617136+00:00 OUT 
+2026-01-22T17:20:23.617167+00:00 OUT ERROR 1046 (3D000) at line 22: No database selected
+2026-01-22T17:20:23.623166+00:00 FINISH success=False message=Run failed at step: restore_mysql_system_db
+2026-01-22T17:23:59.908965+00:00 START mode=run config=config/migration.yaml
+2026-01-22T17:23:59.918203+00:00 SKIP precheck (Precheck source variables and blockers) - already DONE
+2026-01-22T17:23:59.919393+00:00 SKIP prepare_mysql (Set innodb_fast_shutdown=0 before shutdown) - already DONE
+2026-01-22T17:23:59.920312+00:00 SKIP backup_mysql_system_db (Backup mysql system database) - already DONE
+2026-01-22T17:23:59.921288+00:00 SKIP generate_fix_sql (Generate SQL fixes (auth/json/collations) (optional)) - already DONE
+2026-01-22T17:23:59.922289+00:00 SKIP stop_mysql_and_remove_packages (Stop MySQL and remove MySQL packages) - already DONE
+2026-01-22T17:23:59.923265+00:00 SKIP install_mariadb (Install MariaDB) - already DONE
+2026-01-22T17:23:59.924178+00:00 SKIP start_upgrade (Start MariaDB and run mariadb-upgrade) - already DONE
+2026-01-22T17:23:59.925157+00:00 RUN  restore_mysql_system_db (Restore mysql system database backup (socket-first)) -> scripts/08_restore_mysql_system_db.sh
+2026-01-22T17:23:59.925392+00:00 CMD /home/ec2-user/Mysql-to-MariaDB-Migration/scripts/08_restore_mysql_system_db.sh
+2026-01-22T17:23:59.929195+00:00 OUT ==> Restore mysql system database (socket-first)
+2026-01-22T17:23:59.988016+00:00 OUT Waiting for socket: /var/lib/mysql/mysql.sock
+2026-01-22T17:24:00.117561+00:00 OUT Using socket: /var/lib/mysql/mysql.sock
+2026-01-22T17:24:01.018128+00:00 OUT --------------
+2026-01-22T17:24:01.018257+00:00 OUT CREATE TABLE `user` (
+2026-01-22T17:24:01.018289+00:00 OUT   `Host` char(255) CHARACTER SET ascii COLLATE ascii_general_ci NOT NULL DEFAULT '',
+2026-01-22T17:24:01.018314+00:00 OUT   `User` char(32) COLLATE utf8mb3_bin NOT NULL DEFAULT '',
+2026-01-22T17:24:01.018342+00:00 OUT   `Select_priv` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',
+2026-01-22T17:24:01.018364+00:00 OUT   `Insert_priv` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',
+2026-01-22T17:24:01.018385+00:00 OUT   `Update_priv` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',
+2026-01-22T17:24:01.018405+00:00 OUT   `Delete_priv` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',
+2026-01-22T17:24:01.018425+00:00 OUT   `Create_priv` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',
+2026-01-22T17:24:01.018444+00:00 OUT   `Drop_priv` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',
+2026-01-22T17:24:01.018463+00:00 OUT   `Reload_priv` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',
+2026-01-22T17:24:01.018483+00:00 OUT   `Shutdown_priv` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',
+2026-01-22T17:24:01.018502+00:00 OUT   `Process_priv` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',
+2026-01-22T17:24:01.018524+00:00 OUT   `File_priv` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',
+2026-01-22T17:24:01.018545+00:00 OUT   `Grant_priv` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',
+2026-01-22T17:24:01.018564+00:00 OUT   `References_priv` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',
+2026-01-22T17:24:01.018585+00:00 OUT   `Index_priv` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',
+2026-01-22T17:24:01.018605+00:00 OUT   `Alter_priv` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',
+2026-01-22T17:24:01.018624+00:00 OUT   `Show_db_priv` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',
+2026-01-22T17:24:01.018656+00:00 OUT   `Super_priv` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',
+2026-01-22T17:24:01.018676+00:00 OUT   `Create_tmp_table_priv` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',
+2026-01-22T17:24:01.018697+00:00 OUT   `Lock_tables_priv` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',
+2026-01-22T17:24:01.018719+00:00 OUT   `Execute_priv` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',
+2026-01-22T17:24:01.018739+00:00 OUT   `Repl_slave_priv` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',
+2026-01-22T17:24:01.018758+00:00 OUT   `Repl_client_priv` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',
+2026-01-22T17:24:01.018777+00:00 OUT   `Create_view_priv` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',
+2026-01-22T17:24:01.018796+00:00 OUT   `Show_view_priv` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',
+2026-01-22T17:24:01.018815+00:00 OUT   `Create_routine_priv` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',
+2026-01-22T17:24:01.018834+00:00 OUT   `Alter_routine_priv` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',
+2026-01-22T17:24:01.018856+00:00 OUT   `Create_user_priv` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',
+2026-01-22T17:24:01.018875+00:00 OUT   `Event_priv` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',
+2026-01-22T17:24:01.018894+00:00 OUT   `Trigger_priv` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',
+2026-01-22T17:24:01.018914+00:00 OUT   `Create_tablespace_priv` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',
+2026-01-22T17:24:01.018939+00:00 OUT   `ssl_type` enum('','ANY','X509','SPECIFIED') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT '',
+2026-01-22T17:24:01.018958+00:00 OUT   `ssl_cipher` blob NOT NULL,
+2026-01-22T17:24:01.018978+00:00 OUT   `x509_issuer` blob NOT NULL,
+2026-01-22T17:24:01.018997+00:00 OUT   `x509_subject` blob NOT NULL,
+2026-01-22T17:24:01.019020+00:00 OUT   `max_questions` int unsigned NOT NULL DEFAULT '0',
+2026-01-22T17:24:01.019039+00:00 OUT   `max_updates` int unsigned NOT NULL DEFAULT '0',
+2026-01-22T17:24:01.019058+00:00 OUT   `max_connections` int unsigned NOT NULL DEFAULT '0',
+2026-01-22T17:24:01.019077+00:00 OUT   `max_user_connections` int unsigned NOT NULL DEFAULT '0',
+2026-01-22T17:24:01.019096+00:00 OUT   `plugin` char(64) COLLATE utf8mb3_bin NOT NULL DEFAULT 'caching_sha2_password',
+2026-01-22T17:24:01.019116+00:00 OUT   `authentication_string` text COLLATE utf8mb3_bin,
+2026-01-22T17:24:01.019136+00:00 OUT   `password_expired` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',
+2026-01-22T17:24:01.019155+00:00 OUT   `password_last_changed` timestamp NULL DEFAULT NULL,
+2026-01-22T17:24:01.019174+00:00 OUT   `password_lifetime` smallint unsigned DEFAULT NULL,
+2026-01-22T17:24:01.019193+00:00 OUT   `account_locked` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',
+2026-01-22T17:24:01.019212+00:00 OUT   `Create_role_priv` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',
+2026-01-22T17:24:01.019232+00:00 OUT   `Drop_role_priv` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',
+2026-01-22T17:24:01.019253+00:00 OUT   `Password_reuse_history` smallint unsigned DEFAULT NULL,
+2026-01-22T17:24:01.019272+00:00 OUT   `Password_reuse_time` smallint unsigned DEFAULT NULL,
+2026-01-22T17:24:01.019291+00:00 OUT   `Password_require_current` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
+2026-01-22T17:24:01.019310+00:00 OUT   `User_attributes` json DEFAULT NULL,
+2026-01-22T17:24:01.019330+00:00 OUT   PRIMARY KEY (`Host`,`User`)
+2026-01-22T17:24:01.019351+00:00 OUT ) /*!50100 TABLESPACE `mysql` */ ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin STATS_PERSISTENT=0 ROW_FORMAT=DYNAMIC COMMENT='Users and global privileges'
+2026-01-22T17:24:01.019375+00:00 OUT --------------
+2026-01-22T17:24:01.019400+00:00 OUT 
+2026-01-22T17:24:01.019420+00:00 OUT ERROR 1050 (42S01) at line 950: Table 'user' already exists
+2026-01-22T17:24:01.024119+00:00 FINISH success=False message=Run failed at step: restore_mysql_system_db
+2026-01-22T17:31:57.189413+00:00 START mode=run config=config/migration.yaml
+2026-01-22T17:31:57.199171+00:00 SKIP precheck (Precheck source variables and blockers) - already DONE
+2026-01-22T17:31:57.200076+00:00 SKIP prepare_mysql (Set innodb_fast_shutdown=0 before shutdown) - already DONE
+2026-01-22T17:31:57.201135+00:00 SKIP backup_mysql_system_db (Backup mysql system database) - already DONE
+2026-01-22T17:31:57.201914+00:00 RUN  backup_application_databases (Backup application databases (exclude system schemas)) -> scripts/02b_backup_application_databases.sh
+2026-01-22T17:31:57.202151+00:00 CMD /home/ec2-user/Mysql-to-MariaDB-Migration/scripts/02b_backup_application_databases.sh
+2026-01-22T17:31:57.207419+00:00 OUT Discovering application schemas...
+2026-01-22T17:31:57.211407+00:00 OUT mysql: Deprecated program name. It will be removed in a future release, use '/usr/bin/mariadb' instead
+2026-01-22T17:31:57.213174+00:00 OUT ERROR 2002 (HY000): Can't connect to local server through socket '/var/lib/mysql/mysql.sock' (13)
+2026-01-22T17:31:57.215339+00:00 FINISH success=False message=Run failed at step: backup_application_databases
+2026-01-22T17:36:48.884064+00:00 START mode=run config=config/migration.yaml
+2026-01-22T17:36:48.893850+00:00 SKIP precheck (Precheck source variables and blockers) - already DONE
+2026-01-22T17:36:48.894779+00:00 SKIP prepare_mysql (Set innodb_fast_shutdown=0 before shutdown) - already DONE
+2026-01-22T17:36:48.895821+00:00 SKIP backup_mysql_system_db (Backup mysql system database) - already DONE
+2026-01-22T17:36:48.896739+00:00 RUN  backup_application_databases (Backup application databases (exclude system schemas)) -> scripts/02b_backup_application_databases.sh
+2026-01-22T17:36:48.897001+00:00 CMD /home/ec2-user/Mysql-to-MariaDB-Migration/scripts/02b_backup_application_databases.sh
+2026-01-22T17:36:48.900919+00:00 OUT ==> Backup application databases (exclude system schemas)
+2026-01-22T17:36:48.904208+00:00 OUT Discovering application schemas...
+2026-01-22T17:36:48.909484+00:00 OUT WARNING: option --ssl-verify-server-cert is disabled, because of an insecure passwordless login.
+2026-01-22T17:36:48.927739+00:00 OUT ERROR 1698 (28000): Access denied for user 'root'@'localhost'
+2026-01-22T17:36:48.930300+00:00 FINISH success=False message=Run failed at step: backup_application_databases
+2026-01-22T17:47:54.386657+00:00 START mode=run config=config/migration.yaml
+2026-01-22T17:47:54.397008+00:00 SKIP precheck (Precheck source variables and blockers) - already DONE
+2026-01-22T17:47:54.397845+00:00 SKIP prepare_mysql (Set innodb_fast_shutdown=0 before shutdown) - already DONE
+2026-01-22T17:47:54.398738+00:00 SKIP backup_mysql_system_db (Backup mysql system database) - already DONE
+2026-01-22T17:47:54.399691+00:00 RUN  bootstrap_migration_user (Bootstrap migration user (socket-first)) -> scripts/02a_bootstrap_migration_user.sh
+2026-01-22T17:47:54.399918+00:00 CMD /home/ec2-user/Mysql-to-MariaDB-Migration/scripts/02a_bootstrap_migration_user.sh
+2026-01-22T17:47:54.403749+00:00 OUT ==> Bootstrap migration user (socket-based, non-interactive)
+2026-01-22T17:48:54.505418+00:00 OUT ERROR: socket not found: /var/lib/mysql/mysql.sock
+2026-01-22T17:48:54.507012+00:00 FINISH success=False message=Run failed at step: bootstrap_migration_user

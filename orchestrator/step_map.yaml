@@ -38,6 +38,11 @@ phases:
       script: scripts/02_backup_mysql_system_db.sh
       args: []
 
+    - id: backup_application_databases
+      name: Backup application databases (exclude system schemas)
+      script: scripts/02b_backup_application_databases.sh
+      args: []
+
   transform:
     - id: generate_fix_sql
       name: Generate SQL fixes (auth/json/collations) (optional)
@@ -59,6 +64,11 @@ phases:
     - id: start_upgrade
       name: Start MariaDB and run mariadb-upgrade
       script: scripts/06_start_mariadb_and_upgrade.sh
+      args: []
+
+    - id: restore_mysql_system_db
+      name: Restore mysql system database backup (socket-first)
+      script: scripts/08_restore_mysql_system_db.sh
       args: []
 
   validate:
