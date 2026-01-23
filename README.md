@@ -26,3 +26,14 @@ Private repository to design, execute, and validate end-to-end MySQL to MariaDB 
 
 ## Status
 In progress
+
+## Workflow (quick onboarding)
+1. Run precheck to assess source MySQL and gather blockers.
+2. Prepare MySQL and take backups (system + application schemas).
+3. Optionally generate fix SQL for auth plugins/JSON columns.
+4. Stop MySQL and swap packages to MariaDB (offline cutover).
+5. Start MariaDB, run upgrade, restore system DB, and validate.
+
+Notes:
+- Orchestrator mode: `python -m orchestrator.migrationctl assess/run --config config/*.yaml --out artifacts`
+- Manual mode: run scripts in `scripts/` in numeric order.
