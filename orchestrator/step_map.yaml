@@ -20,7 +20,31 @@ modes:
     - import
     - validate
 
+  one_step:
+    - precheck_only
+    - one_step
+    - validate
+
+  two_step:
+    - precheck_only
+    - two_step_schema
+    - two_step_data
+    - two_step_finalize
+    - validate
+
+  near_zero:
+    - precheck_only
+    - near_zero_replication
+    - near_zero_cdc
+    - near_zero_cutover
+    - validate
+
 phases:
+  precheck_only:
+    - id: precheck
+      name: Precheck source variables and blockers
+      script: scripts/00_precheck.sh
+      args: []
   prerequisites:
     - id: precheck
       name: Precheck source variables and blockers
@@ -75,4 +99,46 @@ phases:
     - id: validate
       name: Validate after upgrade
       script: scripts/07_validate.sh
+      args: []
+
+  one_step:
+    - id: one_step_dump_restore
+      name: One-step dump/restore (mariadb-dump | mariadb)
+      script: scripts/10_one_step_migration.sh
+      args: []
+
+  two_step_schema:
+    - id: two_step_schema_only
+      name: Export schema only (no data)
+      script: scripts/11_two_step_schema.sh
+      args: []
+
+  two_step_data:
+    - id: two_step_parallel_data
+      name: Parallel data transfer with SQLines Data
+      script: scripts/12_two_step_sqldata.sh
+      args: []
+
+  two_step_finalize:
+    - id: two_step_finalize_objects
+      name: Apply constraints/indexes/routines after data load
+      script: scripts/13_two_step_finalize.sh
+      args: []
+
+  near_zero_replication:
+    - id: near_zero_replica_setup
+      name: Configure MariaDB as replica of MySQL
+      script: scripts/14_near_zero_replication.sh
+      args: []
+
+  near_zero_cdc:
+    - id: near_zero_cdc_stream
+      name: Start CDC (Debezium) stream to MariaDB
+      script: scripts/15_near_zero_cdc.sh
+      args: []
+
+  near_zero_cutover:
+    - id: near_zero_cutover
+      name: Cutover and validation
+      script: scripts/16_near_zero_cutover.sh
       args: []

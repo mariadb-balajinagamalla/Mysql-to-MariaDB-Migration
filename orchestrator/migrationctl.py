@@ -39,6 +39,24 @@ def _load_step_map(repo_root: Path) -> Dict[str, Any]:
         raise typer.BadParameter(f"Missing step map: {step_map_path}")
     return _load_yaml(step_map_path)
 
+def _resolve_mode(cfg: Dict[str, Any], cli_mode: Optional[str]) -> str:
+    if cli_mode:
+        return cli_mode.strip().lower()
+    return (cfg.get("mode") or "offline").lower()
+
+def _validate_mode(step_map: Dict[str, Any], mode: str) -> None:
+    modes = step_map.get("modes", {}) or {}
+    if mode not in modes:
+        available = ", ".join(sorted(modes.keys()))
+        raise typer.BadParameter(f"Unknown mode/playbook: {mode}. Available: {available}")
+
+def _require_env(env: Dict[str, str], keys: List[str], mode_value: str) -> None:
+    missing = [k for k in keys if not env.get(k)]
+    if missing:
+        raise typer.BadParameter(
+            f"Missing required env vars for mode '{mode_value}': {', '.join(missing)}"
+        )
+
 @app.command()
 def assess(
     config: Path = typer.Option(..., "--config", "-c", help="Source DB config YAML (read-only)."),
@@ -84,6 +102,13 @@ def assess(
 def plan(
     config: Path = typer.Option(..., "--config", "-c", help="Migration config YAML."),
     out: Path = typer.Option(DEFAULT_OUTDIR, "--out", "-o", help="Output directory for artifacts."),
+    mode: Optional[str] = typer.Option(
+        None,
+        "--mode",
+        "--playbook",
+        "-m",
+        help="Execution mode/playbook (e.g., offline, local, one_step, two_step, near_zero).",
+    ),
 ):
     """Generate a plan from config + step map (no execution)."""
     repo_root = _repo_root()
@@ -95,14 +120,40 @@ def plan(
     cfg = _load_yaml(config)
     step_map = _load_step_map(repo_root)
 
-    # Expand steps for offline mode for now
-    mode = (cfg.get("mode") or "offline").lower()
-    phases = step_map.get("modes", {}).get(mode, [])
+    mode_value = _resolve_mode(cfg, mode)
+    _validate_mode(step_map, mode_value)
+    phases = step_map.get("modes", {}).get(mode_value, [])
     steps: List[Dict[str, Any]] = []
     for ph in phases:
         steps.extend(step_map.get("phases", {}).get(ph, []))
 
-    report.set_plan({"mode": mode, "phases": phases, "steps": steps})
+    env = cfg.get("env", {}) or {}
+    env = {str(k): str(v) for k, v in env.items()}
+    if mode_value in ("one_step", "two_step"):
+        _require_env(
+            env,
+            ["SRC_HOST", "SRC_USER", "SRC_PASS", "SRC_DB", "TGT_HOST", "TGT_USER", "TGT_PASS"],
+            mode_value,
+        )
+    if mode_value == "two_step":
+        if not (env.get("SQLINESDATA_CMD") or env.get("SQLINESDATA_BIN")):
+            raise typer.BadParameter(
+                "Missing SQLines configuration for mode 'two_step': "
+                "set SQLINESDATA_CMD or SQLINESDATA_BIN + SQLINESDATA_ARGS"
+            )
+        if not (env.get("SQLINESDATA_CMD_FINALIZE") or env.get("SQLINESDATA_ARGS_FINALIZE")):
+            raise typer.BadParameter(
+                "Missing finalize configuration for mode 'two_step': "
+                "set SQLINESDATA_CMD_FINALIZE or SQLINESDATA_ARGS_FINALIZE"
+            )
+    if mode_value == "near_zero":
+        _require_env(
+            env,
+            ["NEAR_ZERO_REPLICATION_CMD", "NEAR_ZERO_CDC_CMD", "NEAR_ZERO_CUTOVER_CMD"],
+            mode_value,
+        )
+
+    report.set_plan({"mode": mode_value, "phases": phases, "steps": steps})
     report.finish_run(success=True, message="Plan generated (no execution).")
     typer.echo("PLAN: generated in artifacts/report.json")
 
@@ -112,6 +163,13 @@ def run(
     config: Path = typer.Option(..., "--config", "-c", help="Migration config YAML."),
     out: Path = typer.Option(DEFAULT_OUTDIR, "--out", "-o", help="Output directory for artifacts."),
     non_interactive: bool = typer.Option(True, "--non-interactive", help="Never prompt; CI-safe."),
+    mode: Optional[str] = typer.Option(
+        None,
+        "--mode",
+        "--playbook",
+        "-m",
+        help="Execution mode/playbook (e.g., offline, local, one_step, two_step, near_zero).",
+    ),
 ):
     """Execute migration steps (offline mode) with resume-safe state tracking."""
     repo_root = _repo_root()
@@ -124,19 +182,44 @@ def run(
     cfg = _load_yaml(config)
     step_map = _load_step_map(repo_root)
 
-    mode = (cfg.get("mode") or "offline").lower()
-    phases = step_map.get("modes", {}).get(mode, [])
+    mode_value = _resolve_mode(cfg, mode)
+    _validate_mode(step_map, mode_value)
+    phases = step_map.get("modes", {}).get(mode_value, [])
     steps: List[Dict[str, Any]] = []
     for ph in phases:
         steps.extend(step_map.get("phases", {}).get(ph, []))
 
-    report.set_plan({"mode": mode, "phases": phases, "steps": steps})
+    report.set_plan({"mode": mode_value, "phases": phases, "steps": steps})
     
    #executor = cfg.get("executor", {}) or {}
 
     # Execute steps sequentially
     env = cfg.get("env", {}) or {}
     env = {str(k): str(v) for k, v in env.items()}
+
+    if mode_value in ("one_step", "two_step"):
+        _require_env(
+            env,
+            ["SRC_HOST", "SRC_USER", "SRC_PASS", "SRC_DB", "TGT_HOST", "TGT_USER", "TGT_PASS"],
+            mode_value,
+        )
+    if mode_value == "two_step":
+        if not (env.get("SQLINESDATA_CMD") or env.get("SQLINESDATA_BIN")):
+            raise typer.BadParameter(
+                "Missing SQLines configuration for mode 'two_step': "
+                "set SQLINESDATA_CMD or SQLINESDATA_BIN + SQLINESDATA_ARGS"
+            )
+        if not (env.get("SQLINESDATA_CMD_FINALIZE") or env.get("SQLINESDATA_ARGS_FINALIZE")):
+            raise typer.BadParameter(
+                "Missing finalize configuration for mode 'two_step': "
+                "set SQLINESDATA_CMD_FINALIZE or SQLINESDATA_ARGS_FINALIZE"
+            )
+    if mode_value == "near_zero":
+        _require_env(
+            env,
+            ["NEAR_ZERO_REPLICATION_CMD", "NEAR_ZERO_CDC_CMD", "NEAR_ZERO_CUTOVER_CMD"],
+            mode_value,
+        )
 
     failures = []
     for s in steps:
@@ -176,6 +259,13 @@ def resume(
     out: Path = typer.Option(DEFAULT_OUTDIR, "--out", "-o", help="Output directory containing state.json."),
     config: Optional[Path] = typer.Option(None, "--config", "-c", help="Migration config YAML. If omitted, uses path stored in report.json if present."),
     non_interactive: bool = typer.Option(True, "--non-interactive", help="Never prompt; CI-safe."),
+    mode: Optional[str] = typer.Option(
+        None,
+        "--mode",
+        "--playbook",
+        "-m",
+        help="Execution mode/playbook override.",
+    ),
 ):
     """Resume a previously failed run using the state.json checkpoint."""
     report_path = out / DEFAULT_REPORT
@@ -189,7 +279,7 @@ def resume(
         raise typer.BadParameter("Config path not provided and not found in report.json")
 
     # Just call run() (it will skip DONE steps)
-    run(config=config, out=out, non_interactive=non_interactive)
+    run(config=config, out=out, non_interactive=non_interactive, mode=mode)
 
 
 def main():
