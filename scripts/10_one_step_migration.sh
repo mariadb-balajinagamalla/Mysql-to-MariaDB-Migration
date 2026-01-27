@@ -12,6 +12,7 @@ SRC_PORT="${SRC_PORT:-3306}"
 SRC_USER="${SRC_USER:-}"
 SRC_PASS="${SRC_PASS:-}"
 SRC_DB="${SRC_DB:-}"
+SRC_SSL_MODE="${SRC_SSL_MODE:-}"
 
 TGT_HOST="${TGT_HOST:-}"
 TGT_PORT="${TGT_PORT:-3306}"
@@ -28,8 +29,6 @@ if [[ -z "$TGT_HOST" || -z "$TGT_USER" || -z "$TGT_PASS" ]]; then
   exit 1
 fi
 
-export MYSQL_PWD="$SRC_PASS"
-
 SRC_AUTH=( -h"$SRC_HOST" -P"$SRC_PORT" -u"$SRC_USER" )
 TGT_AUTH=( -h"$TGT_HOST" -P"$TGT_PORT" -u"$TGT_USER" )
 
@@ -41,12 +40,21 @@ if command -v "$PV_BIN" >/dev/null 2>&1; then
   PIPE_CMD=( "$PV_BIN" -pet )
 fi
 
+SRC_SSL_ARGS=()
+if [[ -n "$SRC_SSL_MODE" ]]; then
+  SRC_SSL_ARGS=( --ssl-mode="$SRC_SSL_MODE" )
+fi
+
+if [[ "${#PIPE_CMD[@]}" -eq 0 ]]; then
+  echo "pv not found; running without progress meter."
+fi
+
 set -o pipefail
-"$MARIADB_DUMP_BIN" "${SRC_AUTH[@]}" \
+"$MARIADB_DUMP_BIN" "${SRC_AUTH[@]}" "${SRC_SSL_ARGS[@]}" \
   --databases "$SRC_DB" \
-  --routines --triggers \
-  --gtid=0 --no-tablespaces --hex-blob --single-transaction --skip-ssl \
-  | "${PIPE_CMD[@]}" \
+  --routines --triggers --events \
+  --gtid=0 --no-tablespaces --hex-blob --single-transaction \
+  | if [[ "${#PIPE_CMD[@]}" -gt 0 ]]; then "${PIPE_CMD[@]}"; else cat; fi \
   | MYSQL_PWD="$TGT_PASS" "$MARIADB_BIN" "${TGT_AUTH[@]}"
 set +o pipefail
 

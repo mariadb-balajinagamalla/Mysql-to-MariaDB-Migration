@@ -13,6 +13,7 @@ env:
   # SRC_USER: migrate
   # SRC_PASS: "change_me"
   # SRC_DB: mydb
+  # SRC_SSL_MODE: "DISABLED"  # e.g., DISABLED | REQUIRED | VERIFY_CA | VERIFY_IDENTITY
   # TGT_HOST: 127.0.0.1
   # TGT_PORT: "3306"
   # TGT_USER: root
