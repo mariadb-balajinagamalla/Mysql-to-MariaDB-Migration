@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
-  "run_id": "20260119T185452Z",
+  "run_id": "20260128T203735Z",
   "mode": "plan",
   "config_path": "config/migration.yaml",
-  "started_at": "2026-01-19T18:54:52.121196+00:00",
-  "finished_at": "2026-01-19T18:54:52.130531+00:00",
+  "started_at": "2026-01-28T20:37:35.426842+00:00",
+  "finished_at": "2026-01-28T20:37:35.431464+00:00",
   "success": true,
   "message": "Plan generated (no execution).",
   "source": {},
@@ -13,16 +13,26 @@
   "warnings": [],
   "inventory": {},
   "plan": {
-    "mode": "offline",
+    "mode": "one_step",
     "phases": [
-      "prerequisites",
-      "backup",
-      "transform",
-      "stop_and_swap",
-      "import",
+      "one_step_prepare",
+      "precheck_only",
+      "one_step",
       "validate"
     ],
     "steps": [
+      {
+        "id": "install_mariadb",
+        "name": "Install MariaDB (target host)",
+        "script": "scripts/05_install_mariadb.sh",
+        "args": []
+      },
+      {
+        "id": "create_migration_user",
+        "name": "Create migration user on source and target",
+        "script": "scripts/09_create_migration_user.sh",
+        "args": []
+      },
       {
         "id": "precheck",
         "name": "Precheck source variables and blockers",
@@ -30,39 +40,9 @@
         "args": []
       },
       {
-        "id": "prepare_mysql",
-        "name": "Set innodb_fast_shutdown=0 before shutdown",
-        "script": "scripts/01_prepare_mysql.sh",
-        "args": []
-      },
-      {
-        "id": "backup_mysql_system_db",
-        "name": "Backup mysql system database",
-        "script": "scripts/02_backup_mysql_system_db.sh",
-        "args": []
-      },
-      {
-        "id": "generate_fix_sql",
-        "name": "Generate SQL fixes (auth/json/collations) (optional)",
-        "script": "scripts/03_generate_fix_sql.sh",
-        "args": []
-      },
-      {
-        "id": "stop_mysql_and_remove_packages",
-        "name": "Stop MySQL and remove MySQL packages",
-        "script": "scripts/04_stop_mysql_and_remove_packages.sh",
-        "args": []
-      },
-      {
-        "id": "install_mariadb",
-        "name": "Install MariaDB",
-        "script": "scripts/05_install_mariadb.sh",
-        "args": []
-      },
-      {
-        "id": "start_upgrade",
-        "name": "Start MariaDB and run mariadb-upgrade",
-        "script": "scripts/06_start_mariadb_and_upgrade.sh",
+        "id": "one_step_dump_restore",
+        "name": "One-step dump/restore (mariadb-dump | mariadb)",
+        "script": "scripts/10_one_step_migration.sh",
         "args": []
       },
       {

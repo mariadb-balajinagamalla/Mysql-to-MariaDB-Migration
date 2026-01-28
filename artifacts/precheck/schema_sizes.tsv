@@ -1,7 +1,6 @@
-appdb	6367.56
-sakila	6.45
-mysql	2.66
-json_poc	0.02
+testdb	38.56
+mysql	2.61
+classicmodels	0.50
 sys	0.02
 information_schema	0.00
 performance_schema	0.00

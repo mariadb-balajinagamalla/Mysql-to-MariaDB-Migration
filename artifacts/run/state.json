@@ -1,130 +1,105 @@
 {
-  "created_at": "2026-01-19T18:55:53.833993+00:00",
+  "created_at": "2026-01-28T20:44:39.053962+00:00",
   "steps": {
-    "backup_application_databases": {
+    "create_migration_user": {
       "meta": {
         "args": [],
         "output_tail": [
-          "==> Backup application databases (exclude system schemas)",
-          "Discovering application schemas...",
-          "WARNING: option --ssl-verify-server-cert is disabled, because of an insecure passwordless login.",
-          "ERROR 1698 (28000): Access denied for user 'root'@'localhost'"
-        ],
-        "returncode": 1,
-        "script": "scripts/02b_backup_application_databases.sh"
-      },
-      "status": "FAILED",
-      "updated_at": "2026-01-22T17:36:48.929332+00:00"
-    },
-    "backup_mysql_system_db": {
-      "meta": {
-        "args": [],
-        "output_tail": [
-          "Dumping mysql system database from 127.0.0.1:3306 ...",
-          "Wrote: /home/ec2-user/Mysql-to-MariaDB-Migration/artifacts/backup/mysql-system-db.sql"
+          "==> Create migration user on source and target",
+          "Creating migration user on source: 192.168.68.104:3306",
+          "Creating migration user on target: 192.168.64.2:3306",
+          "Migration user setup completed."
         ],
         "returncode": 0,
-        "script": "scripts/02_backup_mysql_system_db.sh"
+        "script": "scripts/09_create_migration_user.sh"
       },
       "status": "DONE",
-      "updated_at": "2026-01-19T18:55:54.653572+00:00"
-    },
-    "bootstrap_migration_user": {
-      "meta": {
-        "args": [],
-        "output_tail": [
-          "==> Bootstrap migration user (socket-based, non-interactive)",
-          "ERROR: socket not found: /var/lib/mysql/mysql.sock"
-        ],
-        "returncode": 2,
-        "script": "scripts/02a_bootstrap_migration_user.sh"
-      },
-      "status": "FAILED",
-      "updated_at": "2026-01-22T17:48:54.506026+00:00"
-    },
-    "generate_fix_sql": {
-      "meta": {
-        "args": [],
-        "output_tail": [
-          "== Generating user plugin fix SQL ==",
-          "Wrote: /home/ec2-user/Mysql-to-MariaDB-Migration/outputs/fix_users_to_native_password.sql",
-          "NOTE: Replace <SET_PASSWORD_HERE> manually or wire from secrets.",
-          "",
-          "== Generating JSON-to-LONGTEXT conversion SQL (optional) ==",
-          "Wrote: /home/ec2-user/Mysql-to-MariaDB-Migration/outputs/fix_json_to_longtext.sql",
-          "Only apply if you truly need TEXT storage for compatibility."
-        ],
-        "returncode": 0,
-        "script": "scripts/03_generate_fix_sql.sh"
-      },
-      "status": "DONE",
-      "updated_at": "2026-01-19T18:55:54.708684+00:00"
+      "updated_at": "2026-01-28T21:43:45.158607+00:00"
     },
     "install_mariadb": {
       "meta": {
         "args": [],
         "output_tail": [
-          "Package lzo-2.10-4.amzn2023.0.2.x86_64 is already installed.",
-          "Package snappy-1.1.8-5.amzn2023.0.2.x86_64 is already installed.",
-          "Package mysql-selinux-1.0.4-2.amzn2023.0.3.noarch is already installed.",
-          "Dependencies resolved.",
-          "Nothing to do.",
-          "Complete!",
-          "Installing MariaDB Enterprise RPMs...",
-          "warning: package MariaDB-backup-11.8.3_1-1.el9.x86_64 was already added, replacing with MariaDB-backup-11.8.5_2-1.el9.x86_64",
-          "warning: package MariaDB-client-11.8.3_1-1.el9.x86_64 was already added, replacing with MariaDB-client-11.8.5_2-1.el9.x86_64",
-          "warning: package MariaDB-client-compat-11.8.3_1-1.el9.noarch was already added, replacing with MariaDB-client-compat-11.8.5_2-1.el9.noarch",
-          "warning: package MariaDB-columnstore-engine-11.8.3_1_25.10.0-1.el9.x86_64 was already added, replacing with MariaDB-columnstore-engine-11.8.5_2_25.10.2-1.el9.x86_64",
-          "warning: package MariaDB-common-11.8.3_1-1.el9.x86_64 was already added, replacing with MariaDB-common-11.8.5_2-1.el9.x86_64",
-          "warning: package MariaDB-cracklib-password-check-11.8.3_1-1.el9.x86_64 was already added, replacing with MariaDB-cracklib-password-check-11.8.5_2-1.el9.x86_64",
-          "warning: package MariaDB-devel-11.8.3_1-1.el9.x86_64 was already added, replacing with MariaDB-devel-11.8.5_2-1.el9.x86_64",
-          "warning: package MariaDB-gssapi-server-11.8.3_1-1.el9.x86_64 was already added, replacing with MariaDB-gssapi-server-11.8.5_2-1.el9.x86_64",
-          "warning: package MariaDB-hashicorp-key-management-11.8.3_1-1.el9.x86_64 was already added, replacing with MariaDB-hashicorp-key-management-11.8.5_2-1.el9.x86_64",
-          "warning: package MariaDB-provider-bzip2-11.8.3_1-1.el9.x86_64 was already added, replacing with MariaDB-provider-bzip2-11.8.5_2-1.el9.x86_64",
-          "warning: package MariaDB-provider-lz4-11.8.3_1-1.el9.x86_64 was already added, replacing with MariaDB-provider-lz4-11.8.5_2-1.el9.x86_64",
-          "warning: package MariaDB-provider-lzma-11.8.3_1-1.el9.x86_64 was already added, replacing with MariaDB-provider-lzma-11.8.5_2-1.el9.x86_64",
-          "warning: package MariaDB-provider-lzo-11.8.3_1-1.el9.x86_64 was already added, replacing with MariaDB-provider-lzo-11.8.5_2-1.el9.x86_64",
-          "warning: package MariaDB-provider-snappy-11.8.3_1-1.el9.x86_64 was already added, replacing with MariaDB-provider-snappy-11.8.5_2-1.el9.x86_64",
-          "warning: package MariaDB-rocksdb-engine-11.8.3_1-1.el9.x86_64 was already added, replacing with MariaDB-rocksdb-engine-11.8.5_2-1.el9.x86_64",
-          "warning: package MariaDB-s3-engine-11.8.3_1-1.el9.x86_64 was already added, replacing with MariaDB-s3-engine-11.8.5_2-1.el9.x86_64",
-          "warning: package MariaDB-server-11.8.3_1-1.el9.x86_64 was already added, replacing with MariaDB-server-11.8.5_2-1.el9.x86_64",
-          "warning: package MariaDB-server-compat-11.8.3_1-1.el9.noarch was already added, replacing with MariaDB-server-compat-11.8.5_2-1.el9.noarch",
-          "warning: package MariaDB-shared-11.8.3_1-1.el9.x86_64 was already added, replacing with MariaDB-shared-11.8.5_2-1.el9.x86_64",
-          "warning: package MariaDB-spider-engine-11.8.3_1-1.el9.x86_64 was already added, replacing with MariaDB-spider-engine-11.8.5_2-1.el9.x86_64",
+          "MariaDB-columnstore-cmapi-10.6.24_19_2########################################",
+          "Created symlink '/etc/systemd/system/multi-user.target.wants/mariadb-columnstore-cmapi.service' \u2192 '/usr/lib/systemd/system/mariadb-columnstore-cmapi.service'.",
+          "Created symlink '/etc/systemd/system/mariadb-columnstore.service' \u2192 '/dev/null'.",
+          "Installing RPMs...",
+          "warning: galera-enterprise-4-26.4.24-1.el10.aarch64.rpm: Header V4 RSA/SHA512 Signature, key ID 8c27d14e: NOKEY",
+          "warning: package MariaDB-backup-11.8.3_1-1.el10.aarch64 was already added, replacing with MariaDB-backup-11.8.5_2-1.el10.aarch64",
+          "warning: package MariaDB-client-11.8.3_1-1.el10.aarch64 was already added, replacing with MariaDB-client-11.8.5_2-1.el10.aarch64",
+          "warning: package MariaDB-client-compat-11.8.3_1-1.el10.noarch was already added, replacing with MariaDB-client-compat-11.8.5_2-1.el10.noarch",
+          "warning: package MariaDB-columnstore-engine-11.8.3_1_25.10.0-1.el10.aarch64 was already added, replacing with MariaDB-columnstore-engine-11.8.5_2_25.10.2-1.el10.aarch64",
+          "warning: package MariaDB-common-11.8.3_1-1.el10.aarch64 was already added, replacing with MariaDB-common-11.8.5_2-1.el10.aarch64",
+          "warning: package MariaDB-cracklib-password-check-11.8.3_1-1.el10.aarch64 was already added, replacing with MariaDB-cracklib-password-check-11.8.5_2-1.el10.aarch64",
+          "warning: package MariaDB-devel-11.8.3_1-1.el10.aarch64 was already added, replacing with MariaDB-devel-11.8.5_2-1.el10.aarch64",
+          "warning: package MariaDB-gssapi-server-11.8.3_1-1.el10.aarch64 was already added, replacing with MariaDB-gssapi-server-11.8.5_2-1.el10.aarch64",
+          "warning: package MariaDB-hashicorp-key-management-11.8.3_1-1.el10.aarch64 was already added, replacing with MariaDB-hashicorp-key-management-11.8.5_2-1.el10.aarch64",
+          "warning: package MariaDB-provider-bzip2-11.8.3_1-1.el10.aarch64 was already added, replacing with MariaDB-provider-bzip2-11.8.5_2-1.el10.aarch64",
+          "warning: package MariaDB-provider-lz4-11.8.3_1-1.el10.aarch64 was already added, replacing with MariaDB-provider-lz4-11.8.5_2-1.el10.aarch64",
+          "warning: package MariaDB-provider-lzma-11.8.3_1-1.el10.aarch64 was already added, replacing with MariaDB-provider-lzma-11.8.5_2-1.el10.aarch64",
+          "warning: package MariaDB-provider-lzo-11.8.3_1-1.el10.aarch64 was already added, replacing with MariaDB-provider-lzo-11.8.5_2-1.el10.aarch64",
+          "warning: package MariaDB-provider-snappy-11.8.3_1-1.el10.aarch64 was already added, replacing with MariaDB-provider-snappy-11.8.5_2-1.el10.aarch64",
+          "warning: package MariaDB-rocksdb-engine-11.8.3_1-1.el10.aarch64 was already added, replacing with MariaDB-rocksdb-engine-11.8.5_2-1.el10.aarch64",
+          "warning: package MariaDB-s3-engine-11.8.3_1-1.el10.aarch64 was already added, replacing with MariaDB-s3-engine-11.8.5_2-1.el10.aarch64",
+          "warning: package MariaDB-server-11.8.3_1-1.el10.aarch64 was already added, replacing with MariaDB-server-11.8.5_2-1.el10.aarch64",
+          "warning: package MariaDB-server-compat-11.8.3_1-1.el10.noarch was already added, replacing with MariaDB-server-compat-11.8.5_2-1.el10.noarch",
+          "warning: package MariaDB-shared-11.8.3_1-1.el10.aarch64 was already added, replacing with MariaDB-shared-11.8.5_2-1.el10.aarch64",
+          "warning: package MariaDB-spider-engine-11.8.3_1-1.el10.aarch64 was already added, replacing with MariaDB-spider-engine-11.8.5_2-1.el10.aarch64",
+          "Verifying...                          ########################################",
           "Preparing...                          ########################################",
-          "\tpackage MariaDB-shared-11.8.5_2-1.el9.x86_64 is already installed",
-          "\tpackage MariaDB-common-11.8.5_2-1.el9.x86_64 is already installed",
-          "\tpackage MariaDB-client-compat-11.8.5_2-1.el9.noarch is already installed",
-          "\tpackage MariaDB-client-11.8.5_2-1.el9.x86_64 is already installed",
-          "\tpackage galera-enterprise-4-26.4.24-1.el9.x86_64 is already installed",
-          "\tpackage MariaDB-server-compat-11.8.5_2-1.el9.noarch is already installed",
-          "\tpackage MariaDB-server-11.8.5_2-1.el9.x86_64 is already installed",
-          "\tpackage MariaDB-columnstore-engine-11.8.5_2_25.10.2-1.el9.x86_64 is already installed",
-          "\tpackage MariaDB-cracklib-password-check-11.8.5_2-1.el9.x86_64 is already installed",
-          "\tpackage MariaDB-gssapi-server-11.8.5_2-1.el9.x86_64 is already installed",
-          "\tpackage MariaDB-hashicorp-key-management-11.8.5_2-1.el9.x86_64 is already installed",
-          "\tpackage MariaDB-provider-bzip2-11.8.5_2-1.el9.x86_64 is already installed",
-          "\tpackage MariaDB-provider-lz4-11.8.5_2-1.el9.x86_64 is already installed",
-          "\tpackage MariaDB-provider-lzma-11.8.5_2-1.el9.x86_64 is already installed",
-          "\tpackage MariaDB-provider-lzo-11.8.5_2-1.el9.x86_64 is already installed",
-          "\tpackage MariaDB-provider-snappy-11.8.5_2-1.el9.x86_64 is already installed",
-          "\tpackage MariaDB-rocksdb-engine-11.8.5_2-1.el9.x86_64 is already installed",
-          "\tpackage MariaDB-s3-engine-11.8.5_2-1.el9.x86_64 is already installed",
-          "\tpackage MariaDB-spider-engine-11.8.5_2-1.el9.x86_64 is already installed",
-          "\tpackage MariaDB-backup-11.8.5_2-1.el9.x86_64 is already installed",
-          "\tpackage MariaDB-devel-11.8.5_2-1.el9.x86_64 is already installed",
-          "\tpackage MariaDB-columnstore-cmapi-10.6.24_19_25.10.1-1.el9.x86_64 is already installed"
+          "\tpackage MariaDB-shared-11.8.5_2-1.el10.aarch64 is already installed",
+          "\tpackage MariaDB-common-11.8.5_2-1.el10.aarch64 is already installed",
+          "\tpackage MariaDB-client-compat-11.8.5_2-1.el10.noarch is already installed",
+          "\tpackage MariaDB-client-11.8.5_2-1.el10.aarch64 is already installed",
+          "\tpackage galera-enterprise-4-26.4.24-1.el10.aarch64 is already installed",
+          "\tpackage MariaDB-server-compat-11.8.5_2-1.el10.noarch is already installed",
+          "\tpackage MariaDB-server-11.8.5_2-1.el10.aarch64 is already installed",
+          "\tpackage MariaDB-columnstore-engine-11.8.5_2_25.10.2-1.el10.aarch64 is already installed",
+          "\tpackage MariaDB-cracklib-password-check-11.8.5_2-1.el10.aarch64 is already installed",
+          "\tpackage MariaDB-gssapi-server-11.8.5_2-1.el10.aarch64 is already installed",
+          "\tpackage MariaDB-hashicorp-key-management-11.8.5_2-1.el10.aarch64 is already installed",
+          "\tpackage MariaDB-provider-bzip2-11.8.5_2-1.el10.aarch64 is already installed",
+          "\tpackage MariaDB-provider-lz4-11.8.5_2-1.el10.aarch64 is already installed",
+          "\tpackage MariaDB-provider-lzma-11.8.5_2-1.el10.aarch64 is already installed",
+          "\tpackage MariaDB-provider-lzo-11.8.5_2-1.el10.aarch64 is already installed",
+          "\tpackage MariaDB-provider-snappy-11.8.5_2-1.el10.aarch64 is already installed",
+          "\tpackage MariaDB-rocksdb-engine-11.8.5_2-1.el10.aarch64 is already installed",
+          "\tpackage MariaDB-s3-engine-11.8.5_2-1.el10.aarch64 is already installed",
+          "\tpackage MariaDB-spider-engine-11.8.5_2-1.el10.aarch64 is already installed",
+          "\tpackage MariaDB-backup-11.8.5_2-1.el10.aarch64 is already installed",
+          "\tpackage MariaDB-devel-11.8.5_2-1.el10.aarch64 is already installed",
+          "\tpackage MariaDB-columnstore-cmapi-10.6.24_19_25.10.1-1.el10.aarch64 is already installed",
+          "MariaDB already installed; ignoring RPM install errors."
         ],
-        "returncode": 44,
+        "returncode": 0,
         "script": "scripts/05_install_mariadb.sh"
       },
       "status": "DONE",
-      "updated_at": "2026-01-21T16:17:49.897361+00:00"
+      "updated_at": "2026-01-28T21:30:47.558678+00:00"
+    },
+    "one_step_dump_restore": {
+      "meta": {
+        "args": [],
+        "output_tail": [
+          "==> One-step migration (mariadb-dump | mariadb)",
+          "mariadb-dump not found; using mysqldump.",
+          "Source: 192.168.68.104:3306  DB: classicmodels",
+          "Target: 192.168.64.2:3306",
+          "pv not found; running without progress meter.",
+          "WARNING: option --ssl-verify-server-cert is disabled, because of an insecure passwordless login.",
+          "One-step migration completed."
+        ],
+        "returncode": 0,
+        "script": "scripts/10_one_step_migration.sh"
+      },
+      "status": "DONE",
+      "updated_at": "2026-01-28T22:03:28.983287+00:00"
     },
     "precheck": {
       "meta": {
         "args": [],
         "output_tail": [
+          "---- partitioned_tables ----",
           "(no rows)",
           "",
           "---- active_plugins ----",
@@ -166,7 +141,6 @@
           "MyISAM\tACTIVE",
           "mysqlx\tACTIVE",
           "mysqlx_cache_cleaner\tACTIVE",
-          "mysql_native_password\tACTIVE",
           "ngram\tACTIVE",
           "PERFORMANCE_SCHEMA\tACTIVE",
           "sha256_password\tACTIVE",
@@ -174,190 +148,31 @@
           "TempTable\tACTIVE",
           "",
           "Precheck complete.",
-          "TSV outputs: /home/ec2-user/Mysql-to-MariaDB-Migration/artifacts/precheck/*.tsv"
+          "TSV outputs: /Users/balajin/Documents/GitHub/Mysql-to-MariaDB-Migration/artifacts/precheck/*.tsv"
         ],
         "returncode": 0,
         "script": "scripts/00_precheck.sh"
       },
       "status": "DONE",
-      "updated_at": "2026-01-19T18:55:54.317460+00:00"
-    },
-    "prepare_mysql": {
-      "meta": {
-        "args": [],
-        "output_tail": [
-          "Setting innodb_fast_shutdown=0 (required before major upgrade)",
-          "Done."
-        ],
-        "returncode": 0,
-        "script": "scripts/01_prepare_mysql.sh"
-      },
-      "status": "DONE",
-      "updated_at": "2026-01-19T18:55:54.346562+00:00"
-    },
-    "restore_mysql_system_db": {
-      "meta": {
-        "args": [],
-        "output_tail": [
-          "  `Create_priv` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',",
-          "  `Drop_priv` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',",
-          "  `Reload_priv` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',",
-          "  `Shutdown_priv` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',",
-          "  `Process_priv` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',",
-          "  `File_priv` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',",
-          "  `Grant_priv` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',",
-          "  `References_priv` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',",
-          "  `Index_priv` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',",
-          "  `Alter_priv` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',",
-          "  `Show_db_priv` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',",
-          "  `Super_priv` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',",
-          "  `Create_tmp_table_priv` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',",
-          "  `Lock_tables_priv` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',",
-          "  `Execute_priv` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',",
-          "  `Repl_slave_priv` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',",
-          "  `Repl_client_priv` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',",
-          "  `Create_view_priv` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',",
-          "  `Show_view_priv` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',",
-          "  `Create_routine_priv` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',",
-          "  `Alter_routine_priv` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',",
-          "  `Create_user_priv` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',",
-          "  `Event_priv` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',",
-          "  `Trigger_priv` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',",
-          "  `Create_tablespace_priv` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',",
-          "  `ssl_type` enum('','ANY','X509','SPECIFIED') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT '',",
-          "  `ssl_cipher` blob NOT NULL,",
-          "  `x509_issuer` blob NOT NULL,",
-          "  `x509_subject` blob NOT NULL,",
-          "  `max_questions` int unsigned NOT NULL DEFAULT '0',",
-          "  `max_updates` int unsigned NOT NULL DEFAULT '0',",
-          "  `max_connections` int unsigned NOT NULL DEFAULT '0',",
-          "  `max_user_connections` int unsigned NOT NULL DEFAULT '0',",
-          "  `plugin` char(64) COLLATE utf8mb3_bin NOT NULL DEFAULT 'caching_sha2_password',",
-          "  `authentication_string` text COLLATE utf8mb3_bin,",
-          "  `password_expired` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',",
-          "  `password_last_changed` timestamp NULL DEFAULT NULL,",
-          "  `password_lifetime` smallint unsigned DEFAULT NULL,",
-          "  `account_locked` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',",
-          "  `Create_role_priv` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',",
-          "  `Drop_role_priv` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'N',",
-          "  `Password_reuse_history` smallint unsigned DEFAULT NULL,",
-          "  `Password_reuse_time` smallint unsigned DEFAULT NULL,",
-          "  `Password_require_current` enum('N','Y') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,",
-          "  `User_attributes` json DEFAULT NULL,",
-          "  PRIMARY KEY (`Host`,`User`)",
-          ") /*!50100 TABLESPACE `mysql` */ ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin STATS_PERSISTENT=0 ROW_FORMAT=DYNAMIC COMMENT='Users and global privileges'",
-          "--------------",
-          "",
-          "ERROR 1050 (42S01) at line 950: Table 'user' already exists"
-        ],
-        "returncode": 1,
-        "script": "scripts/08_restore_mysql_system_db.sh"
-      },
-      "status": "FAILED",
-      "updated_at": "2026-01-22T17:24:01.022940+00:00"
-    },
-    "start_upgrade": {
-      "meta": {
-        "args": [],
-        "output_tail": [
-          "sys.x$user_summary_by_file_io                      OK",
-          "sys.x$user_summary_by_file_io_type                 OK",
-          "sys.x$user_summary_by_stages                       OK",
-          "sys.x$user_summary_by_statement_latency            OK",
-          "sys.x$user_summary_by_statement_type               OK",
-          "sys.x$wait_classes_global_by_avg_latency           OK",
-          "sys.x$wait_classes_global_by_latency               OK",
-          "sys.x$waits_by_host_by_latency                     OK",
-          "sys.x$waits_by_user_by_latency                     OK",
-          "sys.x$waits_global_by_latency                      OK",
-          "Phase 5/8: Fixing table and database names",
-          "Phase 6/8: Checking and upgrading tables",
-          "Processing databases",
-          "information_schema",
-          "performance_schema",
-          "sys",
-          "sys.sys_config                                     OK",
-          "Phase 7/8: uninstalling plugins",
-          "Phase 8/8: Running 'FLUSH PRIVILEGES'",
-          "OK",
-          "",
-          "\u25cf mariadb.service - MariaDB 11.8.5-2 database server",
-          "     Loaded: loaded (/usr/lib/systemd/system/mariadb.service; disabled; preset: disabled)",
-          "    Drop-In: /etc/systemd/system/mariadb.service.d",
-          "             \u2514\u2500migrated-from-my.cnf-settings.conf",
-          "     Active: active (running) since Wed 2026-01-21 18:17:31 UTC; 5min ago",
-          "       Docs: man:mariadbd(8)",
-          "             https://mariadb.com/kb/en/library/systemd/",
-          "    Process: 2052223 ExecStartPre=/bin/sh -c [ ! -e /usr/bin/galera_recovery ] && VAR= ||   VAR=`/usr/bin/galera_recovery`; [ $? -eq 0 ]   && echo _WSREP_START_POSITION=$VAR > /run/mariadb/wsrep-start-position || exit 1 (code=exited, status=0/SUCCESS)",
-          "    Process: 2052359 ExecStartPost=/bin/rm -f /run/mariadb/wsrep-start-position /run/mariadb/wsrep-new-cluster (code=exited, status=0/SUCCESS)",
-          "   Main PID: 2052308 (mariadbd)",
-          "     Status: \"Taking your SQL requests now...\"",
-          "      Tasks: 17 (limit: 124785)",
-          "     Memory: 116.2M",
-          "        CPU: 1.726s",
-          "     CGroup: /system.slice/mariadb.service",
-          "             \u2514\u25002052308 /usr/sbin/mariadbd",
-          "",
-          "Jan 21 18:17:29 ip-172-31-27-200.ap-south-1.compute.internal mariadbd[2052308]: 2026-01-21 18:17:29 0 [Note] Plugin 'FEEDBACK' is disabled.",
-          "Jan 21 18:17:29 ip-172-31-27-200.ap-south-1.compute.internal mariadbd[2052308]: 2026-01-21 18:17:29 server_audit: MariaDB Audit Plugin version 2.7.0 STARTED.",
-          "Jan 21 18:17:29 ip-172-31-27-200.ap-south-1.compute.internal mariadbd[2052308]: 2026-01-21 18:17:29 server_audit: Query cache is enabled with the TABLE events. Some table reads can be veiled.",
-          "Jan 21 18:17:29 ip-172-31-27-200.ap-south-1.compute.internal mariadbd[2052308]: 2026-01-21 18:17:29 0 [Note] Plugin 'wsrep-provider' is disabled.",
-          "Jan 21 18:17:30 ip-172-31-27-200.ap-south-1.compute.internal mariadbd[2052308]: 2026-01-21 18:17:30 0 [Note] Server socket created on IP: '0.0.0.0', port: '3306'.",
-          "Jan 21 18:17:30 ip-172-31-27-200.ap-south-1.compute.internal mariadbd[2052308]: 2026-01-21 18:17:30 0 [Note] Server socket created on IP: '::', port: '3306'.",
-          "Jan 21 18:17:30 ip-172-31-27-200.ap-south-1.compute.internal mariadbd[2052308]: 2026-01-21 18:17:30 0 [Note] mariadbd: Event Scheduler: Loaded 0 events",
-          "Jan 21 18:17:30 ip-172-31-27-200.ap-south-1.compute.internal mariadbd[2052308]: 2026-01-21 18:17:30 0 [Note] /usr/sbin/mariadbd: ready for connections.",
-          "Jan 21 18:17:30 ip-172-31-27-200.ap-south-1.compute.internal mariadbd[2052308]: Version: '11.8.5-2-MariaDB-enterprise'  socket: '/var/lib/mysql/mysql.sock'  port: 3306  MariaDB Enterprise Server",
-          "Jan 21 18:17:31 ip-172-31-27-200.ap-south-1.compute.internal systemd[1]: Started mariadb.service - MariaDB 11.8.5-2 database server.",
-          "",
-          "Upgrade complete."
-        ],
-        "returncode": 0,
-        "script": "scripts/06_start_mariadb_and_upgrade.sh"
-      },
-      "status": "DONE",
-      "updated_at": "2026-01-21T18:23:13.500596+00:00"
-    },
-    "stop_mysql_and_remove_packages": {
-      "meta": {
-        "args": [],
-        "output_tail": [
-          "Stopping MySQL service...",
-          "",
-          "Installed MySQL / Percona packages:",
-          "mysql-community-common-8.0.44-1.el9.x86_64",
-          "mysql-community-client-plugins-8.0.44-1.el9.x86_64",
-          "mysql-community-libs-8.0.44-1.el9.x86_64",
-          "mysql-community-client-8.0.44-1.el9.x86_64",
-          "mysql-community-icu-data-files-8.0.44-1.el9.x86_64",
-          "mysql-community-server-8.0.44-1.el9.x86_64",
-          "mysql80-community-release-el9-5.noarch",
-          "",
-          "IMPORTANT:",
-          "This step is DESTRUCTIVE.",
-          "Review the list above carefully.",
-          "",
-          "To actually remove packages, edit this script and UNCOMMENT:",
-          "  sudo rpm -e --nodeps <package-name>"
-        ],
-        "returncode": 0,
-        "script": "scripts/04_stop_mysql_and_remove_packages.sh"
-      },
-      "status": "DONE",
-      "updated_at": "2026-01-19T18:55:55.523947+00:00"
+      "updated_at": "2026-01-28T21:53:31.975039+00:00"
     },
     "validate": {
       "meta": {
         "args": [],
         "output_tail": [
-          "MariaDB version (socket-based validation):",
+          "MariaDB version (TCP validation):",
+          "WARNING: option --ssl-verify-server-cert is disabled, because of an insecure passwordless login.",
           "11.8.5-2-MariaDB-enterprise",
           "",
           "User authentication plugins:",
+          "WARNING: option --ssl-verify-server-cert is disabled, because of an insecure passwordless login.",
           "mariadb.sys\tlocalhost\tmysql_native_password",
+          "migrate\t%\tmysql_native_password",
           "mysql\tlocalhost\tmysql_native_password",
           "root\tlocalhost\tmysql_native_password",
           "",
           "Storage engines:",
+          "WARNING: option --ssl-verify-server-cert is disabled, because of an insecure passwordless login.",
           "SPIDER\tYES\tSpider storage engine\tYES\tYES\tNO",
           "CSV\tYES\tStores tables as CSV files\tNO\tNO\tNO",
           "MRG_MyISAM\tYES\tCollection of identical MyISAM tables\tNO\tNO\tNO",
@@ -367,6 +182,7 @@
           "InnoDB\tDEFAULT\tSupports transactions, row-level locking, foreign keys and encryption for tables\tYES\tYES\tYES",
           "SEQUENCE\tYES\tGenerated tables filled with sequential values\tYES\tNO\tYES",
           "PERFORMANCE_SCHEMA\tYES\tPerformance Schema\tNO\tNO\tNO",
+          "Columnstore\tYES\tColumnStore storage engine\tYES\tNO\tNO",
           "ROCKSDB\tYES\tRocksDB storage engine\tYES\tYES\tYES",
           "",
           "Validation complete (socket-first)."
@@ -375,7 +191,7 @@
         "script": "scripts/07_validate.sh"
       },
       "status": "DONE",
-      "updated_at": "2026-01-21T18:40:32.246119+00:00"
+      "updated_at": "2026-01-28T22:07:54.074379+00:00"
     }
   },
   "version": 1
