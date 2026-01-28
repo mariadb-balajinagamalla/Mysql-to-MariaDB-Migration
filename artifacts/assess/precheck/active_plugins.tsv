@@ -36,7 +36,6 @@ MRG_MYISAM	ACTIVE
 MyISAM	ACTIVE
 mysqlx	ACTIVE
 mysqlx_cache_cleaner	ACTIVE
-mysql_native_password	ACTIVE
 ngram	ACTIVE
 PERFORMANCE_SCHEMA	ACTIVE
 sha256_password	ACTIVE

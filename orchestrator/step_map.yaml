@@ -21,6 +21,7 @@ modes:
     - validate
 
   one_step:
+    - one_step_prepare
     - precheck_only
     - one_step
     - validate
@@ -99,6 +100,22 @@ phases:
     - id: validate
       name: Validate after upgrade
       script: scripts/07_validate.sh
+      args: []
+
+  one_step_prepare:
+    - id: preflight_one_step
+      name: Preflight checks (one_step)
+      script: scripts/00_preflight_one_step.sh
+      args: []
+
+    - id: install_mariadb
+      name: Install MariaDB (target host)
+      script: scripts/05_install_mariadb.sh
+      args: []
+
+    - id: create_migration_user
+      name: Create migration user on source and target
+      script: scripts/09_create_migration_user.sh
       args: []
 
   one_step:

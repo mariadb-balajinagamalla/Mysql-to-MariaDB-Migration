@@ -1,4 +1,4 @@
-analytics	10.%	caching_sha2_password
-app_ro	%	caching_sha2_password
-app_rw	%	caching_sha2_password
+migrate	%	caching_sha2_password
+migrate	192.168.64.2	caching_sha2_password
+packer	%	caching_sha2_password
 root	localhost	caching_sha2_password

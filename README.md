@@ -24,6 +24,10 @@ Private repository to design, execute, and validate end-to-end MySQL to MariaDB 
 - mydumper
 - Custom validation scripts
 
+## Prerequisites (required)
+- Set `MARIADB_ES_TOKEN` in the environment to download MariaDB Enterprise RPMs.
+- Ensure network connectivity from the orchestrator host to both source MySQL and target MariaDB.
+
 ## Status
 In progress
 

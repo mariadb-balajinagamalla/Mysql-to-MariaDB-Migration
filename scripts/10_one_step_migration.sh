@@ -18,6 +18,9 @@ TGT_HOST="${TGT_HOST:-}"
 TGT_PORT="${TGT_PORT:-3306}"
 TGT_USER="${TGT_USER:-}"
 TGT_PASS="${TGT_PASS:-}"
+TGT_SSH_HOST="${TGT_SSH_HOST:-}"
+TGT_SSH_USER="${TGT_SSH_USER:-root}"
+TGT_SSH_OPTS="${TGT_SSH_OPTS:-}"
 
 if [[ -z "$SRC_HOST" || -z "$SRC_USER" || -z "$SRC_PASS" || -z "$SRC_DB" ]]; then
   echo "ERROR: Missing source envs. Set SRC_HOST, SRC_USER, SRC_PASS, SRC_DB (SRC_PORT optional)."
@@ -27,6 +30,13 @@ fi
 if [[ -z "$TGT_HOST" || -z "$TGT_USER" || -z "$TGT_PASS" ]]; then
   echo "ERROR: Missing target envs. Set TGT_HOST, TGT_USER, TGT_PASS (TGT_PORT optional)."
   exit 1
+fi
+
+if ! command -v "$MARIADB_DUMP_BIN" >/dev/null 2>&1; then
+  if command -v mysqldump >/dev/null 2>&1; then
+    echo "mariadb-dump not found; using mysqldump."
+    MARIADB_DUMP_BIN="mysqldump"
+  fi
 fi
 
 SRC_AUTH=( -h"$SRC_HOST" -P"$SRC_PORT" -u"$SRC_USER" )
@@ -50,12 +60,26 @@ if [[ "${#PIPE_CMD[@]}" -eq 0 ]]; then
 fi
 
 set -o pipefail
-"$MARIADB_DUMP_BIN" "${SRC_AUTH[@]}" "${SRC_SSL_ARGS[@]}" \
-  --databases "$SRC_DB" \
-  --routines --triggers --events \
-  --gtid=0 --no-tablespaces --hex-blob --single-transaction \
+DUMP_ARGS=(
+  --databases "$SRC_DB"
+  --routines --triggers --events
+  --no-tablespaces --hex-blob --single-transaction
+)
+if [[ "$MARIADB_DUMP_BIN" == "mysqldump" ]]; then
+  DUMP_ARGS+=(--set-gtid-purged=OFF)
+else
+  DUMP_ARGS+=(--gtid=0)
+fi
+
+MYSQL_PWD="$SRC_PASS" "$MARIADB_DUMP_BIN" "${SRC_AUTH[@]}" "${SRC_SSL_ARGS[@]}" "${DUMP_ARGS[@]}" \
   | if [[ "${#PIPE_CMD[@]}" -gt 0 ]]; then "${PIPE_CMD[@]}"; else cat; fi \
-  | MYSQL_PWD="$TGT_PASS" "$MARIADB_BIN" "${TGT_AUTH[@]}"
+  | if [[ -n "$TGT_SSH_HOST" ]]; then
+      TGT_PASS_Q="$(printf '%q' "$TGT_PASS")"
+      ssh ${TGT_SSH_OPTS} "${TGT_SSH_USER}@${TGT_SSH_HOST}" \
+        "MYSQL_PWD=$TGT_PASS_Q ${MARIADB_BIN} ${TGT_AUTH[*]}"
+    else
+      MYSQL_PWD="$TGT_PASS" "$MARIADB_BIN" "${TGT_AUTH[@]}"
+    fi
 set +o pipefail
 
 echo "One-step migration completed."

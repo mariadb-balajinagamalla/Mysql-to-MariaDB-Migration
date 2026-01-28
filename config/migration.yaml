@@ -1,4 +1,4 @@
-mode: offline 
+mode: one_step
 
 env:
   HOST: 127.0.0.1
@@ -8,16 +8,31 @@ env:
   SOCKET: /var/lib/mysql/mysql.sock
 
   # Playbook envs (one_step / two_step)
-  # SRC_HOST: 127.0.0.1
-  # SRC_PORT: "3306"
-  # SRC_USER: migrate
-  # SRC_PASS: "change_me"
-  # SRC_DB: mydb
-  # SRC_SSL_MODE: "DISABLED"  # e.g., DISABLED | REQUIRED | VERIFY_CA | VERIFY_IDENTITY
-  # TGT_HOST: 127.0.0.1
-  # TGT_PORT: "3306"
-  # TGT_USER: root
-  # TGT_PASS: "change_me"
+  SRC_HOST: 192.168.68.104
+  SRC_PORT: "3306"
+  SRC_USER: migrate
+  SRC_PASS: "Migrate123!"
+  SRC_DB: classicmodels
+  SRC_SSL_MODE: "DISABLED"  # e.g., DISABLED | REQUIRED | VERIFY_CA | VERIFY_IDENTITY
+  SRC_ADMIN_USER: root
+  SRC_ADMIN_PASS: "Root@1234"
+  SRC_ADMIN_LOCAL: "1"
+  # SRC_ADMIN_SOCKET: "/tmp/mysql.sock"
+  TGT_HOST: 192.168.64.2
+  TGT_PORT: "3306"
+  TGT_USER: migrate
+  TGT_PASS: "Migrate123!"
+  TGT_ADMIN_USER: root
+  TGT_ADMIN_PASS: "Root@1234"
+  TGT_ADMIN_LOCAL: "1"
+  # TGT_ADMIN_SOCKET: "/var/lib/mysql/mysql.sock"
+  TGT_SSH_HOST: "192.168.64.2"
+  TGT_SSH_USER: "root"
+  TGT_SSH_OPTS: "-o StrictHostKeyChecking=no"
+  ALLOW_ROOT_USERS: "0"
+  SKIP_INSTALL_MARIADB: "0"  # set to "1" if MariaDB is already installed on target
+  PREFLIGHT_AUTO_FIX: "1"
+  PREFLIGHT_AUTO_FIX_TARGET: "1"
 
   # Two-step SQLines Data
   # SQLINESDATA_BIN: /usr/local/bin/sqldata
@@ -30,6 +45,17 @@ env:
   # NEAR_ZERO_REPLICATION_CMD: "bash /path/to/replication_setup.sh"
   # NEAR_ZERO_CDC_CMD: "bash /path/to/start_cdc.sh"
   # NEAR_ZERO_CUTOVER_CMD: "bash /path/to/cutover.sh"
+
+  # MariaDB Enterprise install (target)
+  # MARIADB_ES_TOKEN: "xxxxx"  # REQUIRED: set via environment variable (do not commit)
+  MARIADB_ES_VERSION: "11.8.5-2"
+  MARIADB_NOGPGCHECK: "0"
+  MARIADB_ES_OS: "rhel-10"
+  MARIADB_ES_ARCH: "aarch64"
+  MARIADB_INSTALL_HOST: "192.168.64.2"
+  MARIADB_INSTALL_SSH_USER: "root"
+  MARIADB_INSTALL_SSH_OPTS: "-o StrictHostKeyChecking=no"
+  REMOVE_MYSQL_PACKAGES: "1"
 
 target:
   type: mariadb

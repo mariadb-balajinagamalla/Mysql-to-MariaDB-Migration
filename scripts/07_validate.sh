@@ -7,13 +7,22 @@ TGT_HOST="${TGT_HOST:-}"
 TGT_PORT="${TGT_PORT:-3306}"
 TGT_USER="${TGT_USER:-root}"
 TGT_PASS="${TGT_PASS:-}"
+TGT_SSH_HOST="${TGT_SSH_HOST:-}"
+TGT_SSH_USER="${TGT_SSH_USER:-root}"
+TGT_SSH_OPTS="${TGT_SSH_OPTS:-}"
 
 if [[ -n "$TGT_HOST" && -n "$TGT_USER" && -n "$TGT_PASS" ]]; then
   echo "MariaDB version (TCP validation):"
-  MYSQL_PWD="$TGT_PASS" "$MARIADB_BIN" \
-    -h"$TGT_HOST" -P"$TGT_PORT" -u"$TGT_USER" \
-    --batch --skip-column-names \
-    -e "SELECT VERSION();"
+  if [[ -n "$TGT_SSH_HOST" ]]; then
+    TGT_PASS_Q="$(printf '%q' "$TGT_PASS")"
+    ssh ${TGT_SSH_OPTS} "${TGT_SSH_USER}@${TGT_SSH_HOST}" \
+      "MYSQL_PWD=$TGT_PASS_Q ${MARIADB_BIN} -h'$TGT_HOST' -P'$TGT_PORT' -u'$TGT_USER' --batch --skip-column-names -e \"SELECT VERSION();\""
+  else
+    MYSQL_PWD="$TGT_PASS" "$MARIADB_BIN" \
+      -h"$TGT_HOST" -P"$TGT_PORT" -u"$TGT_USER" \
+      --batch --skip-column-names \
+      -e "SELECT VERSION();"
+  fi
 else
   echo "MariaDB version (socket-based validation):"
   sudo "$MARIADB_BIN" \
@@ -26,10 +35,16 @@ fi
 echo
 echo "User authentication plugins:"
 if [[ -n "$TGT_HOST" && -n "$TGT_USER" && -n "$TGT_PASS" ]]; then
-  MYSQL_PWD="$TGT_PASS" "$MARIADB_BIN" \
-    -h"$TGT_HOST" -P"$TGT_PORT" -u"$TGT_USER" \
-    --batch --skip-column-names \
-    -e "SELECT user, host, plugin FROM mysql.user ORDER BY user, host;"
+  if [[ -n "$TGT_SSH_HOST" ]]; then
+    TGT_PASS_Q="$(printf '%q' "$TGT_PASS")"
+    ssh ${TGT_SSH_OPTS} "${TGT_SSH_USER}@${TGT_SSH_HOST}" \
+      "MYSQL_PWD=$TGT_PASS_Q ${MARIADB_BIN} -h'$TGT_HOST' -P'$TGT_PORT' -u'$TGT_USER' --batch --skip-column-names -e \"SELECT user, host, plugin FROM mysql.user ORDER BY user, host;\""
+  else
+    MYSQL_PWD="$TGT_PASS" "$MARIADB_BIN" \
+      -h"$TGT_HOST" -P"$TGT_PORT" -u"$TGT_USER" \
+      --batch --skip-column-names \
+      -e "SELECT user, host, plugin FROM mysql.user ORDER BY user, host;"
+  fi
 else
   sudo "$MARIADB_BIN" \
     --socket="$SOCKET" \
@@ -41,10 +56,16 @@ fi
 echo
 echo "Storage engines:"
 if [[ -n "$TGT_HOST" && -n "$TGT_USER" && -n "$TGT_PASS" ]]; then
-  MYSQL_PWD="$TGT_PASS" "$MARIADB_BIN" \
-    -h"$TGT_HOST" -P"$TGT_PORT" -u"$TGT_USER" \
-    --batch --skip-column-names \
-    -e "SHOW ENGINES;"
+  if [[ -n "$TGT_SSH_HOST" ]]; then
+    TGT_PASS_Q="$(printf '%q' "$TGT_PASS")"
+    ssh ${TGT_SSH_OPTS} "${TGT_SSH_USER}@${TGT_SSH_HOST}" \
+      "MYSQL_PWD=$TGT_PASS_Q ${MARIADB_BIN} -h'$TGT_HOST' -P'$TGT_PORT' -u'$TGT_USER' --batch --skip-column-names -e \"SHOW ENGINES;\""
+  else
+    MYSQL_PWD="$TGT_PASS" "$MARIADB_BIN" \
+      -h"$TGT_HOST" -P"$TGT_PORT" -u"$TGT_USER" \
+      --batch --skip-column-names \
+      -e "SHOW ENGINES;"
+  fi
 else
   sudo "$MARIADB_BIN" \
     --socket="$SOCKET" \

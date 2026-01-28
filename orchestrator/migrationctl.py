@@ -129,12 +129,24 @@ def plan(
 
     env = cfg.get("env", {}) or {}
     env = {str(k): str(v) for k, v in env.items()}
+    # Allow environment variables to override/extend config envs.
+    env = {**env, **os.environ}
     if mode_value in ("one_step", "two_step"):
         _require_env(
             env,
             ["SRC_HOST", "SRC_USER", "SRC_PASS", "SRC_DB", "TGT_HOST", "TGT_USER", "TGT_PASS"],
             mode_value,
         )
+        if mode_value == "one_step" and env.get("SKIP_INSTALL_MARIADB") not in ("1", "true", "TRUE", "True"):
+            _require_env(env, ["MARIADB_ES_TOKEN"], mode_value)
+        if mode_value == "one_step":
+            if not (env.get("SRC_ADMIN_USER") and env.get("SRC_ADMIN_PASS")):
+                report.log("WARN: SRC_ADMIN_USER/PASS not set; using SRC_USER/PASS as admin.")
+            if not (env.get("TGT_ADMIN_USER") and env.get("TGT_ADMIN_PASS")):
+                report.log("WARN: TGT_ADMIN_USER/PASS not set; using TGT_USER/PASS as admin.")
+        if env.get("ALLOW_ROOT_USERS") not in ("1", "true", "TRUE", "True"):
+            if env.get("SRC_USER") == "root" or env.get("TGT_USER") == "root":
+                raise typer.BadParameter("SRC_USER/TGT_USER must not be root. Set ALLOW_ROOT_USERS=1 to override.")
     if mode_value == "two_step":
         if not (env.get("SQLINESDATA_CMD") or env.get("SQLINESDATA_BIN")):
             raise typer.BadParameter(
@@ -196,6 +208,8 @@ def run(
     # Execute steps sequentially
     env = cfg.get("env", {}) or {}
     env = {str(k): str(v) for k, v in env.items()}
+    # Allow environment variables to override/extend config envs.
+    env = {**env, **os.environ}
 
     if mode_value in ("one_step", "two_step"):
         _require_env(
@@ -203,6 +217,16 @@ def run(
             ["SRC_HOST", "SRC_USER", "SRC_PASS", "SRC_DB", "TGT_HOST", "TGT_USER", "TGT_PASS"],
             mode_value,
         )
+        if mode_value == "one_step" and env.get("SKIP_INSTALL_MARIADB") not in ("1", "true", "TRUE", "True"):
+            _require_env(env, ["MARIADB_ES_TOKEN"], mode_value)
+        if mode_value == "one_step":
+            if not (env.get("SRC_ADMIN_USER") and env.get("SRC_ADMIN_PASS")):
+                report.log("WARN: SRC_ADMIN_USER/PASS not set; using SRC_USER/PASS as admin.")
+            if not (env.get("TGT_ADMIN_USER") and env.get("TGT_ADMIN_PASS")):
+                report.log("WARN: TGT_ADMIN_USER/PASS not set; using TGT_USER/PASS as admin.")
+        if env.get("ALLOW_ROOT_USERS") not in ("1", "true", "TRUE", "True"):
+            if env.get("SRC_USER") == "root" or env.get("TGT_USER") == "root":
+                raise typer.BadParameter("SRC_USER/TGT_USER must not be root. Set ALLOW_ROOT_USERS=1 to override.")
     if mode_value == "two_step":
         if not (env.get("SQLINESDATA_CMD") or env.get("SQLINESDATA_BIN")):
             raise typer.BadParameter(
