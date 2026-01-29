@@ -12,7 +12,9 @@ SRC_PORT="${SRC_PORT:-3306}"
 SRC_USER="${SRC_USER:-}"
 SRC_PASS="${SRC_PASS:-}"
 SRC_DB="${SRC_DB:-}"
+SRC_DBS="${SRC_DBS:-}"
 SRC_SSL_MODE="${SRC_SSL_MODE:-}"
+STRIP_DEFINERS="${STRIP_DEFINERS:-1}"
 
 TGT_HOST="${TGT_HOST:-}"
 TGT_PORT="${TGT_PORT:-3306}"
@@ -22,8 +24,8 @@ TGT_SSH_HOST="${TGT_SSH_HOST:-}"
 TGT_SSH_USER="${TGT_SSH_USER:-root}"
 TGT_SSH_OPTS="${TGT_SSH_OPTS:-}"
 
-if [[ -z "$SRC_HOST" || -z "$SRC_USER" || -z "$SRC_PASS" || -z "$SRC_DB" ]]; then
-  echo "ERROR: Missing source envs. Set SRC_HOST, SRC_USER, SRC_PASS, SRC_DB (SRC_PORT optional)."
+if [[ -z "$SRC_HOST" || -z "$SRC_USER" || -z "$SRC_PASS" || ( -z "$SRC_DB" && -z "$SRC_DBS" ) ]]; then
+  echo "ERROR: Missing source envs. Set SRC_HOST, SRC_USER, SRC_PASS, and SRC_DB or SRC_DBS."
   exit 1
 fi
 
@@ -42,7 +44,11 @@ fi
 SRC_AUTH=( -h"$SRC_HOST" -P"$SRC_PORT" -u"$SRC_USER" )
 TGT_AUTH=( -h"$TGT_HOST" -P"$TGT_PORT" -u"$TGT_USER" )
 
-echo "Source: $SRC_HOST:$SRC_PORT  DB: $SRC_DB"
+if [[ -n "$SRC_DBS" ]]; then
+  echo "Source: $SRC_HOST:$SRC_PORT  DBs: $SRC_DBS"
+else
+  echo "Source: $SRC_HOST:$SRC_PORT  DB: $SRC_DB"
+fi
 echo "Target: $TGT_HOST:$TGT_PORT"
 
 PIPE_CMD=()
@@ -61,10 +67,23 @@ fi
 
 set -o pipefail
 DUMP_ARGS=(
-  --databases "$SRC_DB"
   --routines --triggers --events
   --no-tablespaces --hex-blob --single-transaction
 )
+FILTER_CMD=()
+if [[ "$STRIP_DEFINERS" == "1" ]]; then
+  if [[ "$MARIADB_DUMP_BIN" == "mysqldump" ]]; then
+    FILTER_CMD=( sed -E 's/\/\*!50017 DEFINER=`[^`]+`@`[^`]+`\*\/ ?//g; s/DEFINER=`[^`]+`@`[^`]+`//g' )
+  else
+    DUMP_ARGS+=(--skip-definer)
+  fi
+fi
+if [[ -n "$SRC_DBS" ]]; then
+  IFS=',' read -r -a DB_LIST <<< "$SRC_DBS"
+  DUMP_ARGS+=(--databases "${DB_LIST[@]}")
+else
+  DUMP_ARGS+=(--databases "$SRC_DB")
+fi
 if [[ "$MARIADB_DUMP_BIN" == "mysqldump" ]]; then
   DUMP_ARGS+=(--set-gtid-purged=OFF)
 else
@@ -72,6 +91,7 @@ else
 fi
 
 MYSQL_PWD="$SRC_PASS" "$MARIADB_DUMP_BIN" "${SRC_AUTH[@]}" "${SRC_SSL_ARGS[@]}" "${DUMP_ARGS[@]}" \
+  | if [[ "${#FILTER_CMD[@]}" -gt 0 ]]; then "${FILTER_CMD[@]}"; else cat; fi \
   | if [[ "${#PIPE_CMD[@]}" -gt 0 ]]; then "${PIPE_CMD[@]}"; else cat; fi \
   | if [[ -n "$TGT_SSH_HOST" ]]; then
       TGT_PASS_Q="$(printf '%q' "$TGT_PASS")"

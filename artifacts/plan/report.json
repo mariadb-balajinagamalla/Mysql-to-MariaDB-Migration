@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
-  "run_id": "20260128T203735Z",
+  "run_id": "20260129T183708Z",
   "mode": "plan",
   "config_path": "config/migration.yaml",
-  "started_at": "2026-01-28T20:37:35.426842+00:00",
-  "finished_at": "2026-01-28T20:37:35.431464+00:00",
+  "started_at": "2026-01-29T18:37:08.272806+00:00",
+  "finished_at": "2026-01-29T18:37:08.277475+00:00",
   "success": true,
   "message": "Plan generated (no execution).",
   "source": {},
@@ -21,6 +21,12 @@
       "validate"
     ],
     "steps": [
+      {
+        "id": "preflight_one_step",
+        "name": "Preflight checks (one_step)",
+        "script": "scripts/00_preflight_one_step.sh",
+        "args": []
+      },
       {
         "id": "install_mariadb",
         "name": "Install MariaDB (target host)",

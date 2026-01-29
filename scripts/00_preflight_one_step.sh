@@ -12,6 +12,7 @@ SRC_PORT="${SRC_PORT:-3306}"
 SRC_USER="${SRC_USER:-}"
 SRC_PASS="${SRC_PASS:-}"
 SRC_DB="${SRC_DB:-}"
+SRC_DBS="${SRC_DBS:-}"
 
 TGT_HOST="${TGT_HOST:-}"
 TGT_PORT="${TGT_PORT:-3306}"
@@ -25,11 +26,14 @@ AUTO_FIX="${PREFLIGHT_AUTO_FIX:-0}"
 AUTO_FIX_TARGET="${PREFLIGHT_AUTO_FIX_TARGET:-$AUTO_FIX}"
 
 missing=()
-for v in SRC_HOST SRC_USER SRC_PASS SRC_DB TGT_HOST TGT_USER TGT_PASS; do
+for v in SRC_HOST SRC_USER SRC_PASS TGT_HOST TGT_USER TGT_PASS; do
   if [[ -z "${!v:-}" ]]; then
     missing+=("$v")
   fi
 done
+if [[ -z "$SRC_DB" && -z "$SRC_DBS" ]]; then
+  missing+=("SRC_DB_or_SRC_DBS")
+fi
 if [[ "${#missing[@]}" -gt 0 ]]; then
   echo "ERROR: Missing env vars: ${missing[*]}"
   exit 1
