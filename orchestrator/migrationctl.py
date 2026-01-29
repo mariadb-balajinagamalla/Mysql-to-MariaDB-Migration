@@ -134,9 +134,11 @@ def plan(
     if mode_value in ("one_step", "two_step"):
         _require_env(
             env,
-            ["SRC_HOST", "SRC_USER", "SRC_PASS", "SRC_DB", "TGT_HOST", "TGT_USER", "TGT_PASS"],
+            ["SRC_HOST", "SRC_USER", "SRC_PASS", "TGT_HOST", "TGT_USER", "TGT_PASS"],
             mode_value,
         )
+        if not (env.get("SRC_DB") or env.get("SRC_DBS")):
+            raise typer.BadParameter("Missing SRC_DB or SRC_DBS for one_step/two_step.")
         if mode_value == "one_step" and env.get("SKIP_INSTALL_MARIADB") not in ("1", "true", "TRUE", "True"):
             _require_env(env, ["MARIADB_ES_TOKEN"], mode_value)
         if mode_value == "one_step":
@@ -214,9 +216,11 @@ def run(
     if mode_value in ("one_step", "two_step"):
         _require_env(
             env,
-            ["SRC_HOST", "SRC_USER", "SRC_PASS", "SRC_DB", "TGT_HOST", "TGT_USER", "TGT_PASS"],
+            ["SRC_HOST", "SRC_USER", "SRC_PASS", "TGT_HOST", "TGT_USER", "TGT_PASS"],
             mode_value,
         )
+        if not (env.get("SRC_DB") or env.get("SRC_DBS")):
+            raise typer.BadParameter("Missing SRC_DB or SRC_DBS for one_step/two_step.")
         if mode_value == "one_step" and env.get("SKIP_INSTALL_MARIADB") not in ("1", "true", "TRUE", "True"):
             _require_env(env, ["MARIADB_ES_TOKEN"], mode_value)
         if mode_value == "one_step":

@@ -27,10 +27,73 @@ Private repository to design, execute, and validate end-to-end MySQL to MariaDB 
 ## Prerequisites (required)
 - Set `MARIADB_ES_TOKEN` in the environment to download MariaDB Enterprise RPMs.
 - Ensure network connectivity from the orchestrator host to both source MySQL and target MariaDB.
+- The orchestrator can run on a third host; SSH access to the target is required for install/validation.
 
 ## Status
 In progress
 
+## Migration playbooks
+### One-step (dump/restore)
+Best for smaller databases and standard maintenance windows.
+- Uses `mariadb-dump` (or `mysqldump`) on source and streams to target `mariadb`.
+- Supports single DB (`SRC_DB`) or multi-DB (`SRC_DBS="db1,db2"`).
+- Strips DEFINER clauses by default to avoid permission errors on target.
+
+### Two-step (schema + parallel data)
+Best for larger datasets or tighter windows.
+- Schema-only dump first, then SQLines Data for parallel load, then finalize objects.
+
+### Near zero-downtime (custom)
+Best for mission-critical workloads.
+- Replication + CDC (Debezium) until cutover.
+
+## Orchestrator usage
+Assessment (read-only):
+```bash
+python3 -m orchestrator.migrationctl assess --config config/source.yaml --out artifacts/assess
+```
+
+Plan:
+```bash
+python3 -m orchestrator.migrationctl plan --config config/migration.yaml --mode one_step --out artifacts/plan
+```
+
+Run:
+```bash
+python3 -m orchestrator.migrationctl run --config config/migration.yaml --mode one_step --out artifacts/run
+```
+
+Resume:
+```bash
+python3 -m orchestrator.migrationctl resume --config config/migration.yaml --mode one_step --out artifacts/run
+```
+
+## One-step required envs (config/migration.yaml)
+Source:
+- `SRC_HOST`, `SRC_PORT`, `SRC_USER`, `SRC_PASS`
+- `SRC_DB` or `SRC_DBS` (comma-separated)
+- `SRC_ADMIN_USER`, `SRC_ADMIN_PASS` (for creating migration user)
+- `SRC_ADMIN_LOCAL=1` to use local socket on source host (recommended)
+
+Target:
+- `TGT_HOST`, `TGT_PORT`, `TGT_USER`, `TGT_PASS`
+- `TGT_ADMIN_USER`, `TGT_ADMIN_PASS`
+- `TGT_ADMIN_LOCAL=1` to use socket on target host (recommended)
+- `TGT_SSH_HOST`, `TGT_SSH_USER`, `TGT_SSH_OPTS` (required when running from a third host)
+
+Install (target):
+- `MARIADB_ES_TOKEN` (exported env var; do not commit)
+- `MARIADB_ES_OS` (e.g., `rhel-10`), `MARIADB_ES_ARCH` (e.g., `aarch64`)
+- `MARIADB_INSTALL_HOST` (target IP) and SSH settings
+
+## Multi-DB example
+```yaml
+SRC_DBS: "sakila,world"
+```
+
+## Notes
+- Use a fresh `--out` directory per run to avoid step skips.
+- If you want a truly clean install on target, remove existing MySQL/MariaDB packages and data.
 ## Workflow (quick onboarding)
 1. Run precheck to assess source MySQL and gather blockers.
 2. Prepare MySQL and take backups (system + application schemas).
