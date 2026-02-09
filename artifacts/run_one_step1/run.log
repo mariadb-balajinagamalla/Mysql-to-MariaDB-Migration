@@ -21,3 +21,1024 @@
 2026-02-09T13:22:03.263522+00:00 OUT Running MariaDB install on remote host: 192.168.64.3
 2026-02-09T13:23:18.269854+00:00 OUT ssh: connect to host 192.168.64.3 port 22: Operation timed out
 2026-02-09T13:23:18.277446+00:00 FINISH success=False message=Run failed at step: install_mariadb
+2026-02-09T13:26:12.903990+00:00 START mode=run config=config/migration.yaml
+2026-02-09T13:26:12.909498+00:00 SKIP preflight_one_step (Preflight checks (one_step)) - already DONE
+2026-02-09T13:26:12.909634+00:00 RUN  install_mariadb (Install MariaDB (target host)) -> scripts/05_install_mariadb.sh
+2026-02-09T13:26:12.909746+00:00 CMD /Users/balajin/Documents/GitHub/Mysql-to-MariaDB-Migration/scripts/05_install_mariadb.sh
+2026-02-09T13:26:12.919951+00:00 OUT Running MariaDB install on remote host: 192.168.64.4
+2026-02-09T13:26:13.537478+00:00 OUT Downloading MariaDB Enterprise RPM tarball:
+2026-02-09T13:26:13.538216+00:00 OUT   https://dlm.mariadb.com/b5a27492-b13b-4515-8d32-671cf7617d89/mariadb-enterprise-server/11.8.5-2/pkgtar/mariadb-enterprise-11.8.5-2-rhel-10-aarch64-rpms.tar
+2026-02-09T13:26:13.540553+00:00 OUT   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+2026-02-09T13:26:13.540914+00:00 OUT                                  Dload  Upload   Total   Spent    Left  Speed
+2026-02-09T13:26:13.541239+00:00 OUT 
+2026-02-09T13:26:13.609642+00:00 OUT   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+2026-02-09T13:26:14.558911+00:00 OUT   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+2026-02-09T13:26:14.560171+00:00 OUT   0     0    0     0    0     0      0      0 --:--:--  0:00:01 --:--:--     0
+2026-02-09T13:26:14.582112+00:00 OUT 
+2026-02-09T13:26:15.607882+00:00 OUT   0     0    0     0    0     0      0      0 --:--:--  0:00:01 --:--:--     0
+2026-02-09T13:26:16.580979+00:00 OUT   0  157M    0 34067    0     0  16488      0  2:46:39  0:00:02  2:46:37 33236
+2026-02-09T13:26:17.623173+00:00 OUT   0  157M    0  590k    0     0   194k      0  0:13:48  0:00:03  0:13:45  295k
+2026-02-09T13:26:18.601092+00:00 OUT   7  157M    7 12.1M    0     0  3039k      0  0:00:52  0:00:04  0:00:48 4082k
+2026-02-09T13:26:19.580337+00:00 OUT  16  157M   16 25.8M    0     0  5238k      0  0:00:30  0:00:05  0:00:25 6597k
+2026-02-09T13:26:20.614767+00:00 OUT  26  157M   26 42.2M    0     0  7159k      0  0:00:22  0:00:06  0:00:16 8649k
+2026-02-09T13:26:21.580029+00:00 OUT  36  157M   36 58.0M    0     0  8401k      0  0:00:19  0:00:07  0:00:12 11.5M
+2026-02-09T13:26:22.632535+00:00 OUT  46  157M   46 72.4M    0     0  9230k      0  0:00:17  0:00:08  0:00:09 14.3M
+2026-02-09T13:26:23.625941+00:00 OUT  57  157M   57 90.6M    0     0   9.9M      0  0:00:15  0:00:09  0:00:06 15.6M
+2026-02-09T13:26:24.596158+00:00 OUT  69  157M   69  108M    0     0  10.7M      0  0:00:14  0:00:10  0:00:04 16.4M
+2026-02-09T13:26:25.583254+00:00 OUT  80  157M   80  127M    0     0  11.5M      0  0:00:13  0:00:11  0:00:02 16.9M
+2026-02-09T13:26:26.280267+00:00 OUT  93  157M   93  146M    0     0  12.1M      0  0:00:12  0:00:12 --:--:-- 17.8M
+2026-02-09T13:26:26.280888+00:00 OUT 100  157M  100  157M    0     0  12.3M      0  0:00:12  0:00:12 --:--:-- 18.0M
+2026-02-09T13:26:26.285580+00:00 OUT Extracting RPMs...
+2026-02-09T13:26:26.403809+00:00 OUT Installing RPM dependencies...
+2026-02-09T13:26:26.957289+00:00 OUT Last metadata expiration check: 2:21:09 ago on Monday 09 February 2026 04:35:18 PM.
+2026-02-09T13:26:26.983362+00:00 OUT Package perl-DBI-1.643-26.el10.aarch64 is already installed.
+2026-02-09T13:26:26.983895+00:00 OUT Package perl-Data-Dumper-2.189-512.el10.aarch64 is already installed.
+2026-02-09T13:26:26.984076+00:00 OUT Package perl-File-Copy-2.41-512.2.el10_0.noarch is already installed.
+2026-02-09T13:26:26.984450+00:00 OUT Package libaio-0.3.111-22.el10.aarch64 is already installed.
+2026-02-09T13:26:26.984684+00:00 OUT Package libsepol-3.9-1.el10.aarch64 is already installed.
+2026-02-09T13:26:26.985334+00:00 OUT Package lzo-2.10-14.el10.aarch64 is already installed.
+2026-02-09T13:26:26.985551+00:00 OUT Package snappy-1.1.10-7.el10.aarch64 is already installed.
+2026-02-09T13:26:27.003727+00:00 OUT Dependencies resolved.
+2026-02-09T13:26:27.007100+00:00 OUT ================================================================================
+2026-02-09T13:26:27.007392+00:00 OUT  Package                       Arch     Version                Repository  Size
+2026-02-09T13:26:27.007585+00:00 OUT ================================================================================
+2026-02-09T13:26:27.007780+00:00 OUT Installing:
+2026-02-09T13:26:27.007949+00:00 OUT  boost-program-options         aarch64  1.83.0-5.el10          appstream  101 k
+2026-02-09T13:26:27.008113+00:00 OUT  mysql-selinux                 noarch   1.0.14-1.el10_0        appstream   37 k
+2026-02-09T13:26:27.008289+00:00 OUT  perl                          aarch64  4:5.40.2-512.2.el10_0  appstream   13 k
+2026-02-09T13:26:27.008448+00:00 OUT  perl-Sys-Hostname             aarch64  1.25-512.2.el10_0      appstream   17 k
+2026-02-09T13:26:27.008605+00:00 OUT  unixODBC                      aarch64  2.3.12-6.el10          appstream  476 k
+2026-02-09T13:26:27.008753+00:00 OUT Installing dependencies:
+2026-02-09T13:26:27.008891+00:00 OUT  perl-Algorithm-Diff           noarch   1.2010-14.el10         appstream   46 k
+2026-02-09T13:26:27.008984+00:00 OUT  perl-Archive-Tar              noarch   3.02-512.el10          appstream   71 k
+2026-02-09T13:26:27.009079+00:00 OUT  perl-Archive-Zip              noarch   1.68-17.el10           appstream  114 k
+2026-02-09T13:26:27.009177+00:00 OUT  perl-Attribute-Handlers       noarch   1.03-512.2.el10_0      appstream   28 k
+2026-02-09T13:26:27.009272+00:00 OUT  perl-AutoSplit                noarch   5.74-512.2.el10_0      appstream   21 k
+2026-02-09T13:26:27.009370+00:00 OUT  perl-Benchmark                noarch   1.25-512.2.el10_0      appstream   27 k
+2026-02-09T13:26:27.009476+00:00 OUT  perl-CPAN                     noarch   2.36-514.el10_0        appstream  569 k
+2026-02-09T13:26:27.009690+00:00 OUT  perl-CPAN-Meta                noarch   2.150010-511.el10      appstream  197 k
+2026-02-09T13:26:27.009878+00:00 OUT  perl-CPAN-Meta-Requirements   noarch   2.143-11.el10          appstream   35 k
+2026-02-09T13:26:27.010076+00:00 OUT  perl-CPAN-Meta-YAML           noarch   0.018-512.el10         appstream   26 k
+2026-02-09T13:26:27.010178+00:00 OUT  perl-Compress-Bzip2           aarch64  2.28-21.el10           appstream   67 k
+2026-02-09T13:26:27.010278+00:00 OUT  perl-Compress-Raw-Lzma        aarch64  2.212-3.el10           appstream   51 k
+2026-02-09T13:26:27.010410+00:00 OUT  perl-Config-Extensions        noarch   0.03-512.2.el10_0      appstream   12 k
+2026-02-09T13:26:27.010579+00:00 OUT  perl-Config-Perl-V            noarch   0.36-512.el10          appstream   22 k
+2026-02-09T13:26:27.010699+00:00 OUT  perl-DBM_Filter               noarch   0.06-512.2.el10_0      appstream   27 k
+2026-02-09T13:26:27.010838+00:00 OUT  perl-Data-OptList             noarch   0.114-7.el10           appstream   27 k
+2026-02-09T13:26:27.010960+00:00 OUT  perl-Data-Section             noarch   0.200008-8.el10        appstream   25 k
+2026-02-09T13:26:27.011056+00:00 OUT  perl-Devel-PPPort             aarch64  3.72-512.el10          appstream  216 k
+2026-02-09T13:26:27.011136+00:00 OUT  perl-Devel-Peek               aarch64  1.34-512.2.el10_0      appstream   31 k
+2026-02-09T13:26:27.011248+00:00 OUT  perl-Devel-SelfStubber        noarch   1.06-512.2.el10_0      appstream   14 k
+2026-02-09T13:26:27.011335+00:00 OUT  perl-Devel-Size               aarch64  0.84-3.el10            appstream   31 k
+2026-02-09T13:26:27.011409+00:00 OUT  perl-DirHandle                noarch   1.05-512.2.el10_0      appstream   12 k
+2026-02-09T13:26:27.011505+00:00 OUT  perl-Dumpvalue                noarch   2.27-512.2.el10_0      appstream   18 k
+2026-02-09T13:26:27.011649+00:00 OUT  perl-Encode-devel             aarch64  4:3.21-511.el10        appstream   41 k
+2026-02-09T13:26:27.011753+00:00 OUT  perl-English                  noarch   1.11-512.2.el10_0      appstream   13 k
+2026-02-09T13:26:27.011828+00:00 OUT  perl-Env                      noarch   1.06-511.el10          appstream   20 k
+2026-02-09T13:26:27.011903+00:00 OUT  perl-ExtUtils-CBuilder        noarch   1:0.280240-511.el10    appstream   52 k
+2026-02-09T13:26:27.011977+00:00 OUT  perl-ExtUtils-Command         noarch   2:7.70-513.el10        appstream   14 k
+2026-02-09T13:26:27.012060+00:00 OUT  perl-ExtUtils-Constant        noarch   0.25-512.2.el10_0      appstream   43 k
+2026-02-09T13:26:27.012136+00:00 OUT  perl-ExtUtils-Embed           noarch   1.35-512.2.el10_0      appstream   17 k
+2026-02-09T13:26:27.012211+00:00 OUT  perl-ExtUtils-Install         noarch   2.22-511.el10          appstream   43 k
+2026-02-09T13:26:27.012299+00:00 OUT  perl-ExtUtils-MM-Utils        noarch   2:7.70-513.el10        appstream   12 k
+2026-02-09T13:26:27.012386+00:00 OUT  perl-ExtUtils-MakeMaker       noarch   2:7.70-513.el10        appstream  295 k
+2026-02-09T13:26:27.012463+00:00 OUT  perl-ExtUtils-Manifest        noarch   1:1.75-511.el10        appstream   34 k
+2026-02-09T13:26:27.012559+00:00 OUT  perl-ExtUtils-Miniperl        noarch   1.14-512.2.el10_0      appstream   15 k
+2026-02-09T13:26:27.012775+00:00 OUT  perl-ExtUtils-ParseXS         noarch   1:3.51-512.el10        appstream  189 k
+2026-02-09T13:26:27.012972+00:00 OUT  perl-File-DosGlob             aarch64  1.12-512.2.el10_0      appstream   19 k
+2026-02-09T13:26:27.013075+00:00 OUT  perl-File-Fetch               noarch   1.04-511.el10          appstream   30 k
+2026-02-09T13:26:27.013156+00:00 OUT  perl-File-HomeDir             noarch   1.006-15.el10          appstream   60 k
+2026-02-09T13:26:27.013233+00:00 OUT  perl-File-Which               noarch   1.27-14.el10           appstream   22 k
+2026-02-09T13:26:27.013312+00:00 OUT  perl-FileCache                noarch   1.10-512.2.el10_0      appstream   14 k
+2026-02-09T13:26:27.013427+00:00 OUT  perl-Filter                   aarch64  2:1.64-512.el10        appstream   89 k
+2026-02-09T13:26:27.013614+00:00 OUT  perl-Filter-Simple            noarch   0.96-511.el10          appstream   27 k
+2026-02-09T13:26:27.013727+00:00 OUT  perl-FindBin                  noarch   1.54-512.2.el10_0      appstream   14 k
+2026-02-09T13:26:27.013898+00:00 OUT  perl-GDBM_File                aarch64  1:1.24-512.2.el10_0    appstream   42 k
+2026-02-09T13:26:27.014007+00:00 OUT  perl-Hash-Util                aarch64  0.32-512.2.el10_0      appstream   34 k
+2026-02-09T13:26:27.014098+00:00 OUT  perl-Hash-Util-FieldHash      aarch64  1.27-512.2.el10_0      appstream   39 k
+2026-02-09T13:26:27.014185+00:00 OUT  perl-I18N-Collate             noarch   1.02-512.2.el10_0      appstream   14 k
+2026-02-09T13:26:27.014269+00:00 OUT  perl-I18N-LangTags            noarch   0.45-512.2.el10_0      appstream   52 k
+2026-02-09T13:26:27.014348+00:00 OUT  perl-IO-Compress-Lzma         noarch   2.206-7.el10           appstream   80 k
+2026-02-09T13:26:27.014427+00:00 OUT  perl-IO-Zlib                  noarch   1:1.15-511.el10        appstream   20 k
+2026-02-09T13:26:27.014504+00:00 OUT  perl-IPC-Cmd                  noarch   2:1.04-512.el10        appstream   40 k
+2026-02-09T13:26:27.014590+00:00 OUT  perl-IPC-SysV                 aarch64  2.09-512.el10          appstream   41 k
+2026-02-09T13:26:27.014671+00:00 OUT  perl-IPC-System-Simple        noarch   1.30-16.el10           appstream   39 k
+2026-02-09T13:26:27.014784+00:00 OUT  perl-JSON-PP                  noarch   1:4.16-512.el10        appstream   66 k
+2026-02-09T13:26:27.014904+00:00 OUT  perl-Locale-Maketext          noarch   1.33-512.el10          appstream   93 k
+2026-02-09T13:26:27.014966+00:00 OUT  perl-Locale-Maketext-Simple   noarch   1:0.21-512.2.el10_0    appstream   17 k
+2026-02-09T13:26:27.015023+00:00 OUT  perl-MIME-Charset             noarch   1.013.1-8.el10         appstream   48 k
+2026-02-09T13:26:27.015081+00:00 OUT  perl-MRO-Compat               noarch   0.15-12.el10           appstream   25 k
+2026-02-09T13:26:27.015133+00:00 OUT  perl-Math-BigInt-FastCalc     aarch64  0.501.800-511.el10     appstream   28 k
+2026-02-09T13:26:27.015178+00:00 OUT  perl-Memoize                  noarch   1.16-512.2.el10_0      appstream   46 k
+2026-02-09T13:26:27.015211+00:00 OUT  perl-Module-Build             noarch   2:0.42.34-7.el10       appstream  253 k
+2026-02-09T13:26:27.015241+00:00 OUT  perl-Module-CoreList          noarch   1:5.20250120-1.el10    appstream   91 k
+2026-02-09T13:26:27.015277+00:00 OUT  perl-Module-CoreList-tools    noarch   1:5.20250120-1.el10    appstream   18 k
+2026-02-09T13:26:27.015322+00:00 OUT  perl-Module-Load-Conditional  noarch   0.74-511.el10          appstream   22 k
+2026-02-09T13:26:27.015356+00:00 OUT  perl-Module-Loaded            noarch   1:0.08-512.2.el10_0    appstream   13 k
+2026-02-09T13:26:27.015390+00:00 OUT  perl-Module-Metadata          noarch   1.000038-512.el10      appstream   35 k
+2026-02-09T13:26:27.015431+00:00 OUT  perl-Module-Signature         noarch   0.88-12.el10           appstream   82 k
+2026-02-09T13:26:27.015464+00:00 OUT  perl-NEXT                     noarch   0.69-512.2.el10_0      appstream   21 k
+2026-02-09T13:26:27.015499+00:00 OUT  perl-Net                      noarch   1.04-512.2.el10_0      appstream   22 k
+2026-02-09T13:26:27.015534+00:00 OUT  perl-Net-Ping                 noarch   2.76-511.el10          appstream   50 k
+2026-02-09T13:26:27.015563+00:00 OUT  perl-ODBM_File                aarch64  1.18-512.2.el10_0      appstream   22 k
+2026-02-09T13:26:27.015604+00:00 OUT  perl-Opcode                   aarch64  1.65-512.2.el10_0      appstream   35 k
+2026-02-09T13:26:27.015634+00:00 OUT  perl-Package-Generator        noarch   1.106-34.el10          appstream   22 k
+2026-02-09T13:26:27.015663+00:00 OUT  perl-Params-Check             noarch   1:0.38-511.el10        appstream   22 k
+2026-02-09T13:26:27.015691+00:00 OUT  perl-Params-Util              aarch64  1.102-19.el10          appstream   32 k
+2026-02-09T13:26:27.015721+00:00 OUT  perl-Perl-OSType              noarch   1.010-512.el10         appstream   23 k
+2026-02-09T13:26:27.015767+00:00 OUT  perl-PerlIO-via-QuotedPrint   noarch   0.10-511.el10          appstream   22 k
+2026-02-09T13:26:27.015803+00:00 OUT  perl-Pod-Checker              noarch   4:1.77-511.el10        appstream   32 k
+2026-02-09T13:26:27.015860+00:00 OUT  perl-Pod-Functions            noarch   1.14-512.2.el10_0      appstream   14 k
+2026-02-09T13:26:27.015887+00:00 OUT  perl-Pod-Html                 noarch   1.35-512.2.el10_0      appstream   29 k
+2026-02-09T13:26:27.015907+00:00 OUT  perl-Safe                     noarch   2.46-512.2.el10_0      appstream   25 k
+2026-02-09T13:26:27.015934+00:00 OUT  perl-Search-Dict              noarch   1.07-512.2.el10_0      appstream   13 k
+2026-02-09T13:26:27.015954+00:00 OUT  perl-SelfLoader               noarch   1.27-512.2.el10_0      appstream   21 k
+2026-02-09T13:26:27.015982+00:00 OUT  perl-Software-License         noarch   0.104006-4.el10        appstream  154 k
+2026-02-09T13:26:27.016002+00:00 OUT  perl-Sub-Exporter             noarch   0.991-7.el10           appstream   80 k
+2026-02-09T13:26:27.016027+00:00 OUT  perl-Sub-Install              noarch   0.929-8.el10           appstream   23 k
+2026-02-09T13:26:27.016050+00:00 OUT  perl-Sys-Syslog               aarch64  0.36-512.el10          appstream   47 k
+2026-02-09T13:26:27.016084+00:00 OUT  perl-Term-Complete            noarch   1.403-512.2.el10_0     appstream   13 k
+2026-02-09T13:26:27.016113+00:00 OUT  perl-Term-ReadLine            noarch   1.17-512.2.el10_0      appstream   19 k
+2026-02-09T13:26:27.016139+00:00 OUT  perl-Term-Size-Perl           aarch64  0.031-22.el10          appstream   21 k
+2026-02-09T13:26:27.016159+00:00 OUT  perl-Term-Table               noarch   0.018-513.el10         appstream   47 k
+2026-02-09T13:26:27.016189+00:00 OUT  perl-Test                     noarch   1.31-512.2.el10_0      appstream   28 k
+2026-02-09T13:26:27.016222+00:00 OUT  perl-Test-Harness             noarch   1:3.48-512.el10        appstream  282 k
+2026-02-09T13:26:27.016242+00:00 OUT  perl-Test-Simple              noarch   3:1.302199-513.el10    appstream  602 k
+2026-02-09T13:26:27.016268+00:00 OUT  perl-Test2-Suite              noarch   0.000163-4.el10        appstream  484 k
+2026-02-09T13:26:27.016287+00:00 OUT  perl-Text-Abbrev              noarch   1.02-512.2.el10_0      appstream   12 k
+2026-02-09T13:26:27.016313+00:00 OUT  perl-Text-Balanced            noarch   2.06-511.el10          appstream   49 k
+2026-02-09T13:26:27.016332+00:00 OUT  perl-Text-Diff                noarch   1.45-24.el10           appstream   40 k
+2026-02-09T13:26:27.016359+00:00 OUT  perl-Text-Glob                noarch   0.11-26.el10           appstream   13 k
+2026-02-09T13:26:27.016378+00:00 OUT  perl-Text-Template            noarch   1.61-8.el10            appstream   59 k
+2026-02-09T13:26:27.016417+00:00 OUT  perl-Thread                   noarch   3.05-512.2.el10_0      appstream   18 k
+2026-02-09T13:26:27.016444+00:00 OUT  perl-Thread-Semaphore         noarch   2.13-512.2.el10_0      appstream   15 k
+2026-02-09T13:26:27.016482+00:00 OUT  perl-Tie                      noarch   4.6-512.2.el10_0       appstream   27 k
+2026-02-09T13:26:27.016511+00:00 OUT  perl-Tie-File                 noarch   1.09-512.2.el10_0      appstream   43 k
+2026-02-09T13:26:27.016537+00:00 OUT  perl-Tie-Memoize              noarch   1.1-512.2.el10_0       appstream   14 k
+2026-02-09T13:26:27.016557+00:00 OUT  perl-Tie-RefHash              noarch   1.40-511.el10          appstream   23 k
+2026-02-09T13:26:27.016589+00:00 OUT  perl-Time                     noarch   1.04-512.2.el10_0      appstream   16 k
+2026-02-09T13:26:27.016613+00:00 OUT  perl-Time-HiRes               aarch64  4:1.9777-511.el10      appstream   58 k
+2026-02-09T13:26:27.016638+00:00 OUT  perl-Time-Piece               aarch64  1.3401-512.2.el10_0    appstream   40 k
+2026-02-09T13:26:27.016657+00:00 OUT  perl-Unicode-Collate          aarch64  1.31-511.el10          appstream  670 k
+2026-02-09T13:26:27.016683+00:00 OUT  perl-Unicode-Normalize        aarch64  1.32-511.el10          appstream   72 k
+2026-02-09T13:26:27.016703+00:00 OUT  perl-Unicode-UCD              noarch   0.78-512.2.el10_0      appstream   78 k
+2026-02-09T13:26:27.016732+00:00 OUT  perl-User-pwent               noarch   1.05-512.2.el10_0      appstream   19 k
+2026-02-09T13:26:27.016780+00:00 OUT  perl-autodie                  noarch   2.37-512.el10          appstream   98 k
+2026-02-09T13:26:27.016812+00:00 OUT  perl-autouse                  noarch   1.11-512.2.el10_0      appstream   14 k
+2026-02-09T13:26:27.016834+00:00 OUT  perl-bignum                   noarch   0.67-512.el10          appstream   53 k
+2026-02-09T13:26:27.016862+00:00 OUT  perl-blib                     noarch   1.07-512.2.el10_0      appstream   12 k
+2026-02-09T13:26:27.016883+00:00 OUT  perl-debugger                 noarch   1.60-512.2.el10_0      appstream  133 k
+2026-02-09T13:26:27.016908+00:00 OUT  perl-deprecate                noarch   0.04-512.2.el10_0      appstream   14 k
+2026-02-09T13:26:27.016930+00:00 OUT  perl-devel                    aarch64  4:5.40.2-512.2.el10_0  appstream  770 k
+2026-02-09T13:26:27.016954+00:00 OUT  perl-diagnostics              noarch   1.40-512.2.el10_0      appstream  217 k
+2026-02-09T13:26:27.016976+00:00 OUT  perl-doc                      noarch   5.40.2-512.2.el10_0    appstream  4.9 M
+2026-02-09T13:26:27.017002+00:00 OUT  perl-encoding                 aarch64  4:3.00-511.el10        appstream   63 k
+2026-02-09T13:26:27.017024+00:00 OUT  perl-encoding-warnings        noarch   0.14-512.2.el10_0      appstream   16 k
+2026-02-09T13:26:27.017048+00:00 OUT  perl-experimental             noarch   0.032-511.el10         appstream   26 k
+2026-02-09T13:26:27.017069+00:00 OUT  perl-fields                   noarch   2.27-512.2.el10_0      appstream   16 k
+2026-02-09T13:26:27.017094+00:00 OUT  perl-filetest                 noarch   1.03-512.2.el10_0      appstream   14 k
+2026-02-09T13:26:27.017117+00:00 OUT  perl-inc-latest               noarch   2:0.500-30.el10        appstream   23 k
+2026-02-09T13:26:27.017141+00:00 OUT  perl-less                     noarch   0.03-512.2.el10_0      appstream   13 k
+2026-02-09T13:26:27.017162+00:00 OUT  perl-libnetcfg                noarch   4:5.40.2-512.2.el10_0  appstream   16 k
+2026-02-09T13:26:27.017187+00:00 OUT  perl-local-lib                noarch   2.000029-9.el10        appstream   66 k
+2026-02-09T13:26:27.017209+00:00 OUT  perl-meta-notation            noarch   5.40.2-512.2.el10_0    appstream   10 k
+2026-02-09T13:26:27.017233+00:00 OUT  perl-open                     noarch   1.13-512.2.el10_0      appstream   16 k
+2026-02-09T13:26:27.017254+00:00 OUT  perl-perlfaq                  noarch   5.20240218-511.el10    appstream  379 k
+2026-02-09T13:26:27.017278+00:00 OUT  perl-ph                       aarch64  5.40.2-512.2.el10_0    appstream   43 k
+2026-02-09T13:26:27.017300+00:00 OUT  perl-sigtrap                  noarch   1.10-512.2.el10_0      appstream   15 k
+2026-02-09T13:26:27.017324+00:00 OUT  perl-sort                     noarch   2.05-512.2.el10_0      appstream   13 k
+2026-02-09T13:26:27.017345+00:00 OUT  perl-utils                    noarch   5.40.2-512.2.el10_0    appstream   52 k
+2026-02-09T13:26:27.017372+00:00 OUT  perl-vmsish                   noarch   1.04-512.2.el10_0      appstream   14 k
+2026-02-09T13:26:27.017394+00:00 OUT  python3-pyparsing             noarch   3.1.1-7.el10           baseos     271 k
+2026-02-09T13:26:27.017418+00:00 OUT  sombok                        aarch64  2.4.0-23.el10          appstream   47 k
+2026-02-09T13:26:27.017440+00:00 OUT  systemtap-sdt-devel           aarch64  5.3-3b.el10            appstream   69 k
+2026-02-09T13:26:27.017464+00:00 OUT  systemtap-sdt-dtrace          aarch64  5.3-3b.el10            appstream   70 k
+2026-02-09T13:26:27.017486+00:00 OUT Installing weak dependencies:
+2026-02-09T13:26:27.017511+00:00 OUT  perl-CPAN-DistnameInfo        noarch   0.12-32.el10           appstream   14 k
+2026-02-09T13:26:27.017533+00:00 OUT  perl-Module-Pluggable         noarch   2:5.2-24.el10_0        epel        31 k
+2026-02-09T13:26:27.017557+00:00 OUT  perl-Term-Size-Any            noarch   0.002-45.el10          appstream   13 k
+2026-02-09T13:26:27.017578+00:00 OUT  perl-Unicode-LineBreak        aarch64  2019.001-24.el10       appstream  120 k
+2026-02-09T13:26:27.017605+00:00 OUT 
+2026-02-09T13:26:27.017641+00:00 OUT Transaction Summary
+2026-02-09T13:26:27.017670+00:00 OUT ================================================================================
+2026-02-09T13:26:27.017700+00:00 OUT Install  153 Packages
+2026-02-09T13:26:27.017728+00:00 OUT 
+2026-02-09T13:26:27.017766+00:00 OUT Total download size: 16 M
+2026-02-09T13:26:27.017793+00:00 OUT Installed size: 46 M
+2026-02-09T13:26:27.017820+00:00 OUT Downloading Packages:
+2026-02-09T13:26:29.377486+00:00 OUT (1/153): boost-program-options-1.83.0-5.el10.aa 239 kB/s | 101 kB     00:00    
+2026-02-09T13:26:29.427023+00:00 OUT (2/153): mysql-selinux-1.0.14-1.el10_0.noarch.r 752 kB/s |  37 kB     00:00    
+2026-02-09T13:26:29.478717+00:00 OUT (3/153): perl-5.40.2-512.2.el10_0.aarch64.rpm   259 kB/s |  13 kB     00:00    
+2026-02-09T13:26:29.539136+00:00 OUT (4/153): perl-Algorithm-Diff-1.2010-14.el10.noa 777 kB/s |  46 kB     00:00    
+2026-02-09T13:26:29.602290+00:00 OUT (5/153): perl-Archive-Tar-3.02-512.el10.noarch. 1.1 MB/s |  71 kB     00:00    
+2026-02-09T13:26:29.675686+00:00 OUT (6/153): perl-Archive-Zip-1.68-17.el10.noarch.r 1.5 MB/s | 114 kB     00:00    
+2026-02-09T13:26:29.730503+00:00 OUT (7/153): perl-Attribute-Handlers-1.03-512.2.el1 533 kB/s |  28 kB     00:00    
+2026-02-09T13:26:29.775089+00:00 OUT (8/153): perl-AutoSplit-5.74-512.2.el10_0.noarc 486 kB/s |  21 kB     00:00    
+2026-02-09T13:26:29.823519+00:00 OUT (9/153): perl-Benchmark-1.25-512.2.el10_0.noarc 559 kB/s |  27 kB     00:00    
+2026-02-09T13:26:29.929032+00:00 OUT (10/153): perl-CPAN-2.36-514.el10_0.noarch.rpm  5.3 MB/s | 569 kB     00:00    
+2026-02-09T13:26:29.978667+00:00 OUT (11/153): perl-CPAN-DistnameInfo-0.12-32.el10.n 292 kB/s |  14 kB     00:00    
+2026-02-09T13:26:30.069905+00:00 OUT (12/153): perl-CPAN-Meta-2.150010-511.el10.noar 2.1 MB/s | 197 kB     00:00    
+2026-02-09T13:26:30.128813+00:00 OUT (13/153): perl-CPAN-Meta-Requirements-2.143-11. 614 kB/s |  35 kB     00:00    
+2026-02-09T13:26:30.139075+00:00 OUT (14/153): perl-Module-Pluggable-5.2-24.el10_0.n  26 kB/s |  31 kB     00:01    
+2026-02-09T13:26:30.191390+00:00 OUT (15/153): perl-CPAN-Meta-YAML-0.018-512.el10.no 438 kB/s |  26 kB     00:00    
+2026-02-09T13:26:30.197573+00:00 OUT (16/153): perl-Compress-Bzip2-2.28-21.el10.aarc 1.1 MB/s |  67 kB     00:00    
+2026-02-09T13:26:30.242509+00:00 OUT (17/153): perl-Config-Extensions-0.03-512.2.el1 273 kB/s |  12 kB     00:00    
+2026-02-09T13:26:30.255476+00:00 OUT (18/153): perl-Compress-Raw-Lzma-2.212-3.el10.a 802 kB/s |  51 kB     00:00    
+2026-02-09T13:26:30.294128+00:00 OUT (19/153): perl-Config-Perl-V-0.36-512.el10.noar 437 kB/s |  22 kB     00:00    
+2026-02-09T13:26:30.299307+00:00 OUT (20/153): perl-DBM_Filter-0.06-512.2.el10_0.noa 617 kB/s |  27 kB     00:00    
+2026-02-09T13:26:30.350339+00:00 OUT (21/153): perl-Data-OptList-0.114-7.el10.noarch 499 kB/s |  27 kB     00:00    
+2026-02-09T13:26:30.358400+00:00 OUT (22/153): perl-Data-Section-0.200008-8.el10.noa 432 kB/s |  25 kB     00:00    
+2026-02-09T13:26:30.409084+00:00 OUT (23/153): perl-Devel-Peek-1.34-512.2.el10_0.aar 628 kB/s |  31 kB     00:00    
+2026-02-09T13:26:30.450378+00:00 OUT (24/153): perl-Devel-PPPort-3.72-512.el10.aarch 2.1 MB/s | 216 kB     00:00    
+2026-02-09T13:26:30.464904+00:00 OUT (25/153): perl-Devel-SelfStubber-1.06-512.2.el1 262 kB/s |  14 kB     00:00    
+2026-02-09T13:26:30.517041+00:00 OUT (26/153): perl-Devel-Size-0.84-3.el10.aarch64.r 468 kB/s |  31 kB     00:00    
+2026-02-09T13:26:30.524383+00:00 OUT (27/153): perl-DirHandle-1.05-512.2.el10_0.noar 212 kB/s |  12 kB     00:00    
+2026-02-09T13:26:30.562894+00:00 OUT (28/153): perl-Dumpvalue-2.27-512.2.el10_0.noar 412 kB/s |  18 kB     00:00    
+2026-02-09T13:26:30.575713+00:00 OUT (29/153): perl-Encode-devel-3.21-511.el10.aarch 799 kB/s |  41 kB     00:00    
+2026-02-09T13:26:30.622574+00:00 OUT (30/153): perl-English-1.11-512.2.el10_0.noarch 227 kB/s |  13 kB     00:00    
+2026-02-09T13:26:30.628897+00:00 OUT (31/153): perl-Env-1.06-511.el10.noarch.rpm     372 kB/s |  20 kB     00:00    
+2026-02-09T13:26:30.676220+00:00 OUT (32/153): perl-ExtUtils-CBuilder-0.280240-511.e 1.0 MB/s |  52 kB     00:00    
+2026-02-09T13:26:30.682788+00:00 OUT (33/153): perl-ExtUtils-Command-7.70-513.el10.n 263 kB/s |  14 kB     00:00    
+2026-02-09T13:26:30.725275+00:00 OUT (34/153): perl-ExtUtils-Constant-0.25-512.2.el1 907 kB/s |  43 kB     00:00    
+2026-02-09T13:26:30.731395+00:00 OUT (35/153): perl-ExtUtils-Embed-1.35-512.2.el10_0 367 kB/s |  17 kB     00:00    
+2026-02-09T13:26:30.778129+00:00 OUT (36/153): perl-ExtUtils-Install-2.22-511.el10.n 847 kB/s |  43 kB     00:00    
+2026-02-09T13:26:30.784972+00:00 OUT (37/153): perl-ExtUtils-MM-Utils-7.70-513.el10. 219 kB/s |  12 kB     00:00    
+2026-02-09T13:26:30.837897+00:00 OUT (38/153): perl-ExtUtils-Manifest-1.75-511.el10. 661 kB/s |  34 kB     00:00    
+2026-02-09T13:26:30.857378+00:00 OUT (39/153): perl-ExtUtils-MakeMaker-7.70-513.el10 3.8 MB/s | 295 kB     00:00    
+2026-02-09T13:26:30.897709+00:00 OUT (40/153): perl-ExtUtils-Miniperl-1.14-512.2.el1 252 kB/s |  15 kB     00:00    
+2026-02-09T13:26:30.931214+00:00 OUT (41/153): perl-ExtUtils-ParseXS-3.51-512.el10.n 2.5 MB/s | 189 kB     00:00    
+2026-02-09T13:26:30.943062+00:00 OUT (42/153): perl-File-DosGlob-1.12-512.2.el10_0.a 433 kB/s |  19 kB     00:00    
+2026-02-09T13:26:30.982669+00:00 OUT (43/153): perl-File-Fetch-1.04-511.el10.noarch. 592 kB/s |  30 kB     00:00    
+2026-02-09T13:26:30.994009+00:00 OUT (44/153): perl-File-HomeDir-1.006-15.el10.noarc 1.2 MB/s |  60 kB     00:00    
+2026-02-09T13:26:31.032511+00:00 OUT (45/153): python3-pyparsing-3.1.1-7.el10.noarch 130 kB/s | 271 kB     00:02    
+2026-02-09T13:26:31.040930+00:00 OUT (46/153): perl-File-Which-1.27-14.el10.noarch.r 375 kB/s |  22 kB     00:00    
+2026-02-09T13:26:31.043156+00:00 OUT (47/153): perl-FileCache-1.10-512.2.el10_0.noar 295 kB/s |  14 kB     00:00    
+2026-02-09T13:26:31.090574+00:00 OUT (48/153): perl-Filter-1.64-512.el10.aarch64.rpm 1.5 MB/s |  89 kB     00:00    
+2026-02-09T13:26:31.094861+00:00 OUT (49/153): perl-FindBin-1.54-512.2.el10_0.noarch 273 kB/s |  14 kB     00:00    
+2026-02-09T13:26:31.098416+00:00 OUT (50/153): perl-Filter-Simple-0.96-511.el10.noar 490 kB/s |  27 kB     00:00    
+2026-02-09T13:26:31.138585+00:00 OUT (51/153): perl-GDBM_File-1.24-512.2.el10_0.aarc 903 kB/s |  42 kB     00:00    
+2026-02-09T13:26:31.143191+00:00 OUT (52/153): perl-Hash-Util-FieldHash-1.27-512.2.e 867 kB/s |  39 kB     00:00    
+2026-02-09T13:26:31.187764+00:00 OUT (53/153): perl-Hash-Util-0.32-512.2.el10_0.aarc 374 kB/s |  34 kB     00:00    
+2026-02-09T13:26:31.192342+00:00 OUT (54/153): perl-I18N-Collate-1.02-512.2.el10_0.n 270 kB/s |  14 kB     00:00    
+2026-02-09T13:26:31.197840+00:00 OUT (55/153): perl-I18N-LangTags-0.45-512.2.el10_0. 972 kB/s |  52 kB     00:00    
+2026-02-09T13:26:31.241142+00:00 OUT (56/153): perl-IO-Zlib-1.15-511.el10.noarch.rpm 426 kB/s |  20 kB     00:00    
+2026-02-09T13:26:31.253859+00:00 OUT (57/153): perl-IPC-Cmd-1.04-512.el10.noarch.rpm 713 kB/s |  40 kB     00:00    
+2026-02-09T13:26:31.265220+00:00 OUT (58/153): perl-IO-Compress-Lzma-2.206-7.el10.no 1.1 MB/s |  80 kB     00:00    
+2026-02-09T13:26:31.309761+00:00 OUT (59/153): perl-IPC-System-Simple-1.30-16.el10.n 717 kB/s |  39 kB     00:00    
+2026-02-09T13:26:31.317841+00:00 OUT (60/153): perl-IPC-SysV-2.09-512.el10.aarch64.r 558 kB/s |  41 kB     00:00    
+2026-02-09T13:26:31.328564+00:00 OUT (61/153): perl-JSON-PP-4.16-512.el10.noarch.rpm 1.0 MB/s |  66 kB     00:00    
+2026-02-09T13:26:31.361150+00:00 OUT (62/153): perl-Locale-Maketext-Simple-0.21-512. 409 kB/s |  17 kB     00:00    
+2026-02-09T13:26:31.376609+00:00 OUT (63/153): perl-MIME-Charset-1.013.1-8.el10.noar 1.0 MB/s |  48 kB     00:00    
+2026-02-09T13:26:31.381891+00:00 OUT (64/153): perl-Locale-Maketext-1.33-512.el10.no 1.3 MB/s |  93 kB     00:00    
+2026-02-09T13:26:31.428320+00:00 OUT (65/153): perl-MRO-Compat-0.15-12.el10.noarch.r 384 kB/s |  25 kB     00:00    
+2026-02-09T13:26:31.433950+00:00 OUT (66/153): perl-Math-BigInt-FastCalc-0.501.800-5 500 kB/s |  28 kB     00:00    
+2026-02-09T13:26:31.437746+00:00 OUT (67/153): perl-Memoize-1.16-512.2.el10_0.noarch 827 kB/s |  46 kB     00:00    
+2026-02-09T13:26:31.490825+00:00 OUT (68/153): perl-Module-CoreList-tools-5.20250120 337 kB/s |  18 kB     00:00    
+2026-02-09T13:26:31.498734+00:00 OUT (69/153): perl-Module-Build-0.42.34-7.el10.noar 3.6 MB/s | 253 kB     00:00    
+2026-02-09T13:26:31.504139+00:00 OUT (70/153): perl-Module-CoreList-5.20250120-1.el1 1.3 MB/s |  91 kB     00:00    
+2026-02-09T13:26:31.541748+00:00 OUT (71/153): perl-Module-Load-Conditional-0.74-511 438 kB/s |  22 kB     00:00    
+2026-02-09T13:26:31.547827+00:00 OUT (72/153): perl-Module-Metadata-1.000038-512.el1 814 kB/s |  35 kB     00:00    
+2026-02-09T13:26:31.550245+00:00 OUT (73/153): perl-Module-Loaded-0.08-512.2.el10_0. 256 kB/s |  13 kB     00:00    
+2026-02-09T13:26:31.600851+00:00 OUT (74/153): perl-NEXT-0.69-512.2.el10_0.noarch.rp 396 kB/s |  21 kB     00:00    
+2026-02-09T13:26:31.604776+00:00 OUT (75/153): perl-Net-1.04-512.2.el10_0.noarch.rpm 412 kB/s |  22 kB     00:00    
+2026-02-09T13:26:31.609571+00:00 OUT (76/153): perl-Module-Signature-0.88-12.el10.no 1.2 MB/s |  82 kB     00:00    
+2026-02-09T13:26:31.648991+00:00 OUT (77/153): perl-Net-Ping-2.76-511.el10.noarch.rp 1.1 MB/s |  50 kB     00:00    
+2026-02-09T13:26:31.653432+00:00 OUT (78/153): perl-ODBM_File-1.18-512.2.el10_0.aarc 464 kB/s |  22 kB     00:00    
+2026-02-09T13:26:31.691106+00:00 OUT (79/153): perl-Opcode-1.65-512.2.el10_0.aarch64 435 kB/s |  35 kB     00:00    
+2026-02-09T13:26:31.695600+00:00 OUT (80/153): perl-Package-Generator-1.106-34.el10. 492 kB/s |  22 kB     00:00    
+2026-02-09T13:26:31.700940+00:00 OUT (81/153): perl-Params-Check-0.38-511.el10.noarc 474 kB/s |  22 kB     00:00    
+2026-02-09T13:26:31.739606+00:00 OUT (82/153): perl-Params-Util-1.102-19.el10.aarch6 691 kB/s |  32 kB     00:00    
+2026-02-09T13:26:31.746940+00:00 OUT (83/153): perl-Perl-OSType-1.010-512.el10.noarc 458 kB/s |  23 kB     00:00    
+2026-02-09T13:26:31.750829+00:00 OUT (84/153): perl-PerlIO-via-QuotedPrint-0.10-511. 437 kB/s |  22 kB     00:00    
+2026-02-09T13:26:31.790633+00:00 OUT (85/153): perl-Pod-Checker-1.77-511.el10.noarch 635 kB/s |  32 kB     00:00    
+2026-02-09T13:26:31.796203+00:00 OUT (86/153): perl-Pod-Html-1.35-512.2.el10_0.noarc 646 kB/s |  29 kB     00:00    
+2026-02-09T13:26:31.799929+00:00 OUT (87/153): perl-Pod-Functions-1.14-512.2.el10_0. 277 kB/s |  14 kB     00:00    
+2026-02-09T13:26:31.835590+00:00 OUT (88/153): perl-Safe-2.46-512.2.el10_0.noarch.rp 570 kB/s |  25 kB     00:00    
+2026-02-09T13:26:31.841061+00:00 OUT (89/153): perl-Search-Dict-1.07-512.2.el10_0.no 291 kB/s |  13 kB     00:00    
+2026-02-09T13:26:31.885274+00:00 OUT (90/153): perl-SelfLoader-1.27-512.2.el10_0.noa 253 kB/s |  21 kB     00:00    
+2026-02-09T13:26:31.903102+00:00 OUT (91/153): perl-Software-License-0.104006-4.el10 2.3 MB/s | 154 kB     00:00    
+2026-02-09T13:26:31.923147+00:00 OUT (92/153): perl-Sub-Exporter-0.991-7.el10.noarch 993 kB/s |  80 kB     00:00    
+2026-02-09T13:26:31.929858+00:00 OUT (93/153): perl-Sub-Install-0.929-8.el10.noarch. 523 kB/s |  23 kB     00:00    
+2026-02-09T13:26:31.944372+00:00 OUT (94/153): perl-Sys-Hostname-1.25-512.2.el10_0.a 428 kB/s |  17 kB     00:00    
+2026-02-09T13:26:31.975188+00:00 OUT (95/153): perl-Term-Complete-1.403-512.2.el10_0 285 kB/s |  13 kB     00:00    
+2026-02-09T13:26:31.983709+00:00 OUT (96/153): perl-Sys-Syslog-0.36-512.el10.aarch64 784 kB/s |  47 kB     00:00    
+2026-02-09T13:26:32.018810+00:00 OUT (97/153): perl-Term-ReadLine-1.17-512.2.el10_0. 253 kB/s |  19 kB     00:00    
+2026-02-09T13:26:32.024122+00:00 OUT (98/153): perl-Term-Size-Any-0.002-45.el10.noar 272 kB/s |  13 kB     00:00    
+2026-02-09T13:26:32.035701+00:00 OUT (99/153): perl-Term-Size-Perl-0.031-22.el10.aar 406 kB/s |  21 kB     00:00    
+2026-02-09T13:26:32.076574+00:00 OUT (100/153): perl-Test-1.31-512.2.el10_0.noarch.r 551 kB/s |  28 kB     00:00    
+2026-02-09T13:26:32.083026+00:00 OUT (101/153): perl-Term-Table-0.018-513.el10.noarc 750 kB/s |  47 kB     00:00    
+2026-02-09T13:26:32.115858+00:00 OUT (102/153): perl-Test-Harness-3.48-512.el10.noar 3.5 MB/s | 282 kB     00:00    
+2026-02-09T13:26:32.193806+00:00 OUT (103/153): perl-Test-Simple-1.302199-513.el10.n 5.1 MB/s | 602 kB     00:00    
+2026-02-09T13:26:32.223539+00:00 OUT (104/153): perl-Text-Abbrev-1.02-512.2.el10_0.n 111 kB/s |  12 kB     00:00    
+2026-02-09T13:26:32.229669+00:00 OUT (105/153): perl-Test2-Suite-0.000163-4.el10.noa 3.2 MB/s | 484 kB     00:00    
+2026-02-09T13:26:32.246738+00:00 OUT (106/153): perl-Text-Balanced-2.06-511.el10.noa 919 kB/s |  49 kB     00:00    
+2026-02-09T13:26:32.275389+00:00 OUT (107/153): perl-Text-Glob-0.11-26.el10.noarch.r 301 kB/s |  13 kB     00:00    
+2026-02-09T13:26:32.280166+00:00 OUT (108/153): perl-Text-Diff-1.45-24.el10.noarch.r 731 kB/s |  40 kB     00:00    
+2026-02-09T13:26:32.302298+00:00 OUT (109/153): perl-Text-Template-1.61-8.el10.noarc 1.0 MB/s |  59 kB     00:00    
+2026-02-09T13:26:32.329038+00:00 OUT (110/153): perl-Thread-Semaphore-2.13-512.2.el1 319 kB/s |  15 kB     00:00    
+2026-02-09T13:26:32.333217+00:00 OUT (111/153): perl-Thread-3.05-512.2.el10_0.noarch 312 kB/s |  18 kB     00:00    
+2026-02-09T13:26:32.349573+00:00 OUT (112/153): perl-Tie-4.6-512.2.el10_0.noarch.rpm 591 kB/s |  27 kB     00:00    
+2026-02-09T13:26:32.381492+00:00 OUT (113/153): perl-Tie-Memoize-1.1-512.2.el10_0.no 292 kB/s |  14 kB     00:00    
+2026-02-09T13:26:32.387011+00:00 OUT (114/153): perl-Tie-File-1.09-512.2.el10_0.noar 750 kB/s |  43 kB     00:00    
+2026-02-09T13:26:32.405487+00:00 OUT (115/153): perl-Tie-RefHash-1.40-511.el10.noarc 417 kB/s |  23 kB     00:00    
+2026-02-09T13:26:32.446088+00:00 OUT (116/153): perl-Time-HiRes-1.9777-511.el10.aarc 1.0 MB/s |  58 kB     00:00    
+2026-02-09T13:26:32.451854+00:00 OUT (117/153): perl-Time-1.04-512.2.el10_0.noarch.r 240 kB/s |  16 kB     00:00    
+2026-02-09T13:26:32.456470+00:00 OUT (118/153): perl-Time-Piece-1.3401-512.2.el10_0. 791 kB/s |  40 kB     00:00    
+2026-02-09T13:26:32.543679+00:00 OUT (119/153): perl-Unicode-Normalize-1.32-511.el10 843 kB/s |  72 kB     00:00    
+2026-02-09T13:26:32.552095+00:00 OUT (120/153): perl-Unicode-LineBreak-2019.001-24.e 1.2 MB/s | 120 kB     00:00    
+2026-02-09T13:26:32.565412+00:00 OUT (121/153): perl-Unicode-Collate-1.31-511.el10.a 5.5 MB/s | 670 kB     00:00    
+2026-02-09T13:26:32.613685+00:00 OUT (122/153): perl-User-pwent-1.05-512.2.el10_0.no 318 kB/s |  19 kB     00:00    
+2026-02-09T13:26:32.627298+00:00 OUT (123/153): perl-Unicode-UCD-0.78-512.2.el10_0.n 966 kB/s |  78 kB     00:00    
+2026-02-09T13:26:32.634735+00:00 OUT (124/153): perl-autodie-2.37-512.el10.noarch.rp 1.4 MB/s |  98 kB     00:00    
+2026-02-09T13:26:32.666435+00:00 OUT (125/153): perl-autouse-1.11-512.2.el10_0.noarc 265 kB/s |  14 kB     00:00    
+2026-02-09T13:26:32.697900+00:00 OUT (126/153): perl-blib-1.07-512.2.el10_0.noarch.r 194 kB/s |  12 kB     00:00    
+2026-02-09T13:26:32.731310+00:00 OUT (127/153): perl-bignum-0.67-512.el10.noarch.rpm 513 kB/s |  53 kB     00:00    
+2026-02-09T13:26:32.750742+00:00 OUT (128/153): perl-deprecate-0.04-512.2.el10_0.noa 277 kB/s |  14 kB     00:00    
+2026-02-09T13:26:32.755703+00:00 OUT (129/153): perl-debugger-1.60-512.2.el10_0.noar 1.5 MB/s | 133 kB     00:00    
+2026-02-09T13:26:32.916488+00:00 OUT (130/153): perl-devel-5.40.2-512.2.el10_0.aarch 4.1 MB/s | 770 kB     00:00    
+2026-02-09T13:26:32.948292+00:00 OUT (131/153): perl-diagnostics-1.40-512.2.el10_0.n 1.1 MB/s | 217 kB     00:00    
+2026-02-09T13:26:33.086838+00:00 OUT (132/153): perl-encoding-3.00-511.el10.aarch64. 374 kB/s |  63 kB     00:00    
+2026-02-09T13:26:33.136826+00:00 OUT (133/153): perl-encoding-warnings-0.14-512.2.el  87 kB/s |  16 kB     00:00    
+2026-02-09T13:26:33.196159+00:00 OUT (134/153): perl-experimental-0.032-511.el10.noa 245 kB/s |  26 kB     00:00    
+2026-02-09T13:26:33.210091+00:00 OUT (135/153): perl-doc-5.40.2-512.2.el10_0.noarch.  11 MB/s | 4.9 MB     00:00    
+2026-02-09T13:26:33.212566+00:00 OUT (136/153): perl-fields-2.27-512.2.el10_0.noarch 211 kB/s |  16 kB     00:00    
+2026-02-09T13:26:33.234996+00:00 OUT (137/153): perl-filetest-1.03-512.2.el10_0.noar 374 kB/s |  14 kB     00:00    
+2026-02-09T13:26:33.258233+00:00 OUT (138/153): perl-less-0.03-512.2.el10_0.noarch.r 283 kB/s |  13 kB     00:00    
+2026-02-09T13:26:33.260341+00:00 OUT (139/153): perl-inc-latest-0.500-30.el10.noarch 464 kB/s |  23 kB     00:00    
+2026-02-09T13:26:33.277719+00:00 OUT (140/153): perl-libnetcfg-5.40.2-512.2.el10_0.n 377 kB/s |  16 kB     00:00    
+2026-02-09T13:26:33.298380+00:00 OUT (141/153): perl-meta-notation-5.40.2-512.2.el10 278 kB/s |  10 kB     00:00    
+2026-02-09T13:26:33.321628+00:00 OUT (142/153): perl-local-lib-2.000029-9.el10.noarc 1.0 MB/s |  66 kB     00:00    
+2026-02-09T13:26:33.326153+00:00 OUT (143/153): perl-open-1.13-512.2.el10_0.noarch.r 338 kB/s |  16 kB     00:00    
+2026-02-09T13:26:33.374676+00:00 OUT (144/153): perl-ph-5.40.2-512.2.el10_0.aarch64. 829 kB/s |  43 kB     00:00    
+2026-02-09T13:26:33.379538+00:00 OUT (145/153): perl-sigtrap-1.10-512.2.el10_0.noarc 294 kB/s |  15 kB     00:00    
+2026-02-09T13:26:33.384455+00:00 OUT (146/153): perl-perlfaq-5.20240218-511.el10.noa 4.3 MB/s | 379 kB     00:00    
+2026-02-09T13:26:33.426386+00:00 OUT (147/153): perl-sort-2.05-512.2.el10_0.noarch.r 288 kB/s |  13 kB     00:00    
+2026-02-09T13:26:33.430657+00:00 OUT (148/153): perl-vmsish-1.04-512.2.el10_0.noarch 300 kB/s |  14 kB     00:00    
+2026-02-09T13:26:33.434065+00:00 OUT (149/153): perl-utils-5.40.2-512.2.el10_0.noarc 983 kB/s |  52 kB     00:00    
+2026-02-09T13:26:33.477210+00:00 OUT (150/153): sombok-2.4.0-23.el10.aarch64.rpm     959 kB/s |  47 kB     00:00    
+2026-02-09T13:26:33.496410+00:00 OUT (151/153): systemtap-sdt-devel-5.3-3b.el10.aarc 1.1 MB/s |  69 kB     00:00    
+2026-02-09T13:26:33.499173+00:00 OUT (152/153): systemtap-sdt-dtrace-5.3-3b.el10.aar 1.1 MB/s |  70 kB     00:00    
+2026-02-09T13:26:33.572933+00:00 OUT (153/153): unixODBC-2.3.12-6.el10.aarch64.rpm   5.1 MB/s | 476 kB     00:00    
+2026-02-09T13:26:33.575818+00:00 OUT --------------------------------------------------------------------------------
+2026-02-09T13:26:33.577187+00:00 OUT Total                                           2.4 MB/s |  16 MB     00:06     
+2026-02-09T13:26:33.595495+00:00 OUT Extra Packages for Enterprise Linux 10 - aarch6 1.6 MB/s | 1.6 kB     00:00    
+2026-02-09T13:26:33.597181+00:00 OUT Importing GPG key 0xE37ED158:
+2026-02-09T13:26:33.597586+00:00 OUT  Userid     : "Fedora (epel10) <epel@fedoraproject.org>"
+2026-02-09T13:26:33.597912+00:00 OUT  Fingerprint: 7D8D 15CB FC4E 6268 8591 FB26 33D9 8517 E37E D158
+2026-02-09T13:26:33.598204+00:00 OUT  From       : /etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-10
+2026-02-09T13:26:33.606697+00:00 OUT Key imported successfully
+2026-02-09T13:26:34.199464+00:00 OUT Running transaction check
+2026-02-09T13:26:34.363076+00:00 OUT Transaction check succeeded.
+2026-02-09T13:26:34.363571+00:00 OUT Running transaction test
+2026-02-09T13:26:34.764062+00:00 OUT Transaction test succeeded.
+2026-02-09T13:26:34.764543+00:00 OUT Running transaction
+2026-02-09T13:26:35.249257+00:00 OUT   Preparing        :                                                        1/1 
+2026-02-09T13:26:35.254363+00:00 OUT   Installing       : perl-Time-HiRes-4:1.9777-511.el10.aarch64            1/153 
+2026-02-09T13:26:35.257444+00:00 OUT   Installing       : perl-ExtUtils-Manifest-1:1.75-511.el10.noarch        2/153 
+2026-02-09T13:26:35.262549+00:00 OUT   Installing       : perl-JSON-PP-1:4.16-512.el10.noarch                  3/153 
+2026-02-09T13:26:35.266095+00:00 OUT   Installing       : perl-ExtUtils-ParseXS-1:3.51-512.el10.noarch         4/153 
+2026-02-09T13:26:35.268140+00:00 OUT   Installing       : perl-CPAN-Meta-Requirements-2.143-11.el10.noarch     5/153 
+2026-02-09T13:26:35.270769+00:00 OUT   Installing       : perl-meta-notation-5.40.2-512.2.el10_0.noarch        6/153 
+2026-02-09T13:26:35.273405+00:00 OUT   Installing       : perl-Unicode-Normalize-1.32-511.el10.aarch64         7/153 
+2026-02-09T13:26:35.274791+00:00 OUT   Installing       : perl-Tie-4.6-512.2.el10_0.noarch                     8/153 
+2026-02-09T13:26:35.276358+00:00 OUT   Installing       : perl-Term-ReadLine-1.17-512.2.el10_0.noarch          9/153 
+2026-02-09T13:26:35.278574+00:00 OUT   Installing       : perl-Perl-OSType-1.010-512.el10.noarch              10/153 
+2026-02-09T13:26:35.281317+00:00 OUT   Installing       : perl-Module-Metadata-1.000038-512.el10.noarch       11/153 
+2026-02-09T13:26:35.286565+00:00 OUT   Installing       : perl-Module-CoreList-1:5.20250120-1.el10.noarch     12/153 
+2026-02-09T13:26:35.291355+00:00 OUT   Installing       : perl-Filter-2:1.64-512.el10.aarch64                 13/153 
+2026-02-09T13:26:35.292861+00:00 OUT   Installing       : perl-Devel-Peek-1.34-512.2.el10_0.aarch64           14/153 
+2026-02-09T13:26:35.294584+00:00 OUT   Installing       : perl-Dumpvalue-2.27-512.2.el10_0.noarch             15/153 
+2026-02-09T13:26:35.296511+00:00 OUT   Installing       : perl-encoding-4:3.00-511.el10.aarch64               16/153 
+2026-02-09T13:26:35.298063+00:00 OUT   Installing       : perl-IO-Zlib-1:1.15-511.el10.noarch                 17/153 
+2026-02-09T13:26:35.332470+00:00 OUT   Installing       : perl-Net-Ping-2.76-511.el10.noarch                  18/153 
+2026-02-09T13:26:35.335848+00:00 OUT   Installing       : perl-doc-5.40.2-512.2.el10_0.noarch                 19/153 
+2026-02-09T13:26:35.337272+00:00 OUT   Installing       : perl-deprecate-0.04-512.2.el10_0.noarch             20/153 
+2026-02-09T13:26:35.338591+00:00 OUT   Installing       : perl-autouse-1.11-512.2.el10_0.noarch               21/153 
+2026-02-09T13:26:35.340193+00:00 OUT   Installing       : perl-User-pwent-1.05-512.2.el10_0.noarch            22/153 
+2026-02-09T13:26:35.342613+00:00 OUT   Installing       : perl-Tie-RefHash-1.40-511.el10.noarch               23/153 
+2026-02-09T13:26:35.344879+00:00 OUT   Installing       : perl-Text-Balanced-2.06-511.el10.noarch             24/153 
+2026-02-09T13:26:35.347203+00:00 OUT   Installing       : perl-Sys-Hostname-1.25-512.2.el10_0.aarch64         25/153 
+2026-02-09T13:26:35.348774+00:00 OUT   Installing       : perl-Sub-Install-0.929-8.el10.noarch                26/153 
+2026-02-09T13:26:35.350659+00:00 OUT   Installing       : perl-SelfLoader-1.27-512.2.el10_0.noarch            27/153 
+2026-02-09T13:26:35.353590+00:00 OUT   Installing       : perl-Pod-Html-1.35-512.2.el10_0.noarch              28/153 
+2026-02-09T13:26:35.356480+00:00 OUT   Installing       : perl-Params-Util-1.102-19.el10.aarch64              29/153 
+2026-02-09T13:26:35.357778+00:00 OUT   Installing       : perl-Opcode-1.65-512.2.el10_0.aarch64               30/153 
+2026-02-09T13:26:35.359758+00:00 OUT   Installing       : perl-Safe-2.46-512.2.el10_0.noarch                  31/153 
+2026-02-09T13:26:35.361779+00:00 OUT   Installing       : perl-I18N-LangTags-0.45-512.2.el10_0.noarch         32/153 
+2026-02-09T13:26:35.363864+00:00 OUT   Installing       : perl-Locale-Maketext-1.33-512.el10.noarch           33/153 
+2026-02-09T13:26:35.366444+00:00 OUT   Installing       : perl-Locale-Maketext-Simple-1:0.21-512.2.el10_0.    34/153 
+2026-02-09T13:26:35.398278+00:00 OUT   Installing       : perl-Params-Check-1:0.38-511.el10.noarch            35/153 
+2026-02-09T13:26:35.401631+00:00 OUT   Installing       : perl-Module-Load-Conditional-0.74-511.el10.noarc    36/153 
+2026-02-09T13:26:35.404502+00:00 OUT   Installing       : perl-Hash-Util-FieldHash-1.27-512.2.el10_0.aarch    37/153 
+2026-02-09T13:26:35.407369+00:00 OUT   Installing       : perl-Hash-Util-0.32-512.2.el10_0.aarch64            38/153 
+2026-02-09T13:26:35.408732+00:00 OUT   Installing       : perl-ExtUtils-MM-Utils-2:7.70-513.el10.noarch       39/153 
+2026-02-09T13:26:35.411564+00:00 OUT   Installing       : perl-IPC-Cmd-2:1.04-512.el10.noarch                 40/153 
+2026-02-09T13:26:35.413905+00:00 OUT   Installing       : perl-ExtUtils-Constant-0.25-512.2.el10_0.noarch     41/153 
+2026-02-09T13:26:35.415271+00:00 OUT   Installing       : perl-ExtUtils-Command-2:7.70-513.el10.noarch        42/153 
+2026-02-09T13:26:35.418872+00:00 OUT   Installing       : perl-DirHandle-1.05-512.2.el10_0.noarch             43/153 
+2026-02-09T13:26:35.421843+00:00 OUT   Installing       : perl-Devel-PPPort-3.72-512.el10.aarch64             44/153 
+2026-02-09T13:26:35.430507+00:00 OUT   Installing       : perl-CPAN-Meta-YAML-0.018-512.el10.noarch           45/153 
+2026-02-09T13:26:35.434801+00:00 OUT   Installing       : perl-CPAN-Meta-2.150010-511.el10.noarch             46/153 
+2026-02-09T13:26:35.443451+00:00 OUT   Installing       : perl-Benchmark-1.25-512.2.el10_0.noarch             47/153 
+2026-02-09T13:26:35.447662+00:00 OUT   Installing       : perl-Test-Harness-1:3.48-512.el10.noarch            48/153 
+2026-02-09T13:26:35.449662+00:00 OUT   Installing       : perl-AutoSplit-5.74-512.2.el10_0.noarch             49/153 
+2026-02-09T13:26:35.451197+00:00 OUT   Installing       : perl-File-Fetch-1.04-511.el10.noarch                50/153 
+2026-02-09T13:26:35.453496+00:00 OUT   Installing       : perl-fields-2.27-512.2.el10_0.noarch                51/153 
+2026-02-09T13:26:35.455136+00:00 OUT   Installing       : perl-Data-OptList-0.114-7.el10.noarch               52/153 
+2026-02-09T13:26:35.456880+00:00 OUT   Installing       : perl-Devel-SelfStubber-1.06-512.2.el10_0.noarch     53/153 
+2026-02-09T13:26:35.458899+00:00 OUT   Installing       : perl-Filter-Simple-0.96-511.el10.noarch             54/153 
+2026-02-09T13:26:35.460604+00:00 OUT   Installing       : perl-Module-Pluggable-2:5.2-24.el10_0.noarch        55/153 
+2026-02-09T13:26:35.462658+00:00 OUT   Installing       : perl-open-1.13-512.2.el10_0.noarch                  56/153 
+2026-02-09T13:26:35.464460+00:00 OUT   Installing       : perl-debugger-1.60-512.2.el10_0.noarch              57/153 
+2026-02-09T13:26:35.466029+00:00 OUT   Installing       : perl-Module-CoreList-tools-1:5.20250120-1.el10.n    58/153 
+2026-02-09T13:26:35.481413+00:00 OUT   Installing       : perl-Env-1.06-511.el10.noarch                       59/153 
+2026-02-09T13:26:35.487950+00:00 OUT   Installing       : perl-Unicode-Collate-1.31-511.el10.aarch64          60/153 
+2026-02-09T13:26:35.489119+00:00 OUT   Installing       : perl-Unicode-UCD-0.78-512.2.el10_0.noarch           61/153 
+2026-02-09T13:26:35.491470+00:00 OUT   Installing       : perl-sigtrap-1.10-512.2.el10_0.noarch               62/153 
+2026-02-09T13:26:35.493994+00:00 OUT   Installing       : sombok-2.4.0-23.el10.aarch64                        63/153 
+2026-02-09T13:26:35.495955+00:00 OUT   Installing       : perl-vmsish-1.04-512.2.el10_0.noarch                64/153 
+2026-02-09T13:26:35.497592+00:00 OUT   Installing       : perl-utils-5.40.2-512.2.el10_0.noarch               65/153 
+2026-02-09T13:26:35.500720+00:00 OUT   Installing       : perl-sort-2.05-512.2.el10_0.noarch                  66/153 
+2026-02-09T13:26:35.506062+00:00 OUT   Installing       : perl-ph-5.40.2-512.2.el10_0.aarch64                 67/153 
+2026-02-09T13:26:35.508754+00:00 OUT   Installing       : perl-perlfaq-5.20240218-511.el10.noarch             68/153 
+2026-02-09T13:26:35.510539+00:00 OUT   Installing       : perl-local-lib-2.000029-9.el10.noarch               69/153 
+2026-02-09T13:26:35.512109+00:00 OUT   Installing       : perl-less-0.03-512.2.el10_0.noarch                  70/153 
+2026-02-09T13:26:35.513941+00:00 OUT   Installing       : perl-filetest-1.03-512.2.el10_0.noarch              71/153 
+2026-02-09T13:26:35.515558+00:00 OUT   Installing       : perl-experimental-0.032-511.el10.noarch             72/153 
+2026-02-09T13:26:35.517991+00:00 OUT   Installing       : perl-encoding-warnings-0.14-512.2.el10_0.noarch     73/153 
+2026-02-09T13:26:35.519784+00:00 OUT   Installing       : perl-diagnostics-1.40-512.2.el10_0.noarch           74/153 
+2026-02-09T13:26:35.522142+00:00 OUT   Installing       : perl-blib-1.07-512.2.el10_0.noarch                  75/153 
+2026-02-09T13:26:35.525217+00:00 OUT   Installing       : perl-bignum-0.67-512.el10.noarch                    76/153 
+2026-02-09T13:26:35.527484+00:00 OUT   Installing       : perl-Time-Piece-1.3401-512.2.el10_0.aarch64         77/153 
+2026-02-09T13:26:35.529096+00:00 OUT   Installing       : perl-Time-1.04-512.2.el10_0.noarch                  78/153 
+2026-02-09T13:26:35.530404+00:00 OUT   Installing       : perl-Tie-Memoize-1.1-512.2.el10_0.noarch            79/153 
+2026-02-09T13:26:35.531687+00:00 OUT   Installing       : perl-Tie-File-1.09-512.2.el10_0.noarch              80/153 
+2026-02-09T13:26:35.533002+00:00 OUT   Installing       : perl-Thread-Semaphore-2.13-512.2.el10_0.noarch      81/153 
+2026-02-09T13:26:35.534852+00:00 OUT   Installing       : perl-Thread-3.05-512.2.el10_0.noarch                82/153 
+2026-02-09T13:26:35.536600+00:00 OUT   Installing       : perl-Text-Template-1.61-8.el10.noarch               83/153 
+2026-02-09T13:26:35.537962+00:00 OUT   Installing       : perl-Text-Glob-0.11-26.el10.noarch                  84/153 
+2026-02-09T13:26:35.539398+00:00 OUT   Installing       : perl-Text-Abbrev-1.02-512.2.el10_0.noarch           85/153 
+2026-02-09T13:26:35.541202+00:00 OUT   Installing       : perl-Test-1.31-512.2.el10_0.noarch                  86/153 
+2026-02-09T13:26:35.543582+00:00 OUT   Installing       : perl-Term-Size-Perl-0.031-22.el10.aarch64           87/153 
+2026-02-09T13:26:35.545085+00:00 OUT   Installing       : perl-Term-Size-Any-0.002-45.el10.noarch             88/153 
+2026-02-09T13:26:35.547260+00:00 OUT   Installing       : perl-Term-Complete-1.403-512.2.el10_0.noarch        89/153 
+2026-02-09T13:26:35.549226+00:00 OUT   Installing       : perl-Sys-Syslog-0.36-512.el10.aarch64               90/153 
+2026-02-09T13:26:35.550290+00:00 OUT   Installing       : perl-Search-Dict-1.07-512.2.el10_0.noarch           91/153 
+2026-02-09T13:26:35.552152+00:00 OUT   Installing       : perl-Pod-Functions-1.14-512.2.el10_0.noarch         92/153 
+2026-02-09T13:26:35.554427+00:00 OUT   Installing       : perl-Pod-Checker-4:1.77-511.el10.noarch             93/153 
+2026-02-09T13:26:35.556405+00:00 OUT   Installing       : perl-PerlIO-via-QuotedPrint-0.10-511.el10.noarch    94/153 
+2026-02-09T13:26:35.560419+00:00 OUT   Installing       : perl-Package-Generator-1.106-34.el10.noarch         95/153 
+2026-02-09T13:26:35.564436+00:00 OUT   Installing       : perl-Sub-Exporter-0.991-7.el10.noarch               96/153 
+2026-02-09T13:26:35.566232+00:00 OUT   Installing       : perl-ODBM_File-1.18-512.2.el10_0.aarch64            97/153 
+2026-02-09T13:26:35.567910+00:00 OUT   Installing       : perl-Net-1.04-512.2.el10_0.noarch                   98/153 
+2026-02-09T13:26:35.569352+00:00 OUT   Installing       : perl-NEXT-0.69-512.2.el10_0.noarch                  99/153 
+2026-02-09T13:26:35.571356+00:00 OUT   Installing       : perl-Module-Loaded-1:0.08-512.2.el10_0.noarch      100/153 
+2026-02-09T13:26:35.574344+00:00 OUT   Installing       : perl-Memoize-1.16-512.2.el10_0.noarch              101/153 
+2026-02-09T13:26:35.578039+00:00 OUT   Installing       : perl-Math-BigInt-FastCalc-0.501.800-511.el10.aar   102/153 
+2026-02-09T13:26:35.580081+00:00 OUT   Installing       : perl-MRO-Compat-0.15-12.el10.noarch                103/153 
+2026-02-09T13:26:35.585834+00:00 OUT   Installing       : perl-Data-Section-0.200008-8.el10.noarch           104/153 
+2026-02-09T13:26:35.590514+00:00 OUT   Installing       : perl-Software-License-0.104006-4.el10.noarch       105/153 
+2026-02-09T13:26:35.594578+00:00 OUT   Installing       : perl-MIME-Charset-1.013.1-8.el10.noarch            106/153 
+2026-02-09T13:26:35.598637+00:00 OUT   Installing       : perl-Unicode-LineBreak-2019.001-24.el10.aarch64    107/153 
+2026-02-09T13:26:35.622633+00:00 OUT   Installing       : perl-Term-Table-0.018-513.el10.noarch              108/153 
+2026-02-09T13:26:35.647275+00:00 OUT   Installing       : perl-Test-Simple-3:1.302199-513.el10.noarch        109/153 
+2026-02-09T13:26:35.651288+00:00 OUT   Installing       : perl-Test2-Suite-0.000163-4.el10.noarch            110/153 
+2026-02-09T13:26:35.655039+00:00 OUT   Installing       : perl-IPC-System-Simple-1.30-16.el10.noarch         111/153 
+2026-02-09T13:26:35.658118+00:00 OUT   Installing       : perl-autodie-2.37-512.el10.noarch                  112/153 
+2026-02-09T13:26:35.661090+00:00 OUT   Installing       : perl-IPC-SysV-2.09-512.el10.aarch64                113/153 
+2026-02-09T13:26:35.662697+00:00 OUT   Installing       : perl-I18N-Collate-1.02-512.2.el10_0.noarch         114/153 
+2026-02-09T13:26:35.664774+00:00 OUT   Installing       : perl-GDBM_File-1:1.24-512.2.el10_0.aarch64         115/153 
+2026-02-09T13:26:35.666110+00:00 OUT   Installing       : perl-FindBin-1.54-512.2.el10_0.noarch              116/153 
+2026-02-09T13:26:35.668508+00:00 OUT   Installing       : perl-FileCache-1.10-512.2.el10_0.noarch            117/153 
+2026-02-09T13:26:35.670784+00:00 OUT   Installing       : perl-File-Which-1.27-14.el10.noarch                118/153 
+2026-02-09T13:26:35.673570+00:00 OUT   Installing       : perl-File-HomeDir-1.006-15.el10.noarch             119/153 
+2026-02-09T13:26:35.676159+00:00 OUT   Installing       : perl-File-DosGlob-1.12-512.2.el10_0.aarch64        120/153 
+2026-02-09T13:26:35.678041+00:00 OUT   Installing       : perl-English-1.11-512.2.el10_0.noarch              121/153 
+2026-02-09T13:26:35.680429+00:00 OUT   Installing       : perl-Devel-Size-0.84-3.el10.aarch64                122/153 
+2026-02-09T13:26:35.683741+00:00 OUT   Installing       : perl-DBM_Filter-0.06-512.2.el10_0.noarch           123/153 
+2026-02-09T13:26:35.685087+00:00 OUT   Installing       : perl-Config-Perl-V-0.36-512.el10.noarch            124/153 
+2026-02-09T13:26:35.687402+00:00 OUT   Installing       : perl-Config-Extensions-0.03-512.2.el10_0.noarch    125/153 
+2026-02-09T13:26:35.691769+00:00 OUT   Installing       : perl-Compress-Raw-Lzma-2.212-3.el10.aarch64        126/153 
+2026-02-09T13:26:35.695086+00:00 OUT   Installing       : perl-IO-Compress-Lzma-2.206-7.el10.noarch          127/153 
+2026-02-09T13:26:35.697518+00:00 OUT   Installing       : perl-Compress-Bzip2-2.28-21.el10.aarch64           128/153 
+2026-02-09T13:26:35.699277+00:00 OUT   Installing       : perl-CPAN-DistnameInfo-0.12-32.el10.noarch         129/153 
+2026-02-09T13:26:35.702762+00:00 OUT   Installing       : perl-Attribute-Handlers-1.03-512.2.el10_0.noarch   130/153 
+2026-02-09T13:26:35.707328+00:00 OUT   Installing       : perl-Archive-Zip-1.68-17.el10.noarch               131/153 
+2026-02-09T13:26:35.709777+00:00 OUT   Installing       : perl-Algorithm-Diff-1.2010-14.el10.noarch          132/153 
+2026-02-09T13:26:35.712373+00:00 OUT   Installing       : perl-Text-Diff-1.45-24.el10.noarch                 133/153 
+2026-02-09T13:26:35.715569+00:00 OUT   Installing       : perl-Archive-Tar-3.02-512.el10.noarch              134/153 
+2026-02-09T13:26:35.720214+00:00 OUT   Installing       : perl-Module-Signature-0.88-12.el10.noarch          135/153 
+2026-02-09T13:26:35.725357+00:00 OUT   Installing       : python3-pyparsing-3.1.1-7.el10.noarch              136/153 
+2026-02-09T13:26:35.728854+00:00 OUT   Installing       : systemtap-sdt-dtrace-5.3-3b.el10.aarch64           137/153 
+2026-02-09T13:26:35.731517+00:00 OUT   Installing       : systemtap-sdt-devel-5.3-3b.el10.aarch64            138/153 
+2026-02-09T13:26:35.745233+00:00 OUT   Installing       : perl-ExtUtils-Install-2.22-511.el10.noarch         139/153 
+2026-02-09T13:26:35.754388+00:00 OUT   Installing       : perl-devel-4:5.40.2-512.2.el10_0.aarch64           140/153 
+2026-02-09T13:26:35.758951+00:00 OUT   Installing       : perl-ExtUtils-MakeMaker-2:7.70-513.el10.noarch     141/153 
+2026-02-09T13:26:35.762161+00:00 OUT   Installing       : perl-ExtUtils-CBuilder-1:0.280240-511.el10.noarc   142/153 
+2026-02-09T13:26:35.763627+00:00 OUT   Installing       : perl-ExtUtils-Embed-1.35-512.2.el10_0.noarch       143/153 
+2026-02-09T13:26:35.765410+00:00 OUT   Installing       : perl-ExtUtils-Miniperl-1.14-512.2.el10_0.noarch    144/153 
+2026-02-09T13:26:35.767134+00:00 OUT   Installing       : perl-libnetcfg-4:5.40.2-512.2.el10_0.noarch        145/153 
+2026-02-09T13:26:35.769410+00:00 OUT   Installing       : perl-Encode-devel-4:3.21-511.el10.aarch64          146/153 
+2026-02-09T13:26:35.775726+00:00 OUT   Installing       : perl-inc-latest-2:0.500-30.el10.noarch             147/153 
+2026-02-09T13:26:35.785140+00:00 OUT   Installing       : perl-Module-Build-2:0.42.34-7.el10.noarch          148/153 
+2026-02-09T13:26:35.789487+00:00 OUT   Installing       : perl-CPAN-2.36-514.el10_0.noarch                   149/153 
+2026-02-09T13:26:35.800609+00:00 OUT   Installing       : perl-4:5.40.2-512.2.el10_0.aarch64                 150/153 
+2026-02-09T13:26:35.806812+00:00 OUT   Installing       : unixODBC-2.3.12-6.el10.aarch64                     151/153 
+2026-02-09T13:26:35.817317+00:00 OUT   Running scriptlet: mysql-selinux-1.0.14-1.el10_0.noarch               152/153 
+2026-02-09T13:26:35.818813+00:00 OUT   Installing       : mysql-selinux-1.0.14-1.el10_0.noarch               152/153 
+2026-02-09T13:26:43.961648+00:00 OUT   Running scriptlet: mysql-selinux-1.0.14-1.el10_0.noarch               152/153 
+2026-02-09T13:26:43.963110+00:00 OUT libsemanage.semanage_direct_install_info: Overriding mysql module at lower priority 100 with module at priority 200.
+2026-02-09T13:26:43.963426+00:00 OUT 
+2026-02-09T13:26:43.970958+00:00 OUT   Installing       : boost-program-options-1.83.0-5.el10.aarch64        153/153 
+2026-02-09T13:26:44.186456+00:00 OUT   Running scriptlet: mysql-selinux-1.0.14-1.el10_0.noarch               153/153 
+2026-02-09T13:26:44.731324+00:00 OUT   Running scriptlet: boost-program-options-1.83.0-5.el10.aarch64        153/153 
+2026-02-09T13:26:44.732986+00:00 OUT 
+2026-02-09T13:26:44.733336+00:00 OUT Installed:
+2026-02-09T13:26:44.733647+00:00 OUT   boost-program-options-1.83.0-5.el10.aarch64                                   
+2026-02-09T13:26:44.733926+00:00 OUT   mysql-selinux-1.0.14-1.el10_0.noarch                                          
+2026-02-09T13:26:44.734153+00:00 OUT   perl-4:5.40.2-512.2.el10_0.aarch64                                            
+2026-02-09T13:26:44.734309+00:00 OUT   perl-Algorithm-Diff-1.2010-14.el10.noarch                                     
+2026-02-09T13:26:44.734451+00:00 OUT   perl-Archive-Tar-3.02-512.el10.noarch                                         
+2026-02-09T13:26:44.734594+00:00 OUT   perl-Archive-Zip-1.68-17.el10.noarch                                          
+2026-02-09T13:26:44.734740+00:00 OUT   perl-Attribute-Handlers-1.03-512.2.el10_0.noarch                              
+2026-02-09T13:26:44.734878+00:00 OUT   perl-AutoSplit-5.74-512.2.el10_0.noarch                                       
+2026-02-09T13:26:44.735014+00:00 OUT   perl-Benchmark-1.25-512.2.el10_0.noarch                                       
+2026-02-09T13:26:44.735153+00:00 OUT   perl-CPAN-2.36-514.el10_0.noarch                                              
+2026-02-09T13:26:44.735290+00:00 OUT   perl-CPAN-DistnameInfo-0.12-32.el10.noarch                                    
+2026-02-09T13:26:44.735435+00:00 OUT   perl-CPAN-Meta-2.150010-511.el10.noarch                                       
+2026-02-09T13:26:44.735571+00:00 OUT   perl-CPAN-Meta-Requirements-2.143-11.el10.noarch                              
+2026-02-09T13:26:44.735706+00:00 OUT   perl-CPAN-Meta-YAML-0.018-512.el10.noarch                                     
+2026-02-09T13:26:44.735844+00:00 OUT   perl-Compress-Bzip2-2.28-21.el10.aarch64                                      
+2026-02-09T13:26:44.735988+00:00 OUT   perl-Compress-Raw-Lzma-2.212-3.el10.aarch64                                   
+2026-02-09T13:26:44.736117+00:00 OUT   perl-Config-Extensions-0.03-512.2.el10_0.noarch                               
+2026-02-09T13:26:44.736224+00:00 OUT   perl-Config-Perl-V-0.36-512.el10.noarch                                       
+2026-02-09T13:26:44.736331+00:00 OUT   perl-DBM_Filter-0.06-512.2.el10_0.noarch                                      
+2026-02-09T13:26:44.736438+00:00 OUT   perl-Data-OptList-0.114-7.el10.noarch                                         
+2026-02-09T13:26:44.736545+00:00 OUT   perl-Data-Section-0.200008-8.el10.noarch                                      
+2026-02-09T13:26:44.736657+00:00 OUT   perl-Devel-PPPort-3.72-512.el10.aarch64                                       
+2026-02-09T13:26:44.736774+00:00 OUT   perl-Devel-Peek-1.34-512.2.el10_0.aarch64                                     
+2026-02-09T13:26:44.736932+00:00 OUT   perl-Devel-SelfStubber-1.06-512.2.el10_0.noarch                               
+2026-02-09T13:26:44.736992+00:00 OUT   perl-Devel-Size-0.84-3.el10.aarch64                                           
+2026-02-09T13:26:44.737054+00:00 OUT   perl-DirHandle-1.05-512.2.el10_0.noarch                                       
+2026-02-09T13:26:44.737113+00:00 OUT   perl-Dumpvalue-2.27-512.2.el10_0.noarch                                       
+2026-02-09T13:26:44.737171+00:00 OUT   perl-Encode-devel-4:3.21-511.el10.aarch64                                     
+2026-02-09T13:26:44.737232+00:00 OUT   perl-English-1.11-512.2.el10_0.noarch                                         
+2026-02-09T13:26:44.737291+00:00 OUT   perl-Env-1.06-511.el10.noarch                                                 
+2026-02-09T13:26:44.737349+00:00 OUT   perl-ExtUtils-CBuilder-1:0.280240-511.el10.noarch                             
+2026-02-09T13:26:44.737418+00:00 OUT   perl-ExtUtils-Command-2:7.70-513.el10.noarch                                  
+2026-02-09T13:26:44.737480+00:00 OUT   perl-ExtUtils-Constant-0.25-512.2.el10_0.noarch                               
+2026-02-09T13:26:44.737537+00:00 OUT   perl-ExtUtils-Embed-1.35-512.2.el10_0.noarch                                  
+2026-02-09T13:26:44.737595+00:00 OUT   perl-ExtUtils-Install-2.22-511.el10.noarch                                    
+2026-02-09T13:26:44.737654+00:00 OUT   perl-ExtUtils-MM-Utils-2:7.70-513.el10.noarch                                 
+2026-02-09T13:26:44.737713+00:00 OUT   perl-ExtUtils-MakeMaker-2:7.70-513.el10.noarch                                
+2026-02-09T13:26:44.737771+00:00 OUT   perl-ExtUtils-Manifest-1:1.75-511.el10.noarch                                 
+2026-02-09T13:26:44.737833+00:00 OUT   perl-ExtUtils-Miniperl-1.14-512.2.el10_0.noarch                               
+2026-02-09T13:26:44.737890+00:00 OUT   perl-ExtUtils-ParseXS-1:3.51-512.el10.noarch                                  
+2026-02-09T13:26:44.737948+00:00 OUT   perl-File-DosGlob-1.12-512.2.el10_0.aarch64                                   
+2026-02-09T13:26:44.738006+00:00 OUT   perl-File-Fetch-1.04-511.el10.noarch                                          
+2026-02-09T13:26:44.738063+00:00 OUT   perl-File-HomeDir-1.006-15.el10.noarch                                        
+2026-02-09T13:26:44.738113+00:00 OUT   perl-File-Which-1.27-14.el10.noarch                                           
+2026-02-09T13:26:44.738173+00:00 OUT   perl-FileCache-1.10-512.2.el10_0.noarch                                       
+2026-02-09T13:26:44.738224+00:00 OUT   perl-Filter-2:1.64-512.el10.aarch64                                           
+2026-02-09T13:26:44.738283+00:00 OUT   perl-Filter-Simple-0.96-511.el10.noarch                                       
+2026-02-09T13:26:44.738338+00:00 OUT   perl-FindBin-1.54-512.2.el10_0.noarch                                         
+2026-02-09T13:26:44.738388+00:00 OUT   perl-GDBM_File-1:1.24-512.2.el10_0.aarch64                                    
+2026-02-09T13:26:44.738453+00:00 OUT   perl-Hash-Util-0.32-512.2.el10_0.aarch64                                      
+2026-02-09T13:26:44.738504+00:00 OUT   perl-Hash-Util-FieldHash-1.27-512.2.el10_0.aarch64                            
+2026-02-09T13:26:44.738558+00:00 OUT   perl-I18N-Collate-1.02-512.2.el10_0.noarch                                    
+2026-02-09T13:26:44.738650+00:00 OUT   perl-I18N-LangTags-0.45-512.2.el10_0.noarch                                   
+2026-02-09T13:26:44.738748+00:00 OUT   perl-IO-Compress-Lzma-2.206-7.el10.noarch                                     
+2026-02-09T13:26:44.738812+00:00 OUT   perl-IO-Zlib-1:1.15-511.el10.noarch                                           
+2026-02-09T13:26:44.738869+00:00 OUT   perl-IPC-Cmd-2:1.04-512.el10.noarch                                           
+2026-02-09T13:26:44.738923+00:00 OUT   perl-IPC-SysV-2.09-512.el10.aarch64                                           
+2026-02-09T13:26:44.739027+00:00 OUT   perl-IPC-System-Simple-1.30-16.el10.noarch                                    
+2026-02-09T13:26:44.739101+00:00 OUT   perl-JSON-PP-1:4.16-512.el10.noarch                                           
+2026-02-09T13:26:44.739164+00:00 OUT   perl-Locale-Maketext-1.33-512.el10.noarch                                     
+2026-02-09T13:26:44.739225+00:00 OUT   perl-Locale-Maketext-Simple-1:0.21-512.2.el10_0.noarch                        
+2026-02-09T13:26:44.739286+00:00 OUT   perl-MIME-Charset-1.013.1-8.el10.noarch                                       
+2026-02-09T13:26:44.739359+00:00 OUT   perl-MRO-Compat-0.15-12.el10.noarch                                           
+2026-02-09T13:26:44.739444+00:00 OUT   perl-Math-BigInt-FastCalc-0.501.800-511.el10.aarch64                          
+2026-02-09T13:26:44.739526+00:00 OUT   perl-Memoize-1.16-512.2.el10_0.noarch                                         
+2026-02-09T13:26:44.739596+00:00 OUT   perl-Module-Build-2:0.42.34-7.el10.noarch                                     
+2026-02-09T13:26:44.739658+00:00 OUT   perl-Module-CoreList-1:5.20250120-1.el10.noarch                               
+2026-02-09T13:26:44.739718+00:00 OUT   perl-Module-CoreList-tools-1:5.20250120-1.el10.noarch                         
+2026-02-09T13:26:44.739787+00:00 OUT   perl-Module-Load-Conditional-0.74-511.el10.noarch                             
+2026-02-09T13:26:44.739846+00:00 OUT   perl-Module-Loaded-1:0.08-512.2.el10_0.noarch                                 
+2026-02-09T13:26:44.739915+00:00 OUT   perl-Module-Metadata-1.000038-512.el10.noarch                                 
+2026-02-09T13:26:44.739975+00:00 OUT   perl-Module-Pluggable-2:5.2-24.el10_0.noarch                                  
+2026-02-09T13:26:44.740076+00:00 OUT   perl-Module-Signature-0.88-12.el10.noarch                                     
+2026-02-09T13:26:44.740154+00:00 OUT   perl-NEXT-0.69-512.2.el10_0.noarch                                            
+2026-02-09T13:26:44.740190+00:00 OUT   perl-Net-1.04-512.2.el10_0.noarch                                             
+2026-02-09T13:26:44.740221+00:00 OUT   perl-Net-Ping-2.76-511.el10.noarch                                            
+2026-02-09T13:26:44.740249+00:00 OUT   perl-ODBM_File-1.18-512.2.el10_0.aarch64                                      
+2026-02-09T13:26:44.740278+00:00 OUT   perl-Opcode-1.65-512.2.el10_0.aarch64                                         
+2026-02-09T13:26:44.740359+00:00 OUT   perl-Package-Generator-1.106-34.el10.noarch                                   
+2026-02-09T13:26:44.740402+00:00 OUT   perl-Params-Check-1:0.38-511.el10.noarch                                      
+2026-02-09T13:26:44.740436+00:00 OUT   perl-Params-Util-1.102-19.el10.aarch64                                        
+2026-02-09T13:26:44.740467+00:00 OUT   perl-Perl-OSType-1.010-512.el10.noarch                                        
+2026-02-09T13:26:44.740496+00:00 OUT   perl-PerlIO-via-QuotedPrint-0.10-511.el10.noarch                              
+2026-02-09T13:26:44.740523+00:00 OUT   perl-Pod-Checker-4:1.77-511.el10.noarch                                       
+2026-02-09T13:26:44.740552+00:00 OUT   perl-Pod-Functions-1.14-512.2.el10_0.noarch                                   
+2026-02-09T13:26:44.740577+00:00 OUT   perl-Pod-Html-1.35-512.2.el10_0.noarch                                        
+2026-02-09T13:26:44.740606+00:00 OUT   perl-Safe-2.46-512.2.el10_0.noarch                                            
+2026-02-09T13:26:44.740631+00:00 OUT   perl-Search-Dict-1.07-512.2.el10_0.noarch                                     
+2026-02-09T13:26:44.740661+00:00 OUT   perl-SelfLoader-1.27-512.2.el10_0.noarch                                      
+2026-02-09T13:26:44.740686+00:00 OUT   perl-Software-License-0.104006-4.el10.noarch                                  
+2026-02-09T13:26:44.740713+00:00 OUT   perl-Sub-Exporter-0.991-7.el10.noarch                                         
+2026-02-09T13:26:44.740781+00:00 OUT   perl-Sub-Install-0.929-8.el10.noarch                                          
+2026-02-09T13:26:44.740827+00:00 OUT   perl-Sys-Hostname-1.25-512.2.el10_0.aarch64                                   
+2026-02-09T13:26:44.740860+00:00 OUT   perl-Sys-Syslog-0.36-512.el10.aarch64                                         
+2026-02-09T13:26:44.740889+00:00 OUT   perl-Term-Complete-1.403-512.2.el10_0.noarch                                  
+2026-02-09T13:26:44.740917+00:00 OUT   perl-Term-ReadLine-1.17-512.2.el10_0.noarch                                   
+2026-02-09T13:26:44.740943+00:00 OUT   perl-Term-Size-Any-0.002-45.el10.noarch                                       
+2026-02-09T13:26:44.740969+00:00 OUT   perl-Term-Size-Perl-0.031-22.el10.aarch64                                     
+2026-02-09T13:26:44.740994+00:00 OUT   perl-Term-Table-0.018-513.el10.noarch                                         
+2026-02-09T13:26:44.741018+00:00 OUT   perl-Test-1.31-512.2.el10_0.noarch                                            
+2026-02-09T13:26:44.741052+00:00 OUT   perl-Test-Harness-1:3.48-512.el10.noarch                                      
+2026-02-09T13:26:44.741077+00:00 OUT   perl-Test-Simple-3:1.302199-513.el10.noarch                                   
+2026-02-09T13:26:44.741103+00:00 OUT   perl-Test2-Suite-0.000163-4.el10.noarch                                       
+2026-02-09T13:26:44.741127+00:00 OUT   perl-Text-Abbrev-1.02-512.2.el10_0.noarch                                     
+2026-02-09T13:26:44.741156+00:00 OUT   perl-Text-Balanced-2.06-511.el10.noarch                                       
+2026-02-09T13:26:44.741238+00:00 OUT   perl-Text-Diff-1.45-24.el10.noarch                                            
+2026-02-09T13:26:44.741277+00:00 OUT   perl-Text-Glob-0.11-26.el10.noarch                                            
+2026-02-09T13:26:44.741308+00:00 OUT   perl-Text-Template-1.61-8.el10.noarch                                         
+2026-02-09T13:26:44.741336+00:00 OUT   perl-Thread-3.05-512.2.el10_0.noarch                                          
+2026-02-09T13:26:44.741362+00:00 OUT   perl-Thread-Semaphore-2.13-512.2.el10_0.noarch                                
+2026-02-09T13:26:44.741388+00:00 OUT   perl-Tie-4.6-512.2.el10_0.noarch                                              
+2026-02-09T13:26:44.741413+00:00 OUT   perl-Tie-File-1.09-512.2.el10_0.noarch                                        
+2026-02-09T13:26:44.741438+00:00 OUT   perl-Tie-Memoize-1.1-512.2.el10_0.noarch                                      
+2026-02-09T13:26:44.741464+00:00 OUT   perl-Tie-RefHash-1.40-511.el10.noarch                                         
+2026-02-09T13:26:44.741488+00:00 OUT   perl-Time-1.04-512.2.el10_0.noarch                                            
+2026-02-09T13:26:44.741513+00:00 OUT   perl-Time-HiRes-4:1.9777-511.el10.aarch64                                     
+2026-02-09T13:26:44.741537+00:00 OUT   perl-Time-Piece-1.3401-512.2.el10_0.aarch64                                   
+2026-02-09T13:26:44.741572+00:00 OUT   perl-Unicode-Collate-1.31-511.el10.aarch64                                    
+2026-02-09T13:26:44.741600+00:00 OUT   perl-Unicode-LineBreak-2019.001-24.el10.aarch64                               
+2026-02-09T13:26:44.741627+00:00 OUT   perl-Unicode-Normalize-1.32-511.el10.aarch64                                  
+2026-02-09T13:26:44.741651+00:00 OUT   perl-Unicode-UCD-0.78-512.2.el10_0.noarch                                     
+2026-02-09T13:26:44.741676+00:00 OUT   perl-User-pwent-1.05-512.2.el10_0.noarch                                      
+2026-02-09T13:26:44.741699+00:00 OUT   perl-autodie-2.37-512.el10.noarch                                             
+2026-02-09T13:26:44.741723+00:00 OUT   perl-autouse-1.11-512.2.el10_0.noarch                                         
+2026-02-09T13:26:44.741745+00:00 OUT   perl-bignum-0.67-512.el10.noarch                                              
+2026-02-09T13:26:44.741769+00:00 OUT   perl-blib-1.07-512.2.el10_0.noarch                                            
+2026-02-09T13:26:44.741795+00:00 OUT   perl-debugger-1.60-512.2.el10_0.noarch                                        
+2026-02-09T13:26:44.741819+00:00 OUT   perl-deprecate-0.04-512.2.el10_0.noarch                                       
+2026-02-09T13:26:44.741848+00:00 OUT   perl-devel-4:5.40.2-512.2.el10_0.aarch64                                      
+2026-02-09T13:26:44.741872+00:00 OUT   perl-diagnostics-1.40-512.2.el10_0.noarch                                     
+2026-02-09T13:26:44.741896+00:00 OUT   perl-doc-5.40.2-512.2.el10_0.noarch                                           
+2026-02-09T13:26:44.741918+00:00 OUT   perl-encoding-4:3.00-511.el10.aarch64                                         
+2026-02-09T13:26:44.741941+00:00 OUT   perl-encoding-warnings-0.14-512.2.el10_0.noarch                               
+2026-02-09T13:26:44.741964+00:00 OUT   perl-experimental-0.032-511.el10.noarch                                       
+2026-02-09T13:26:44.741988+00:00 OUT   perl-fields-2.27-512.2.el10_0.noarch                                          
+2026-02-09T13:26:44.742010+00:00 OUT   perl-filetest-1.03-512.2.el10_0.noarch                                        
+2026-02-09T13:26:44.742035+00:00 OUT   perl-inc-latest-2:0.500-30.el10.noarch                                        
+2026-02-09T13:26:44.742063+00:00 OUT   perl-less-0.03-512.2.el10_0.noarch                                            
+2026-02-09T13:26:44.742086+00:00 OUT   perl-libnetcfg-4:5.40.2-512.2.el10_0.noarch                                   
+2026-02-09T13:26:44.742113+00:00 OUT   perl-local-lib-2.000029-9.el10.noarch                                         
+2026-02-09T13:26:44.742148+00:00 OUT   perl-meta-notation-5.40.2-512.2.el10_0.noarch                                 
+2026-02-09T13:26:44.742178+00:00 OUT   perl-open-1.13-512.2.el10_0.noarch                                            
+2026-02-09T13:26:44.742206+00:00 OUT   perl-perlfaq-5.20240218-511.el10.noarch                                       
+2026-02-09T13:26:44.742232+00:00 OUT   perl-ph-5.40.2-512.2.el10_0.aarch64                                           
+2026-02-09T13:26:44.742256+00:00 OUT   perl-sigtrap-1.10-512.2.el10_0.noarch                                         
+2026-02-09T13:26:44.742281+00:00 OUT   perl-sort-2.05-512.2.el10_0.noarch                                            
+2026-02-09T13:26:44.742308+00:00 OUT   perl-utils-5.40.2-512.2.el10_0.noarch                                         
+2026-02-09T13:26:44.742333+00:00 OUT   perl-vmsish-1.04-512.2.el10_0.noarch                                          
+2026-02-09T13:26:44.742358+00:00 OUT   python3-pyparsing-3.1.1-7.el10.noarch                                         
+2026-02-09T13:26:44.742381+00:00 OUT   sombok-2.4.0-23.el10.aarch64                                                  
+2026-02-09T13:26:44.742406+00:00 OUT   systemtap-sdt-devel-5.3-3b.el10.aarch64                                       
+2026-02-09T13:26:44.742431+00:00 OUT   systemtap-sdt-dtrace-5.3-3b.el10.aarch64                                      
+2026-02-09T13:26:44.742458+00:00 OUT   unixODBC-2.3.12-6.el10.aarch64                                                
+2026-02-09T13:26:44.742481+00:00 OUT 
+2026-02-09T13:26:44.742506+00:00 OUT Complete!
+2026-02-09T13:26:44.840568+00:00 OUT Installing MariaDB Enterprise RPMs...
+2026-02-09T13:26:44.854951+00:00 OUT warning: package MariaDB-backup-11.8.3_1-1.el10.aarch64 was already added, replacing with MariaDB-backup-11.8.5_2-1.el10.aarch64
+2026-02-09T13:26:44.855554+00:00 OUT warning: package MariaDB-client-11.8.3_1-1.el10.aarch64 was already added, replacing with MariaDB-client-11.8.5_2-1.el10.aarch64
+2026-02-09T13:26:44.856071+00:00 OUT warning: package MariaDB-client-compat-11.8.3_1-1.el10.noarch was already added, replacing with MariaDB-client-compat-11.8.5_2-1.el10.noarch
+2026-02-09T13:26:44.867714+00:00 OUT warning: package MariaDB-columnstore-engine-11.8.3_1_25.10.0-1.el10.aarch64 was already added, replacing with MariaDB-columnstore-engine-11.8.5_2_25.10.2-1.el10.aarch64
+2026-02-09T13:26:44.868062+00:00 OUT warning: package MariaDB-common-11.8.3_1-1.el10.aarch64 was already added, replacing with MariaDB-common-11.8.5_2-1.el10.aarch64
+2026-02-09T13:26:44.868406+00:00 OUT warning: package MariaDB-cracklib-password-check-11.8.3_1-1.el10.aarch64 was already added, replacing with MariaDB-cracklib-password-check-11.8.5_2-1.el10.aarch64
+2026-02-09T13:26:44.869928+00:00 OUT warning: package MariaDB-devel-11.8.3_1-1.el10.aarch64 was already added, replacing with MariaDB-devel-11.8.5_2-1.el10.aarch64
+2026-02-09T13:26:44.870379+00:00 OUT warning: package MariaDB-gssapi-server-11.8.3_1-1.el10.aarch64 was already added, replacing with MariaDB-gssapi-server-11.8.5_2-1.el10.aarch64
+2026-02-09T13:26:44.870777+00:00 OUT warning: package MariaDB-hashicorp-key-management-11.8.3_1-1.el10.aarch64 was already added, replacing with MariaDB-hashicorp-key-management-11.8.5_2-1.el10.aarch64
+2026-02-09T13:26:44.871221+00:00 OUT warning: package MariaDB-provider-bzip2-11.8.3_1-1.el10.aarch64 was already added, replacing with MariaDB-provider-bzip2-11.8.5_2-1.el10.aarch64
+2026-02-09T13:26:44.871495+00:00 OUT warning: package MariaDB-provider-lz4-11.8.3_1-1.el10.aarch64 was already added, replacing with MariaDB-provider-lz4-11.8.5_2-1.el10.aarch64
+2026-02-09T13:26:44.871752+00:00 OUT warning: package MariaDB-provider-lzma-11.8.3_1-1.el10.aarch64 was already added, replacing with MariaDB-provider-lzma-11.8.5_2-1.el10.aarch64
+2026-02-09T13:26:44.872122+00:00 OUT warning: package MariaDB-provider-lzo-11.8.3_1-1.el10.aarch64 was already added, replacing with MariaDB-provider-lzo-11.8.5_2-1.el10.aarch64
+2026-02-09T13:26:44.872531+00:00 OUT warning: package MariaDB-provider-snappy-11.8.3_1-1.el10.aarch64 was already added, replacing with MariaDB-provider-snappy-11.8.5_2-1.el10.aarch64
+2026-02-09T13:26:44.872795+00:00 OUT warning: package MariaDB-rocksdb-engine-11.8.3_1-1.el10.aarch64 was already added, replacing with MariaDB-rocksdb-engine-11.8.5_2-1.el10.aarch64
+2026-02-09T13:26:44.873645+00:00 OUT warning: package MariaDB-s3-engine-11.8.3_1-1.el10.aarch64 was already added, replacing with MariaDB-s3-engine-11.8.5_2-1.el10.aarch64
+2026-02-09T13:26:44.874927+00:00 OUT warning: package MariaDB-server-11.8.3_1-1.el10.aarch64 was already added, replacing with MariaDB-server-11.8.5_2-1.el10.aarch64
+2026-02-09T13:26:44.875204+00:00 OUT warning: package MariaDB-server-compat-11.8.3_1-1.el10.noarch was already added, replacing with MariaDB-server-compat-11.8.5_2-1.el10.noarch
+2026-02-09T13:26:44.875668+00:00 OUT warning: package MariaDB-shared-11.8.3_1-1.el10.aarch64 was already added, replacing with MariaDB-shared-11.8.5_2-1.el10.aarch64
+2026-02-09T13:26:44.876139+00:00 OUT warning: package MariaDB-spider-engine-11.8.3_1-1.el10.aarch64 was already added, replacing with MariaDB-spider-engine-11.8.5_2-1.el10.aarch64
+2026-02-09T13:26:45.064878+00:00 OUT Preparing...                          ########################################
+2026-02-09T13:26:45.101187+00:00 OUT Updating / installing...
+2026-02-09T13:26:45.104191+00:00 OUT MariaDB-shared-11.8.5_2-1.el10        ########################################
+2026-02-09T13:26:45.122754+00:00 OUT MariaDB-common-11.8.5_2-1.el10        ########################################
+2026-02-09T13:26:45.127943+00:00 OUT MariaDB-client-compat-11.8.5_2-1.el10 ########################################
+2026-02-09T13:26:45.185241+00:00 OUT MariaDB-client-11.8.5_2-1.el10        ########################################
+2026-02-09T13:26:45.198728+00:00 OUT galera-enterprise-4-26.4.24-1.el10    ########################################
+2026-02-09T13:26:45.215580+00:00 OUT MariaDB-server-compat-11.8.5_2-1.el10 ########################################
+2026-02-09T13:26:45.255852+00:00 OUT usermod: no changes
+2026-02-09T13:26:45.380878+00:00 OUT MariaDB-server-11.8.5_2-1.el10        ########################################
+2026-02-09T13:26:46.264929+00:00 OUT 2026-02-09 18:56:46 server_audit: MariaDB Audit Plugin version 2.7.0 STARTED.
+2026-02-09T13:26:46.266020+00:00 OUT 2026-02-09 18:56:46 server_audit: Query cache is enabled with the TABLE events. Some table reads can be veiled.
+2026-02-09T13:26:46.879258+00:00 OUT 2026-02-09 18:56:46 server_audit: logging was stopped.
+2026-02-09T13:26:47.272371+00:00 OUT 
+2026-02-09T13:26:47.273209+00:00 OUT 
+2026-02-09T13:26:47.273608+00:00 OUT Two all-privilege accounts were created.
+2026-02-09T13:26:47.273826+00:00 OUT One is root@localhost, it has no password, but you need to
+2026-02-09T13:26:47.274060+00:00 OUT be system 'root' user to connect. Use, for example, sudo mariadb
+2026-02-09T13:26:47.274357+00:00 OUT The second is mysql@localhost, it has no password either, but
+2026-02-09T13:26:47.274523+00:00 OUT you need to be the system 'mysql' user to connect.
+2026-02-09T13:26:47.274623+00:00 OUT After connecting you can set the password, if you would need to be
+2026-02-09T13:26:47.274699+00:00 OUT able to connect as any of these users with a password and without sudo
+2026-02-09T13:26:47.274771+00:00 OUT 
+2026-02-09T13:26:47.274842+00:00 OUT See the MariaDB Knowledgebase at https://mariadb.com/kb
+2026-02-09T13:26:47.274911+00:00 OUT 
+2026-02-09T13:26:47.274979+00:00 OUT As a MariaDB Corporation subscription customer please contact us
+2026-02-09T13:26:47.275065+00:00 OUT via https://support.mariadb.com/ to report problems.
+2026-02-09T13:26:47.275207+00:00 OUT You also can get consultative guidance on questions specific to your deployment,
+2026-02-09T13:26:47.275327+00:00 OUT such as how to tune for performance, high availability, security audits, and code review.
+2026-02-09T13:26:47.275420+00:00 OUT 
+2026-02-09T13:26:47.275509+00:00 OUT You also find detailed documentation about how to use MariaDB Enterprise Server at https://mariadb.com/docs/.
+2026-02-09T13:26:47.275585+00:00 OUT The latest information about MariaDB Server is available at https://mariadb.com/kb/en/library/release-notes/.
+2026-02-09T13:26:47.275657+00:00 OUT 
+2026-02-09T13:26:51.583271+00:00 OUT MariaDB-columnstore-engine-11.8.5_2_25########################################
+2026-02-09T13:26:57.004657+00:00 OUT checking for engine columnstore...
+2026-02-09T13:26:57.016287+00:00 OUT columnstore exists
+2026-02-09T13:26:57.600798+00:00 OUT At least one file is not owned by mysql in /var/lib/columnstore. Running chown...
+2026-02-09T13:26:57.615942+00:00 OUT Populating the engine initial system catalog.
+2026-02-09T13:27:04.777635+00:00 OUT MariaDB-cracklib-password-check-11.8.5########################################
+2026-02-09T13:27:04.787321+00:00 OUT MariaDB-gssapi-server-11.8.5_2-1.el10 ########################################
+2026-02-09T13:27:04.810706+00:00 OUT MariaDB-hashicorp-key-management-11.8.########################################
+2026-02-09T13:27:04.815530+00:00 OUT MariaDB-provider-bzip2-11.8.5_2-1.el10########################################
+2026-02-09T13:27:04.819245+00:00 OUT MariaDB-provider-lz4-11.8.5_2-1.el10  ########################################
+2026-02-09T13:27:04.823097+00:00 OUT MariaDB-provider-lzma-11.8.5_2-1.el10 ########################################
+2026-02-09T13:27:04.828984+00:00 OUT MariaDB-provider-lzo-11.8.5_2-1.el10  ########################################
+2026-02-09T13:27:04.833259+00:00 OUT MariaDB-provider-snappy-11.8.5_2-1.el1########################################
+2026-02-09T13:27:04.880221+00:00 OUT MariaDB-rocksdb-engine-11.8.5_2-1.el10########################################
+2026-02-09T13:27:04.897203+00:00 OUT MariaDB-s3-engine-11.8.5_2-1.el10     ########################################
+2026-02-09T13:27:04.908882+00:00 OUT MariaDB-spider-engine-11.8.5_2-1.el10 ########################################
+2026-02-09T13:27:04.961459+00:00 OUT MariaDB-backup-11.8.5_2-1.el10        ########################################
+2026-02-09T13:27:04.992002+00:00 OUT MariaDB-devel-11.8.5_2-1.el10         ########################################
+2026-02-09T13:27:05.943118+00:00 OUT MariaDB-columnstore-cmapi-10.6.24_19_2########################################
+2026-02-09T13:27:06.171708+00:00 OUT Created symlink '/etc/systemd/system/multi-user.target.wants/mariadb-columnstore-cmapi.service' → '/usr/lib/systemd/system/mariadb-columnstore-cmapi.service'.
+2026-02-09T13:27:21.708112+00:00 OUT Job for mariadb-columnstore-cmapi.service failed because the control process exited with error code.
+2026-02-09T13:27:21.709517+00:00 OUT See "systemctl status mariadb-columnstore-cmapi.service" and "journalctl -xeu mariadb-columnstore-cmapi.service" for details.
+2026-02-09T13:27:21.733636+00:00 OUT Created symlink '/etc/systemd/system/mariadb-columnstore.service' → '/dev/null'.
+2026-02-09T13:27:22.508842+00:00 OUT Installing RPMs...
+2026-02-09T13:27:22.541892+00:00 OUT warning: galera-enterprise-4-26.4.24-1.el10.aarch64.rpm: Header V4 RSA/SHA512 Signature, key ID 8c27d14e: NOKEY
+2026-02-09T13:27:22.543185+00:00 OUT warning: package MariaDB-backup-11.8.3_1-1.el10.aarch64 was already added, replacing with MariaDB-backup-11.8.5_2-1.el10.aarch64
+2026-02-09T13:27:22.544430+00:00 OUT warning: package MariaDB-client-11.8.3_1-1.el10.aarch64 was already added, replacing with MariaDB-client-11.8.5_2-1.el10.aarch64
+2026-02-09T13:27:22.545254+00:00 OUT warning: package MariaDB-client-compat-11.8.3_1-1.el10.noarch was already added, replacing with MariaDB-client-compat-11.8.5_2-1.el10.noarch
+2026-02-09T13:27:22.576293+00:00 OUT warning: package MariaDB-columnstore-engine-11.8.3_1_25.10.0-1.el10.aarch64 was already added, replacing with MariaDB-columnstore-engine-11.8.5_2_25.10.2-1.el10.aarch64
+2026-02-09T13:27:22.577336+00:00 OUT warning: package MariaDB-common-11.8.3_1-1.el10.aarch64 was already added, replacing with MariaDB-common-11.8.5_2-1.el10.aarch64
+2026-02-09T13:27:22.578102+00:00 OUT warning: package MariaDB-cracklib-password-check-11.8.3_1-1.el10.aarch64 was already added, replacing with MariaDB-cracklib-password-check-11.8.5_2-1.el10.aarch64
+2026-02-09T13:27:22.580812+00:00 OUT warning: package MariaDB-devel-11.8.3_1-1.el10.aarch64 was already added, replacing with MariaDB-devel-11.8.5_2-1.el10.aarch64
+2026-02-09T13:27:22.581759+00:00 OUT warning: package MariaDB-gssapi-server-11.8.3_1-1.el10.aarch64 was already added, replacing with MariaDB-gssapi-server-11.8.5_2-1.el10.aarch64
+2026-02-09T13:27:22.582509+00:00 OUT warning: package MariaDB-hashicorp-key-management-11.8.3_1-1.el10.aarch64 was already added, replacing with MariaDB-hashicorp-key-management-11.8.5_2-1.el10.aarch64
+2026-02-09T13:27:22.583115+00:00 OUT warning: package MariaDB-provider-bzip2-11.8.3_1-1.el10.aarch64 was already added, replacing with MariaDB-provider-bzip2-11.8.5_2-1.el10.aarch64
+2026-02-09T13:27:22.583820+00:00 OUT warning: package MariaDB-provider-lz4-11.8.3_1-1.el10.aarch64 was already added, replacing with MariaDB-provider-lz4-11.8.5_2-1.el10.aarch64
+2026-02-09T13:27:22.584418+00:00 OUT warning: package MariaDB-provider-lzma-11.8.3_1-1.el10.aarch64 was already added, replacing with MariaDB-provider-lzma-11.8.5_2-1.el10.aarch64
+2026-02-09T13:27:22.585044+00:00 OUT warning: package MariaDB-provider-lzo-11.8.3_1-1.el10.aarch64 was already added, replacing with MariaDB-provider-lzo-11.8.5_2-1.el10.aarch64
+2026-02-09T13:27:22.585552+00:00 OUT warning: package MariaDB-provider-snappy-11.8.3_1-1.el10.aarch64 was already added, replacing with MariaDB-provider-snappy-11.8.5_2-1.el10.aarch64
+2026-02-09T13:27:22.586359+00:00 OUT warning: package MariaDB-rocksdb-engine-11.8.3_1-1.el10.aarch64 was already added, replacing with MariaDB-rocksdb-engine-11.8.5_2-1.el10.aarch64
+2026-02-09T13:27:22.587140+00:00 OUT warning: package MariaDB-s3-engine-11.8.3_1-1.el10.aarch64 was already added, replacing with MariaDB-s3-engine-11.8.5_2-1.el10.aarch64
+2026-02-09T13:27:22.589423+00:00 OUT warning: package MariaDB-server-11.8.3_1-1.el10.aarch64 was already added, replacing with MariaDB-server-11.8.5_2-1.el10.aarch64
+2026-02-09T13:27:22.589896+00:00 OUT warning: package MariaDB-server-compat-11.8.3_1-1.el10.noarch was already added, replacing with MariaDB-server-compat-11.8.5_2-1.el10.noarch
+2026-02-09T13:27:22.590624+00:00 OUT warning: package MariaDB-shared-11.8.3_1-1.el10.aarch64 was already added, replacing with MariaDB-shared-11.8.5_2-1.el10.aarch64
+2026-02-09T13:27:22.591338+00:00 OUT warning: package MariaDB-spider-engine-11.8.3_1-1.el10.aarch64 was already added, replacing with MariaDB-spider-engine-11.8.5_2-1.el10.aarch64
+2026-02-09T13:27:22.629045+00:00 OUT error: Failed dependencies:
+2026-02-09T13:27:22.629398+00:00 OUT 	libxcrypt-compat is needed by MariaDB-columnstore-cmapi-10.6.24_19_25.10.1-1.el10.aarch64
+2026-02-09T13:27:22.637625+00:00 OUT MariaDB already installed; ignoring RPM install errors.
+2026-02-09T13:27:22.643580+00:00 RUN  create_migration_user (Create migration user on source and target) -> scripts/09_create_migration_user.sh
+2026-02-09T13:27:22.644677+00:00 CMD /Users/balajin/Documents/GitHub/Mysql-to-MariaDB-Migration/scripts/09_create_migration_user.sh
+2026-02-09T13:27:22.662101+00:00 OUT ==> Create migration user on source and target
+2026-02-09T13:27:22.665863+00:00 OUT Creating migration user on source: 192.168.68.107:3306
+2026-02-09T13:27:22.887954+00:00 OUT Creating migration user on target: 192.168.64.4:3306
+2026-02-09T13:27:24.628340+00:00 OUT Migration user setup completed.
+2026-02-09T13:27:24.630707+00:00 RUN  precheck (Precheck source variables and blockers) -> scripts/00_precheck.sh
+2026-02-09T13:27:24.631646+00:00 CMD /Users/balajin/Documents/GitHub/Mysql-to-MariaDB-Migration/scripts/00_precheck.sh
+2026-02-09T13:27:24.656114+00:00 OUT == Precheck runner ==
+2026-02-09T13:27:24.657712+00:00 OUT Host: 192.168.68.107  Port: 3306  User: migrate
+2026-02-09T13:27:24.659287+00:00 OUT Checks dir: /Users/balajin/Documents/GitHub/Mysql-to-MariaDB-Migration/sql/checks
+2026-02-09T13:27:24.660914+00:00 OUT Outdir: /Users/balajin/Documents/GitHub/Mysql-to-MariaDB-Migration/artifacts/precheck
+2026-02-09T13:27:24.662469+00:00 OUT 
+2026-02-09T13:27:24.667964+00:00 OUT ---- mysql_version ----
+2026-02-09T13:27:24.702467+00:00 OUT 8.4.8
+2026-02-09T13:27:24.707246+00:00 OUT 
+2026-02-09T13:27:24.710946+00:00 OUT ---- innodb_settings ----
+2026-02-09T13:27:24.737808+00:00 OUT 1	1
+2026-02-09T13:27:24.742167+00:00 OUT 
+2026-02-09T13:27:24.745994+00:00 OUT ---- auth_plugins ----
+2026-02-09T13:27:24.776268+00:00 OUT migrate	%	caching_sha2_password
+2026-02-09T13:27:24.776378+00:00 OUT migrate	192.168.64.2	caching_sha2_password
+2026-02-09T13:27:24.776428+00:00 OUT packer	%	caching_sha2_password
+2026-02-09T13:27:24.776487+00:00 OUT root	localhost	caching_sha2_password
+2026-02-09T13:27:24.780466+00:00 OUT 
+2026-02-09T13:27:24.784507+00:00 OUT ---- json_columns ----
+2026-02-09T13:27:24.871258+00:00 OUT testdb	orders_json	data_json	json
+2026-02-09T13:27:24.875645+00:00 OUT 
+2026-02-09T13:27:24.879370+00:00 OUT ---- compression_encryption ----
+2026-02-09T13:27:24.913849+00:00 OUT (no rows)
+2026-02-09T13:27:24.915974+00:00 OUT 
+2026-02-09T13:27:24.919934+00:00 OUT ---- engines_summary ----
+2026-02-09T13:27:24.970982+00:00 OUT PERFORMANCE_SCHEMA	113
+2026-02-09T13:27:24.971126+00:00 OUT InnoDB	65
+2026-02-09T13:27:24.971193+00:00 OUT CSV	2
+2026-02-09T13:27:24.975675+00:00 OUT 
+2026-02-09T13:27:24.979344+00:00 OUT ---- schema_sizes ----
+2026-02-09T13:27:25.173348+00:00 OUT testdb	38.56
+2026-02-09T13:27:25.173598+00:00 OUT sakila	6.45
+2026-02-09T13:27:25.173710+00:00 OUT mysql	2.61
+2026-02-09T13:27:25.173806+00:00 OUT world	0.77
+2026-02-09T13:27:25.173897+00:00 OUT classicmodels	0.50
+2026-02-09T13:27:25.173970+00:00 OUT sys	0.02
+2026-02-09T13:27:25.174044+00:00 OUT information_schema	0.00
+2026-02-09T13:27:25.174137+00:00 OUT performance_schema	0.00
+2026-02-09T13:27:25.181596+00:00 OUT 
+2026-02-09T13:27:25.187787+00:00 OUT ---- schema_charsets ----
+2026-02-09T13:27:25.252292+00:00 OUT classicmodels	latin1	latin1_swedish_ci
+2026-02-09T13:27:25.252441+00:00 OUT sakila	utf8mb4	utf8mb4_0900_ai_ci
+2026-02-09T13:27:25.252502+00:00 OUT testdb	utf8mb4	utf8mb4_0900_ai_ci
+2026-02-09T13:27:25.252561+00:00 OUT world	utf8mb4	utf8mb4_0900_ai_ci
+2026-02-09T13:27:25.257592+00:00 OUT 
+2026-02-09T13:27:25.261678+00:00 OUT ---- mysql8_collations ----
+2026-02-09T13:27:25.295936+00:00 OUT sakila	actor	utf8mb4_0900_ai_ci
+2026-02-09T13:27:25.296023+00:00 OUT sakila	address	utf8mb4_0900_ai_ci
+2026-02-09T13:27:25.296069+00:00 OUT sakila	category	utf8mb4_0900_ai_ci
+2026-02-09T13:27:25.296144+00:00 OUT sakila	city	utf8mb4_0900_ai_ci
+2026-02-09T13:27:25.296177+00:00 OUT sakila	country	utf8mb4_0900_ai_ci
+2026-02-09T13:27:25.296209+00:00 OUT sakila	customer	utf8mb4_0900_ai_ci
+2026-02-09T13:27:25.296235+00:00 OUT sakila	film	utf8mb4_0900_ai_ci
+2026-02-09T13:27:25.296323+00:00 OUT sakila	film_actor	utf8mb4_0900_ai_ci
+2026-02-09T13:27:25.296348+00:00 OUT sakila	film_category	utf8mb4_0900_ai_ci
+2026-02-09T13:27:25.296377+00:00 OUT sakila	film_text	utf8mb4_0900_ai_ci
+2026-02-09T13:27:25.296402+00:00 OUT sakila	inventory	utf8mb4_0900_ai_ci
+2026-02-09T13:27:25.296431+00:00 OUT sakila	language	utf8mb4_0900_ai_ci
+2026-02-09T13:27:25.296455+00:00 OUT sakila	payment	utf8mb4_0900_ai_ci
+2026-02-09T13:27:25.296483+00:00 OUT sakila	rental	utf8mb4_0900_ai_ci
+2026-02-09T13:27:25.296512+00:00 OUT sakila	staff	utf8mb4_0900_ai_ci
+2026-02-09T13:27:25.296539+00:00 OUT sakila	store	utf8mb4_0900_ai_ci
+2026-02-09T13:27:25.296567+00:00 OUT testdb	orders_json	utf8mb4_0900_ai_ci
+2026-02-09T13:27:25.296596+00:00 OUT world	city	utf8mb4_0900_ai_ci
+2026-02-09T13:27:25.296624+00:00 OUT world	country	utf8mb4_0900_ai_ci
+2026-02-09T13:27:25.296649+00:00 OUT world	countrylanguage	utf8mb4_0900_ai_ci
+2026-02-09T13:27:25.300622+00:00 OUT 
+2026-02-09T13:27:25.304804+00:00 OUT ---- mysql8_column_collations ----
+2026-02-09T13:27:25.335564+00:00 OUT sakila	actor	first_name	utf8mb4_0900_ai_ci
+2026-02-09T13:27:25.335632+00:00 OUT sakila	actor	last_name	utf8mb4_0900_ai_ci
+2026-02-09T13:27:25.335663+00:00 OUT sakila	actor_info	film_info	utf8mb4_0900_ai_ci
+2026-02-09T13:27:25.335741+00:00 OUT sakila	actor_info	first_name	utf8mb4_0900_ai_ci
+2026-02-09T13:27:25.335797+00:00 OUT sakila	actor_info	last_name	utf8mb4_0900_ai_ci
+2026-02-09T13:27:25.335832+00:00 OUT sakila	address	address	utf8mb4_0900_ai_ci
+2026-02-09T13:27:25.335861+00:00 OUT sakila	address	address2	utf8mb4_0900_ai_ci
+2026-02-09T13:27:25.335893+00:00 OUT sakila	address	district	utf8mb4_0900_ai_ci
+2026-02-09T13:27:25.335918+00:00 OUT sakila	address	phone	utf8mb4_0900_ai_ci
+2026-02-09T13:27:25.335948+00:00 OUT sakila	address	postal_code	utf8mb4_0900_ai_ci
+2026-02-09T13:27:25.335988+00:00 OUT sakila	category	name	utf8mb4_0900_ai_ci
+2026-02-09T13:27:25.336016+00:00 OUT sakila	city	city	utf8mb4_0900_ai_ci
+2026-02-09T13:27:25.336045+00:00 OUT sakila	country	country	utf8mb4_0900_ai_ci
+2026-02-09T13:27:25.336075+00:00 OUT sakila	customer	email	utf8mb4_0900_ai_ci
+2026-02-09T13:27:25.336098+00:00 OUT sakila	customer	first_name	utf8mb4_0900_ai_ci
+2026-02-09T13:27:25.336128+00:00 OUT sakila	customer	last_name	utf8mb4_0900_ai_ci
+2026-02-09T13:27:25.336158+00:00 OUT sakila	customer_list	address	utf8mb4_0900_ai_ci
+2026-02-09T13:27:25.336184+00:00 OUT sakila	customer_list	city	utf8mb4_0900_ai_ci
+2026-02-09T13:27:25.336225+00:00 OUT sakila	customer_list	country	utf8mb4_0900_ai_ci
+2026-02-09T13:27:25.336286+00:00 OUT sakila	customer_list	name	utf8mb4_0900_ai_ci
+2026-02-09T13:27:25.336320+00:00 OUT sakila	customer_list	notes	utf8mb4_0900_ai_ci
+2026-02-09T13:27:25.336349+00:00 OUT sakila	customer_list	phone	utf8mb4_0900_ai_ci
+2026-02-09T13:27:25.336380+00:00 OUT sakila	customer_list	zip code	utf8mb4_0900_ai_ci
+2026-02-09T13:27:25.336407+00:00 OUT sakila	film	description	utf8mb4_0900_ai_ci
+2026-02-09T13:27:25.336437+00:00 OUT sakila	film	rating	utf8mb4_0900_ai_ci
+2026-02-09T13:27:25.336465+00:00 OUT sakila	film	special_features	utf8mb4_0900_ai_ci
+2026-02-09T13:27:25.336490+00:00 OUT sakila	film	title	utf8mb4_0900_ai_ci
+2026-02-09T13:27:25.336516+00:00 OUT sakila	film_list	actors	utf8mb4_0900_ai_ci
+2026-02-09T13:27:25.336540+00:00 OUT sakila	film_list	category	utf8mb4_0900_ai_ci
+2026-02-09T13:27:25.336569+00:00 OUT sakila	film_list	description	utf8mb4_0900_ai_ci
+2026-02-09T13:27:25.336595+00:00 OUT sakila	film_list	rating	utf8mb4_0900_ai_ci
+2026-02-09T13:27:25.336624+00:00 OUT sakila	film_list	title	utf8mb4_0900_ai_ci
+2026-02-09T13:27:25.336646+00:00 OUT sakila	film_text	description	utf8mb4_0900_ai_ci
+2026-02-09T13:27:25.336671+00:00 OUT sakila	film_text	title	utf8mb4_0900_ai_ci
+2026-02-09T13:27:25.336696+00:00 OUT sakila	language	name	utf8mb4_0900_ai_ci
+2026-02-09T13:27:25.336718+00:00 OUT sakila	nicer_but_slower_film_list	actors	utf8mb4_0900_ai_ci
+2026-02-09T13:27:25.336745+00:00 OUT sakila	nicer_but_slower_film_list	category	utf8mb4_0900_ai_ci
+2026-02-09T13:27:25.336770+00:00 OUT sakila	nicer_but_slower_film_list	description	utf8mb4_0900_ai_ci
+2026-02-09T13:27:25.336792+00:00 OUT sakila	nicer_but_slower_film_list	rating	utf8mb4_0900_ai_ci
+2026-02-09T13:27:25.336817+00:00 OUT sakila	nicer_but_slower_film_list	title	utf8mb4_0900_ai_ci
+2026-02-09T13:27:25.336839+00:00 OUT sakila	sales_by_film_category	category	utf8mb4_0900_ai_ci
+2026-02-09T13:27:25.336868+00:00 OUT sakila	sales_by_store	manager	utf8mb4_0900_ai_ci
+2026-02-09T13:27:25.336890+00:00 OUT sakila	sales_by_store	store	utf8mb4_0900_ai_ci
+2026-02-09T13:27:25.336915+00:00 OUT sakila	staff	email	utf8mb4_0900_ai_ci
+2026-02-09T13:27:25.336940+00:00 OUT sakila	staff	first_name	utf8mb4_0900_ai_ci
+2026-02-09T13:27:25.336967+00:00 OUT sakila	staff	last_name	utf8mb4_0900_ai_ci
+2026-02-09T13:27:25.336992+00:00 OUT sakila	staff	username	utf8mb4_0900_ai_ci
+2026-02-09T13:27:25.337014+00:00 OUT sakila	staff_list	address	utf8mb4_0900_ai_ci
+2026-02-09T13:27:25.337042+00:00 OUT sakila	staff_list	city	utf8mb4_0900_ai_ci
+2026-02-09T13:27:25.337063+00:00 OUT sakila	staff_list	country	utf8mb4_0900_ai_ci
+2026-02-09T13:27:25.339934+00:00 OUT ... (truncated; full output in /Users/balajin/Documents/GitHub/Mysql-to-MariaDB-Migration/artifacts/precheck/mysql8_column_collations.tsv)
+2026-02-09T13:27:25.341906+00:00 OUT 
+2026-02-09T13:27:25.345299+00:00 OUT ---- sql_mode ----
+2026-02-09T13:27:25.366879+00:00 OUT ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION
+2026-02-09T13:27:25.370403+00:00 OUT 
+2026-02-09T13:27:25.374034+00:00 OUT ---- definers_inventory ----
+2026-02-09T13:27:25.411693+00:00 OUT ROUTINE	root@localhost	6
+2026-02-09T13:27:25.411772+00:00 OUT TRIGGER	root@localhost	6
+2026-02-09T13:27:25.411811+00:00 OUT VIEW	root@localhost	7
+2026-02-09T13:27:25.417229+00:00 OUT 
+2026-02-09T13:27:25.422263+00:00 OUT ---- partitioned_tables ----
+2026-02-09T13:27:25.455744+00:00 OUT (no rows)
+2026-02-09T13:27:25.457518+00:00 OUT 
+2026-02-09T13:27:25.460729+00:00 OUT ---- active_plugins ----
+2026-02-09T13:27:25.486244+00:00 OUT ARCHIVE	ACTIVE
+2026-02-09T13:27:25.486308+00:00 OUT binlog	ACTIVE
+2026-02-09T13:27:25.486341+00:00 OUT BLACKHOLE	ACTIVE
+2026-02-09T13:27:25.486395+00:00 OUT caching_sha2_password	ACTIVE
+2026-02-09T13:27:25.486436+00:00 OUT CSV	ACTIVE
+2026-02-09T13:27:25.486488+00:00 OUT daemon_keyring_proxy_plugin	ACTIVE
+2026-02-09T13:27:25.486526+00:00 OUT InnoDB	ACTIVE
+2026-02-09T13:27:25.486572+00:00 OUT INNODB_BUFFER_PAGE	ACTIVE
+2026-02-09T13:27:25.486607+00:00 OUT INNODB_BUFFER_PAGE_LRU	ACTIVE
+2026-02-09T13:27:25.486651+00:00 OUT INNODB_BUFFER_POOL_STATS	ACTIVE
+2026-02-09T13:27:25.486682+00:00 OUT INNODB_CACHED_INDEXES	ACTIVE
+2026-02-09T13:27:25.486708+00:00 OUT INNODB_CMP	ACTIVE
+2026-02-09T13:27:25.486749+00:00 OUT INNODB_CMPMEM	ACTIVE
+2026-02-09T13:27:25.486774+00:00 OUT INNODB_CMPMEM_RESET	ACTIVE
+2026-02-09T13:27:25.486803+00:00 OUT INNODB_CMP_PER_INDEX	ACTIVE
+2026-02-09T13:27:25.486830+00:00 OUT INNODB_CMP_PER_INDEX_RESET	ACTIVE
+2026-02-09T13:27:25.486851+00:00 OUT INNODB_CMP_RESET	ACTIVE
+2026-02-09T13:27:25.486873+00:00 OUT INNODB_COLUMNS	ACTIVE
+2026-02-09T13:27:25.486914+00:00 OUT INNODB_FT_BEING_DELETED	ACTIVE
+2026-02-09T13:27:25.486949+00:00 OUT INNODB_FT_CONFIG	ACTIVE
+2026-02-09T13:27:25.486981+00:00 OUT INNODB_FT_DEFAULT_STOPWORD	ACTIVE
+2026-02-09T13:27:25.487009+00:00 OUT INNODB_FT_DELETED	ACTIVE
+2026-02-09T13:27:25.487038+00:00 OUT INNODB_FT_INDEX_CACHE	ACTIVE
+2026-02-09T13:27:25.487068+00:00 OUT INNODB_FT_INDEX_TABLE	ACTIVE
+2026-02-09T13:27:25.487096+00:00 OUT INNODB_INDEXES	ACTIVE
+2026-02-09T13:27:25.487120+00:00 OUT INNODB_METRICS	ACTIVE
+2026-02-09T13:27:25.487152+00:00 OUT INNODB_SESSION_TEMP_TABLESPACES	ACTIVE
+2026-02-09T13:27:25.487177+00:00 OUT INNODB_TABLES	ACTIVE
+2026-02-09T13:27:25.487207+00:00 OUT INNODB_TABLESPACES	ACTIVE
+2026-02-09T13:27:25.487231+00:00 OUT INNODB_TABLESTATS	ACTIVE
+2026-02-09T13:27:25.487259+00:00 OUT INNODB_TEMP_TABLE_INFO	ACTIVE
+2026-02-09T13:27:25.487287+00:00 OUT INNODB_TRX	ACTIVE
+2026-02-09T13:27:25.487314+00:00 OUT INNODB_VIRTUAL	ACTIVE
+2026-02-09T13:27:25.487342+00:00 OUT MEMORY	ACTIVE
+2026-02-09T13:27:25.487368+00:00 OUT MRG_MYISAM	ACTIVE
+2026-02-09T13:27:25.487392+00:00 OUT MyISAM	ACTIVE
+2026-02-09T13:27:25.487430+00:00 OUT mysqlx	ACTIVE
+2026-02-09T13:27:25.487459+00:00 OUT mysqlx_cache_cleaner	ACTIVE
+2026-02-09T13:27:25.487480+00:00 OUT ngram	ACTIVE
+2026-02-09T13:27:25.487512+00:00 OUT PERFORMANCE_SCHEMA	ACTIVE
+2026-02-09T13:27:25.487536+00:00 OUT sha256_password	ACTIVE
+2026-02-09T13:27:25.487558+00:00 OUT sha2_cache_cleaner	ACTIVE
+2026-02-09T13:27:25.487578+00:00 OUT TempTable	ACTIVE
+2026-02-09T13:27:25.490303+00:00 OUT 
+2026-02-09T13:27:25.495502+00:00 OUT Precheck complete.
+2026-02-09T13:27:25.497123+00:00 OUT TSV outputs: /Users/balajin/Documents/GitHub/Mysql-to-MariaDB-Migration/artifacts/precheck/*.tsv
+2026-02-09T13:27:25.498161+00:00 RUN  one_step_dump_restore (One-step dump/restore (mariadb-dump | mariadb)) -> scripts/10_one_step_migration.sh
+2026-02-09T13:27:25.498445+00:00 CMD /Users/balajin/Documents/GitHub/Mysql-to-MariaDB-Migration/scripts/10_one_step_migration.sh
+2026-02-09T13:27:25.510272+00:00 OUT ==> One-step migration (mariadb-dump | mariadb)
+2026-02-09T13:27:25.510827+00:00 OUT mariadb-dump not found; using mysqldump.
+2026-02-09T13:27:25.510882+00:00 OUT Source: 192.168.68.107:3306  DB: testdb
+2026-02-09T13:27:25.510913+00:00 OUT Target: 192.168.64.4:3306
+2026-02-09T13:27:25.510954+00:00 OUT pv not found; running without progress meter.
+2026-02-09T13:27:25.810505+00:00 OUT WARNING: option --ssl-verify-server-cert is disabled, because of an insecure passwordless login.
+2026-02-09T13:27:26.745332+00:00 OUT One-step migration completed.
+2026-02-09T13:27:26.746404+00:00 RUN  validate (Validate after upgrade) -> scripts/07_validate.sh
+2026-02-09T13:27:26.746619+00:00 CMD /Users/balajin/Documents/GitHub/Mysql-to-MariaDB-Migration/scripts/07_validate.sh
+2026-02-09T13:27:26.758115+00:00 OUT MariaDB version (TCP validation):
+2026-02-09T13:27:27.021312+00:00 OUT WARNING: option --ssl-verify-server-cert is disabled, because of an insecure passwordless login.
+2026-02-09T13:27:27.032398+00:00 OUT 11.8.5-2-MariaDB-enterprise
+2026-02-09T13:27:27.034573+00:00 OUT 
+2026-02-09T13:27:27.034790+00:00 OUT User authentication plugins:
+2026-02-09T13:27:27.258655+00:00 OUT WARNING: option --ssl-verify-server-cert is disabled, because of an insecure passwordless login.
+2026-02-09T13:27:27.269384+00:00 OUT mariadb.sys	localhost	mysql_native_password
+2026-02-09T13:27:27.269845+00:00 OUT migrate	%	mysql_native_password
+2026-02-09T13:27:27.270216+00:00 OUT mysql	localhost	mysql_native_password
+2026-02-09T13:27:27.270434+00:00 OUT root	localhost	mysql_native_password
+2026-02-09T13:27:27.271350+00:00 OUT 
+2026-02-09T13:27:27.271582+00:00 OUT Storage engines:
+2026-02-09T13:27:27.450384+00:00 OUT WARNING: option --ssl-verify-server-cert is disabled, because of an insecure passwordless login.
+2026-02-09T13:27:27.459623+00:00 OUT SPIDER	YES	Spider storage engine	YES	YES	NO
+2026-02-09T13:27:27.459938+00:00 OUT CSV	YES	Stores tables as CSV files	NO	NO	NO
+2026-02-09T13:27:27.460116+00:00 OUT MRG_MyISAM	YES	Collection of identical MyISAM tables	NO	NO	NO
+2026-02-09T13:27:27.460483+00:00 OUT Aria	YES	Crash-safe tables with MyISAM heritage. Used for internal temporary tables and privilege tables	NO	NO	NO
+2026-02-09T13:27:27.460760+00:00 OUT MyISAM	YES	Non-transactional engine with good performance and small data footprint	NO	NO	NO
+2026-02-09T13:27:27.460932+00:00 OUT MEMORY	YES	Hash based, stored in memory, useful for temporary tables	NO	NO	NO
+2026-02-09T13:27:27.461174+00:00 OUT InnoDB	DEFAULT	Supports transactions, row-level locking, foreign keys and encryption for tables	YES	YES	YES
+2026-02-09T13:27:27.461325+00:00 OUT SEQUENCE	YES	Generated tables filled with sequential values	YES	NO	YES
+2026-02-09T13:27:27.461629+00:00 OUT PERFORMANCE_SCHEMA	YES	Performance Schema	NO	NO	NO
+2026-02-09T13:27:27.462039+00:00 OUT Columnstore	YES	ColumnStore storage engine	YES	NO	NO
+2026-02-09T13:27:27.462279+00:00 OUT ROCKSDB	YES	RocksDB storage engine	YES	YES	YES
+2026-02-09T13:27:27.462360+00:00 OUT 
+2026-02-09T13:27:27.462441+00:00 OUT Validation complete (socket-first).
+2026-02-09T13:27:27.463949+00:00 FINISH success=True message=Run completed successfully.
+2026-02-09T13:28:43.158859+00:00 START mode=run config=config/migration.yaml
+2026-02-09T13:28:43.166286+00:00 SKIP preflight_one_step (Preflight checks (one_step)) - already DONE
+2026-02-09T13:28:43.166429+00:00 SKIP install_mariadb (Install MariaDB (target host)) - already DONE
+2026-02-09T13:28:43.166542+00:00 SKIP create_migration_user (Create migration user on source and target) - already DONE
+2026-02-09T13:28:43.166650+00:00 SKIP precheck (Precheck source variables and blockers) - already DONE
+2026-02-09T13:28:43.166759+00:00 SKIP one_step_dump_restore (One-step dump/restore (mariadb-dump | mariadb)) - already DONE
+2026-02-09T13:28:43.166864+00:00 SKIP validate (Validate after upgrade) - already DONE
+2026-02-09T13:28:43.166936+00:00 FINISH success=True message=Run completed successfully.

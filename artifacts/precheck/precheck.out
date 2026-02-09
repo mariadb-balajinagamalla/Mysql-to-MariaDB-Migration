@@ -1,5 +1,5 @@
 == Precheck runner ==
-Host: 192.168.68.104  Port: 3306  User: migrate
+Host: 192.168.68.107  Port: 3306  User: migrate
 Checks dir: /Users/balajin/Documents/GitHub/Mysql-to-MariaDB-Migration/sql/checks
 Outdir: /Users/balajin/Documents/GitHub/Mysql-to-MariaDB-Migration/artifacts/precheck
 

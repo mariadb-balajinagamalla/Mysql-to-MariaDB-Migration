@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
-  "run_id": "20260209T132203Z",
+  "run_id": "20260209T132843Z",
   "mode": "run",
   "config_path": "config/migration.yaml",
-  "started_at": "2026-02-09T13:22:03.247714+00:00",
-  "finished_at": "2026-02-09T13:23:18.277423+00:00",
-  "success": false,
-  "message": "Run failed at step: install_mariadb",
+  "started_at": "2026-02-09T13:28:43.158827+00:00",
+  "finished_at": "2026-02-09T13:28:43.166933+00:00",
+  "success": true,
+  "message": "Run completed successfully.",
   "source": {},
   "target": {},
   "gates": [],
@@ -71,15 +71,41 @@
     {
       "id": "install_mariadb",
       "name": "Install MariaDB (target host)",
-      "status": "FAILED",
+      "status": "SKIPPED",
       "details": {
-        "script": "scripts/05_install_mariadb.sh",
-        "args": [],
-        "returncode": 255,
-        "output_tail": [
-          "Running MariaDB install on remote host: 192.168.64.3",
-          "ssh: connect to host 192.168.64.3 port 22: Operation timed out"
-        ]
+        "reason": "already_done"
+      }
+    },
+    {
+      "id": "create_migration_user",
+      "name": "Create migration user on source and target",
+      "status": "SKIPPED",
+      "details": {
+        "reason": "already_done"
+      }
+    },
+    {
+      "id": "precheck",
+      "name": "Precheck source variables and blockers",
+      "status": "SKIPPED",
+      "details": {
+        "reason": "already_done"
+      }
+    },
+    {
+      "id": "one_step_dump_restore",
+      "name": "One-step dump/restore (mariadb-dump | mariadb)",
+      "status": "SKIPPED",
+      "details": {
+        "reason": "already_done"
+      }
+    },
+    {
+      "id": "validate",
+      "name": "Validate after upgrade",
+      "status": "SKIPPED",
+      "details": {
+        "reason": "already_done"
       }
     }
   ]
