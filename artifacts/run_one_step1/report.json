@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
-  "run_id": "20260209T131352Z",
+  "run_id": "20260209T132203Z",
   "mode": "run",
   "config_path": "config/migration.yaml",
-  "started_at": "2026-02-09T13:13:52.422364+00:00",
-  "finished_at": null,
-  "success": null,
-  "message": null,
+  "started_at": "2026-02-09T13:22:03.247714+00:00",
+  "finished_at": "2026-02-09T13:23:18.277423+00:00",
+  "success": false,
+  "message": "Run failed at step: install_mariadb",
   "source": {},
   "target": {},
   "gates": [],
@@ -63,22 +63,22 @@
     {
       "id": "preflight_one_step",
       "name": "Preflight checks (one_step)",
-      "status": "DONE",
+      "status": "SKIPPED",
       "details": {
-        "script": "scripts/00_preflight_one_step.sh",
+        "reason": "already_done"
+      }
+    },
+    {
+      "id": "install_mariadb",
+      "name": "Install MariaDB (target host)",
+      "status": "FAILED",
+      "details": {
+        "script": "scripts/05_install_mariadb.sh",
         "args": [],
-        "returncode": 0,
+        "returncode": 255,
         "output_tail": [
-          "==> Preflight checks (one_step)",
-          "mariadb-dump not found; mysqldump is available (OK).",
-          "Checking source connectivity...",
-          "Checking target SSH connectivity...",
-          "Checking target mariadb client...",
-          "Attempting to install mariadb client deps on target...",
-          "Checking target TCP connectivity...",
-          "WARN: target TCP connect failed. Will attempt socket path during user creation/validate.",
-          "pv not found (optional).",
-          "Preflight complete."
+          "Running MariaDB install on remote host: 192.168.64.3",
+          "ssh: connect to host 192.168.64.3 port 22: Operation timed out"
         ]
       }
     }

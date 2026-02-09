@@ -14,3 +14,10 @@
 2026-02-09T13:13:54.366417+00:00 RUN  install_mariadb (Install MariaDB (target host)) -> scripts/05_install_mariadb.sh
 2026-02-09T13:13:54.366909+00:00 CMD /Users/balajin/Documents/GitHub/Mysql-to-MariaDB-Migration/scripts/05_install_mariadb.sh
 2026-02-09T13:13:54.378614+00:00 OUT Running MariaDB install on remote host: 192.168.64.3
+2026-02-09T13:22:03.247742+00:00 START mode=run config=config/migration.yaml
+2026-02-09T13:22:03.252954+00:00 SKIP preflight_one_step (Preflight checks (one_step)) - already DONE
+2026-02-09T13:22:03.253069+00:00 RUN  install_mariadb (Install MariaDB (target host)) -> scripts/05_install_mariadb.sh
+2026-02-09T13:22:03.253156+00:00 CMD /Users/balajin/Documents/GitHub/Mysql-to-MariaDB-Migration/scripts/05_install_mariadb.sh
+2026-02-09T13:22:03.263522+00:00 OUT Running MariaDB install on remote host: 192.168.64.3
+2026-02-09T13:23:18.269854+00:00 OUT ssh: connect to host 192.168.64.3 port 22: Operation timed out
+2026-02-09T13:23:18.277446+00:00 FINISH success=False message=Run failed at step: install_mariadb
