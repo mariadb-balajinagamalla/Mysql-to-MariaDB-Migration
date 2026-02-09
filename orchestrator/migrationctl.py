@@ -102,8 +102,8 @@ def assess(
 def plan(
     config: Path = typer.Option(..., "--config", "-c", help="Migration config YAML."),
     out: Path = typer.Option(DEFAULT_OUTDIR, "--out", "-o", help="Output directory for artifacts."),
-    mode: Optional[str] = typer.Option(
-        None,
+    mode: str = typer.Option(
+        ...,
         "--mode",
         "--playbook",
         "-m",
@@ -182,8 +182,8 @@ def run(
     config: Path = typer.Option(..., "--config", "-c", help="Migration config YAML."),
     out: Path = typer.Option(DEFAULT_OUTDIR, "--out", "-o", help="Output directory for artifacts."),
     non_interactive: bool = typer.Option(True, "--non-interactive", help="Never prompt; CI-safe."),
-    mode: Optional[str] = typer.Option(
-        None,
+    mode: str = typer.Option(
+        ...,
         "--mode",
         "--playbook",
         "-m",
@@ -297,8 +297,8 @@ def resume(
     out: Path = typer.Option(DEFAULT_OUTDIR, "--out", "-o", help="Output directory containing state.json."),
     config: Optional[Path] = typer.Option(None, "--config", "-c", help="Migration config YAML. If omitted, uses path stored in report.json if present."),
     non_interactive: bool = typer.Option(True, "--non-interactive", help="Never prompt; CI-safe."),
-    mode: Optional[str] = typer.Option(
-        None,
+    mode: str = typer.Option(
+        ...,
         "--mode",
         "--playbook",
         "-m",
