@@ -1,0 +1,16 @@
+2026-02-09T13:13:52.422380+00:00 START mode=run config=config/migration.yaml
+2026-02-09T13:13:52.427476+00:00 RUN  preflight_one_step (Preflight checks (one_step)) -> scripts/00_preflight_one_step.sh
+2026-02-09T13:13:52.427776+00:00 CMD /Users/balajin/Documents/GitHub/Mysql-to-MariaDB-Migration/scripts/00_preflight_one_step.sh
+2026-02-09T13:13:52.442928+00:00 OUT ==> Preflight checks (one_step)
+2026-02-09T13:13:52.447528+00:00 OUT mariadb-dump not found; mysqldump is available (OK).
+2026-02-09T13:13:52.447556+00:00 OUT Checking source connectivity...
+2026-02-09T13:13:52.477021+00:00 OUT Checking target SSH connectivity...
+2026-02-09T13:13:52.808625+00:00 OUT Checking target mariadb client...
+2026-02-09T13:13:53.072395+00:00 OUT Attempting to install mariadb client deps on target...
+2026-02-09T13:13:54.192216+00:00 OUT Checking target TCP connectivity...
+2026-02-09T13:13:54.363410+00:00 OUT WARN: target TCP connect failed. Will attempt socket path during user creation/validate.
+2026-02-09T13:13:54.364809+00:00 OUT pv not found (optional).
+2026-02-09T13:13:54.364989+00:00 OUT Preflight complete.
+2026-02-09T13:13:54.366417+00:00 RUN  install_mariadb (Install MariaDB (target host)) -> scripts/05_install_mariadb.sh
+2026-02-09T13:13:54.366909+00:00 CMD /Users/balajin/Documents/GitHub/Mysql-to-MariaDB-Migration/scripts/05_install_mariadb.sh
+2026-02-09T13:13:54.378614+00:00 OUT Running MariaDB install on remote host: 192.168.64.3

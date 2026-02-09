@@ -27,6 +27,7 @@ modes:
     - validate
 
   two_step:
+    - two_step_prepare
     - precheck_only
     - two_step_schema
     - two_step_data
@@ -116,6 +117,12 @@ phases:
     - id: create_migration_user
       name: Create migration user on source and target
       script: scripts/09_create_migration_user.sh
+      args: []
+
+  two_step_prepare:
+    - id: preflight_two_step
+      name: Preflight checks (two_step)
+      script: scripts/00_preflight_two_step.sh
       args: []
 
   one_step:
