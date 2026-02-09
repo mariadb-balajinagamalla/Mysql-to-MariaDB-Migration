@@ -139,6 +139,11 @@ def plan(
         )
         if not (env.get("SRC_DB") or env.get("SRC_DBS")):
             raise typer.BadParameter("Missing SRC_DB or SRC_DBS for one_step/two_step.")
+        if mode_value == "two_step" and env.get("SRC_DBS"):
+            if not (env.get("SQLINESDATA_CMD_TEMPLATE") and env.get("SQLINESDATA_CMD_FINALIZE_TEMPLATE")):
+                raise typer.BadParameter(
+                    "two_step with SRC_DBS requires SQLINESDATA_CMD_TEMPLATE and SQLINESDATA_CMD_FINALIZE_TEMPLATE."
+                )
         if mode_value == "one_step" and env.get("SKIP_INSTALL_MARIADB") not in ("1", "true", "TRUE", "True"):
             _require_env(env, ["MARIADB_ES_TOKEN"], mode_value)
         if mode_value == "one_step":
@@ -221,6 +226,11 @@ def run(
         )
         if not (env.get("SRC_DB") or env.get("SRC_DBS")):
             raise typer.BadParameter("Missing SRC_DB or SRC_DBS for one_step/two_step.")
+        if mode_value == "two_step" and env.get("SRC_DBS"):
+            if not (env.get("SQLINESDATA_CMD_TEMPLATE") and env.get("SQLINESDATA_CMD_FINALIZE_TEMPLATE")):
+                raise typer.BadParameter(
+                    "two_step with SRC_DBS requires SQLINESDATA_CMD_TEMPLATE and SQLINESDATA_CMD_FINALIZE_TEMPLATE."
+                )
         if mode_value == "one_step" and env.get("SKIP_INSTALL_MARIADB") not in ("1", "true", "TRUE", "True"):
             _require_env(env, ["MARIADB_ES_TOKEN"], mode_value)
         if mode_value == "one_step":
