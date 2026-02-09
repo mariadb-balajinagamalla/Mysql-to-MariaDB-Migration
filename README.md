@@ -96,6 +96,7 @@ Target:
 - `TGT_SSH_HOST`, `TGT_SSH_USER`, `TGT_SSH_OPTS` (if running from a third host)
 
 SQLines Data:
+- SQLines Data is available for Linux/Windows only. Run two-step from a Linux host (e.g., a third VM).
 - `SQLINESDATA_BIN` (path to sqldata/sqlinesdata binary) or set `SQLINESDATA_URL` + `SQLINESDATA_DIR`
 - `SQLINESDATA_CMD` and `SQLINESDATA_CMD_FINALIZE` (single DB)
 - `SQLINESDATA_CMD_TEMPLATE` and `SQLINESDATA_CMD_FINALIZE_TEMPLATE` (multi-DB; use `{DB}` placeholder)
