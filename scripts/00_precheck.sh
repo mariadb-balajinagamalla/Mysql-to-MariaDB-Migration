@@ -78,6 +78,16 @@ SQL_FILES=(
   "$CHECKS_DIR/definers_inventory.sql"
   "$CHECKS_DIR/partitioned_tables.sql"
   "$CHECKS_DIR/active_plugins.sql"
+  "$CHECKS_DIR/functional_indexes.sql"
+  "$CHECKS_DIR/functional_defaults.sql"
+  "$CHECKS_DIR/invisible_columns.sql"
+  "$CHECKS_DIR/check_constraints.sql"
+  "$CHECKS_DIR/partial_revokes.sql"
+  "$CHECKS_DIR/gis_srid_usage.sql"
+  "$CHECKS_DIR/resource_groups.sql"
+  "$CHECKS_DIR/xplugin_status.sql"
+  "$CHECKS_DIR/fk_name_lengths.sql"
+  "$CHECKS_DIR/trigger_order.sql"
 )
 
 for f in "${SQL_FILES[@]}"; do

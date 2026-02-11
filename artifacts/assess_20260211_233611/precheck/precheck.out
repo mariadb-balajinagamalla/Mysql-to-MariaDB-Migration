@@ -1,7 +1,7 @@
 == Precheck runner ==
-Host: 192.168.68.107  Port: 3306  User: migrate
+Host: 127.0.0.1  Port: 3306  User: root
 Checks dir: /Users/balajin/Documents/GitHub/Mysql-to-MariaDB-Migration/sql/checks
-Outdir: /Users/balajin/Documents/GitHub/Mysql-to-MariaDB-Migration/artifacts/precheck
+Outdir: artifacts/assess_20260211_233611/precheck
 
 NOTE: mariadb-migrate-config-file not found; skipping config check.
 ---- mysql_version ----
@@ -116,7 +116,7 @@ sakila	staff	username	utf8mb4_0900_ai_ci
 sakila	staff_list	address	utf8mb4_0900_ai_ci
 sakila	staff_list	city	utf8mb4_0900_ai_ci
 sakila	staff_list	country	utf8mb4_0900_ai_ci
-... (truncated; full output in /Users/balajin/Documents/GitHub/Mysql-to-MariaDB-Migration/artifacts/precheck/mysql8_column_collations.tsv)
+... (truncated; full output in artifacts/assess_20260211_233611/precheck/mysql8_column_collations.tsv)
 
 ---- sql_mode ----
 ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION
@@ -205,4 +205,4 @@ mysqlx	ACTIVE
 (no rows)
 
 Precheck complete.
-TSV outputs: /Users/balajin/Documents/GitHub/Mysql-to-MariaDB-Migration/artifacts/precheck/*.tsv
+TSV outputs: artifacts/assess_20260211_233611/precheck/*.tsv

@@ -7,7 +7,7 @@ env:
   SRC_USER: "migrate"
   SRC_PASS: "Migrate123!"
   #SRC_DB: testdb
-  SRC_DBS: ""
+  SRC_DBS: "sakila,world,testdb"
   SRC_SSL_MODE: "DISABLED"  # e.g., DISABLED | REQUIRED | VERIFY_CA | VERIFY_IDENTITY
   SRC_ADMIN_USER: "root"
   SRC_ADMIN_PASS: "Root@1234"
@@ -20,8 +20,8 @@ env:
   TGT_SSH_HOST: "192.168.64.4"
   TGT_SSH_USER: "root"
   TGT_SSH_OPTS: "-o StrictHostKeyChecking=no"
-  MIGRATE_APP_USERS: "1"
-  APP_USER_DEFAULT_PASSWORD: "Mariadb@123"
+  MIGRATE_APP_USERS: "0"
+  APP_USER_DEFAULT_PASSWORD: ""
 
   # Two-step SQLines Data
   SQLINESDATA_BIN: ""

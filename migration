@@ -46,7 +46,7 @@ yaml_env() {
   ' "$cfg"
 }
 
-echo "==> MySQL to MariaDB Migration (interactive)"
+echo "==> MySQL to MariaDB Migration"
 MODE="$(prompt "Mode (one_step|two_step)" "one_step")"
 MODE="${MODE// /}"
 if [[ "$MODE" != "one_step" && "$MODE" != "two_step" ]]; then
@@ -207,6 +207,39 @@ else
   echo "==> Skipping config save."
 fi
 
-OUT_DIR="artifacts/run_${MODE}_$(date +%Y%m%d_%H%M%S)"
-echo "==> Running: $MODE (out: $OUT_DIR)"
-python3 -m orchestrator.migrationctl run --config config/migration.yaml --mode "$MODE" --out "$OUT_DIR"
+TS="$(date +%Y%m%d_%H%M%S)"
+ASSESS_DIR="artifacts/assess_${TS}"
+PLAN_DIR="artifacts/plan_${TS}"
+RUN_DIR_FILE=".migration_last_run"
+
+RUN_DIR=""
+if [[ -f "$RUN_DIR_FILE" ]]; then
+  RUN_DIR="$(cat "$RUN_DIR_FILE" | tr -d '\n')"
+fi
+
+if [[ -n "$RUN_DIR" && -d "$RUN_DIR" && -f "$RUN_DIR/state.json" ]]; then
+  echo "==> Resuming: $MODE (out: $RUN_DIR)"
+  python3 -m orchestrator.migrationctl resume --config config/migration.yaml --mode "$MODE" --out "$RUN_DIR"
+  STATUS=$?
+else
+  if [[ -f "config/source.yaml" ]]; then
+    echo "==> Assessing (out: $ASSESS_DIR)"
+    python3 -m orchestrator.migrationctl assess --config config/source.yaml --out "$ASSESS_DIR"
+  else
+    echo "==> Skipping assess (config/source.yaml not found)"
+  fi
+
+  echo "==> Planning: $MODE (out: $PLAN_DIR)"
+  python3 -m orchestrator.migrationctl plan --config config/migration.yaml --mode "$MODE" --out "$PLAN_DIR"
+
+  RUN_DIR="artifacts/run_${MODE}_${TS}"
+  echo "$RUN_DIR" > "$RUN_DIR_FILE"
+  echo "==> Running: $MODE (out: $RUN_DIR)"
+  python3 -m orchestrator.migrationctl run --config config/migration.yaml --mode "$MODE" --out "$RUN_DIR"
+  STATUS=$?
+fi
+
+if [[ $STATUS -eq 0 ]]; then
+  rm -f "$RUN_DIR_FILE"
+fi
+exit $STATUS

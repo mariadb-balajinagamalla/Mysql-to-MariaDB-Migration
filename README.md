@@ -59,6 +59,9 @@ Resume:
 python3 -m orchestrator.migrationctl resume --config config/migration.yaml --mode one_step --out artifacts/run
 ```
 
+Notes:
+- `./migration` runs assess → plan → run, and resumes automatically if a previous run failed.
+
 ## One-step required envs (config/migration.yaml)
 Source:
 - `SRC_HOST`, `SRC_PORT`, `SRC_USER`, `SRC_PASS`
