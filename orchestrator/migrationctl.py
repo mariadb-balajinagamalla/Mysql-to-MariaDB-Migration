@@ -57,6 +57,39 @@ def _require_env(env: Dict[str, str], keys: List[str], mode_value: str) -> None:
             f"Missing required env vars for mode '{mode_value}': {', '.join(missing)}"
         )
 
+def _prompt_env(env: Dict[str, str], key: str, prompt: str, secret: bool = False) -> None:
+    if env.get(key):
+        return
+    env[key] = typer.prompt(prompt, hide_input=secret, confirmation_prompt=False)
+
+def _prompt_required_env(env: Dict[str, str], mode_value: str, non_interactive: bool) -> None:
+    if non_interactive:
+        return
+    _prompt_env(env, "SRC_HOST", "Source host")
+    _prompt_env(env, "SRC_PORT", "Source port")
+    _prompt_env(env, "SRC_USER", "Source user")
+    _prompt_env(env, "SRC_PASS", "Source password", secret=True)
+
+    if not env.get("SRC_DB") and not env.get("SRC_DBS"):
+        dbs = typer.prompt("Source database(s) (comma-separated for multiple)")
+        if "," in dbs:
+            env["SRC_DBS"] = dbs
+        else:
+            env["SRC_DB"] = dbs
+
+    _prompt_env(env, "TGT_HOST", "Target host")
+    _prompt_env(env, "TGT_PORT", "Target port")
+    _prompt_env(env, "TGT_USER", "Target user")
+    _prompt_env(env, "TGT_PASS", "Target password", secret=True)
+
+    if mode_value == "two_step":
+        if env.get("SRC_DBS"):
+            _prompt_env(env, "SQLINESDATA_CMD_TEMPLATE", "SQLines Data command template")
+            _prompt_env(env, "SQLINESDATA_CMD_FINALIZE_TEMPLATE", "SQLines Data finalize template")
+        else:
+            _prompt_env(env, "SQLINESDATA_CMD", "SQLines Data command")
+            _prompt_env(env, "SQLINESDATA_CMD_FINALIZE", "SQLines Data finalize command")
+
 @app.command()
 def assess(
     config: Path = typer.Option(..., "--config", "-c", help="Source DB config YAML (read-only)."),
@@ -131,6 +164,7 @@ def plan(
     env = {str(k): str(v) for k, v in env.items()}
     # Allow environment variables to override/extend config envs.
     env = {**env, **os.environ}
+    _prompt_required_env(env, mode_value, non_interactive=False)
     if mode_value in ("one_step", "two_step"):
         _require_env(
             env,
@@ -144,8 +178,6 @@ def plan(
                 raise typer.BadParameter(
                     "two_step with SRC_DBS requires SQLINESDATA_CMD_TEMPLATE and SQLINESDATA_CMD_FINALIZE_TEMPLATE."
                 )
-        if mode_value == "one_step" and env.get("SKIP_INSTALL_MARIADB") not in ("1", "true", "TRUE", "True"):
-            _require_env(env, ["MARIADB_ES_TOKEN"], mode_value)
         if mode_value == "one_step":
             if not (env.get("SRC_ADMIN_USER") and env.get("SRC_ADMIN_PASS")):
                 report.log("WARN: SRC_ADMIN_USER/PASS not set; using SRC_USER/PASS as admin.")
@@ -181,7 +213,7 @@ def plan(
 def run(
     config: Path = typer.Option(..., "--config", "-c", help="Migration config YAML."),
     out: Path = typer.Option(DEFAULT_OUTDIR, "--out", "-o", help="Output directory for artifacts."),
-    non_interactive: bool = typer.Option(True, "--non-interactive", help="Never prompt; CI-safe."),
+    non_interactive: bool = typer.Option(False, "--non-interactive", help="Never prompt; CI-safe."),
     mode: str = typer.Option(
         ...,
         "--mode",
@@ -217,6 +249,7 @@ def run(
     env = {str(k): str(v) for k, v in env.items()}
     # Allow environment variables to override/extend config envs.
     env = {**env, **os.environ}
+    _prompt_required_env(env, mode_value, non_interactive)
 
     if mode_value in ("one_step", "two_step"):
         _require_env(
@@ -231,8 +264,6 @@ def run(
                 raise typer.BadParameter(
                     "two_step with SRC_DBS requires SQLINESDATA_CMD_TEMPLATE and SQLINESDATA_CMD_FINALIZE_TEMPLATE."
                 )
-        if mode_value == "one_step" and env.get("SKIP_INSTALL_MARIADB") not in ("1", "true", "TRUE", "True"):
-            _require_env(env, ["MARIADB_ES_TOKEN"], mode_value)
         if mode_value == "one_step":
             if not (env.get("SRC_ADMIN_USER") and env.get("SRC_ADMIN_PASS")):
                 report.log("WARN: SRC_ADMIN_USER/PASS not set; using SRC_USER/PASS as admin.")
@@ -296,7 +327,7 @@ def run(
 def resume(
     out: Path = typer.Option(DEFAULT_OUTDIR, "--out", "-o", help="Output directory containing state.json."),
     config: Optional[Path] = typer.Option(None, "--config", "-c", help="Migration config YAML. If omitted, uses path stored in report.json if present."),
-    non_interactive: bool = typer.Option(True, "--non-interactive", help="Never prompt; CI-safe."),
+    non_interactive: bool = typer.Option(False, "--non-interactive", help="Never prompt; CI-safe."),
     mode: str = typer.Option(
         ...,
         "--mode",

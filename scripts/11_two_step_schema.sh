@@ -23,13 +23,8 @@ TGT_SSH_HOST="${TGT_SSH_HOST:-}"
 TGT_SSH_USER="${TGT_SSH_USER:-root}"
 TGT_SSH_OPTS="${TGT_SSH_OPTS:-}"
 
-if [[ -n "$SRC_DBS" ]]; then
-  echo "ERROR: two_step schema supports a single SRC_DB only (not SRC_DBS)."
-  exit 1
-fi
-
-if [[ -z "$SRC_HOST" || -z "$SRC_USER" || -z "$SRC_PASS" || -z "$SRC_DB" ]]; then
-  echo "ERROR: Missing source envs. Set SRC_HOST, SRC_USER, SRC_PASS, SRC_DB (SRC_PORT optional)."
+if [[ -z "$SRC_HOST" || -z "$SRC_USER" || -z "$SRC_PASS" || ( -z "$SRC_DB" && -z "$SRC_DBS" ) ]]; then
+  echo "ERROR: Missing source envs. Set SRC_HOST, SRC_USER, SRC_PASS, and SRC_DB or SRC_DBS."
   exit 1
 fi
 
@@ -48,7 +43,11 @@ fi
 SRC_AUTH=( -h"$SRC_HOST" -P"$SRC_PORT" -u"$SRC_USER" )
 TGT_AUTH=( -h"$TGT_HOST" -P"$TGT_PORT" -u"$TGT_USER" )
 
-echo "Source: $SRC_HOST:$SRC_PORT  DB: $SRC_DB"
+if [[ -n "$SRC_DBS" ]]; then
+  echo "Source: $SRC_HOST:$SRC_PORT  DBs: $SRC_DBS"
+else
+  echo "Source: $SRC_HOST:$SRC_PORT  DB: $SRC_DB"
+fi
 echo "Target: $TGT_HOST:$TGT_PORT"
 
 set -o pipefail
@@ -57,8 +56,8 @@ if [[ -n "$SRC_SSL_MODE" ]]; then
   SRC_SSL_ARGS=( --ssl-mode="$SRC_SSL_MODE" )
 fi
 
-DUMP_ARGS=(
-  --no-data --databases "$SRC_DB"
+COMMON_ARGS=(
+  --no-data
   --routines --triggers --events
   --no-tablespaces
 )
@@ -71,20 +70,31 @@ if [[ "$STRIP_DEFINERS" == "1" ]]; then
   fi
 fi
 if [[ "$MARIADB_DUMP_BIN" == "mysqldump" ]]; then
-  DUMP_ARGS+=(--set-gtid-purged=OFF)
+  COMMON_ARGS+=(--set-gtid-purged=OFF)
 else
-  DUMP_ARGS+=(--gtid=0)
+  COMMON_ARGS+=(--gtid=0)
 fi
 
-MYSQL_PWD="$SRC_PASS" "$MARIADB_DUMP_BIN" "${SRC_AUTH[@]}" "${SRC_SSL_ARGS[@]}" "${DUMP_ARGS[@]}" \
-  | if [[ "${#FILTER_CMD[@]}" -gt 0 ]]; then "${FILTER_CMD[@]}"; else cat; fi \
-  | if [[ -n "$TGT_SSH_HOST" ]]; then
-      TGT_PASS_Q="$(printf '%q' "$TGT_PASS")"
-      ssh ${TGT_SSH_OPTS} "${TGT_SSH_USER}@${TGT_SSH_HOST}" \
-        "MYSQL_PWD=$TGT_PASS_Q ${MARIADB_BIN} ${TGT_AUTH[*]}"
-    else
-      MYSQL_PWD="$TGT_PASS" "$MARIADB_BIN" "${TGT_AUTH[@]}"
-    fi
+if [[ -n "$SRC_DBS" ]]; then
+  IFS=',' read -r -a DB_LIST <<< "$SRC_DBS"
+else
+  DB_LIST=("$SRC_DB")
+fi
+
+for db in "${DB_LIST[@]}"; do
+  db="${db// /}"
+  [[ -z "$db" ]] && continue
+  DUMP_ARGS=("${COMMON_ARGS[@]}" --databases "$db")
+  MYSQL_PWD="$SRC_PASS" "$MARIADB_DUMP_BIN" "${SRC_AUTH[@]}" "${SRC_SSL_ARGS[@]}" "${DUMP_ARGS[@]}" \
+    | if [[ "${#FILTER_CMD[@]}" -gt 0 ]]; then "${FILTER_CMD[@]}"; else cat; fi \
+    | if [[ -n "$TGT_SSH_HOST" ]]; then
+        TGT_PASS_Q="$(printf '%q' "$TGT_PASS")"
+        ssh ${TGT_SSH_OPTS} "${TGT_SSH_USER}@${TGT_SSH_HOST}" \
+          "MYSQL_PWD=$TGT_PASS_Q ${MARIADB_BIN} ${TGT_AUTH[*]}"
+      else
+        MYSQL_PWD="$TGT_PASS" "$MARIADB_BIN" "${TGT_AUTH[@]}"
+      fi
+done
 set +o pipefail
 
 echo "Schema-only migration completed."

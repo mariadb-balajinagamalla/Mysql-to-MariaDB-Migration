@@ -6,20 +6,6 @@
 #   args: optional list of args
 
 modes:
-
-  local:
-    - prerequisites
-    - backup
-    - transform
-
-  offline:
-    - prerequisites
-    - backup
-    - transform
-    - stop_and_swap
-    - import
-    - validate
-
   one_step:
     - one_step_prepare
     - precheck_only
@@ -34,69 +20,12 @@ modes:
     - two_step_finalize
     - validate
 
-  near_zero:
-    - precheck_only
-    - near_zero_replication
-    - near_zero_cdc
-    - near_zero_cutover
-    - validate
-
 phases:
   precheck_only:
     - id: precheck
       name: Precheck source variables and blockers
       script: scripts/00_precheck.sh
       args: []
-  prerequisites:
-    - id: precheck
-      name: Precheck source variables and blockers
-      script: scripts/00_precheck.sh
-      args: []
-
-    - id: prepare_mysql
-      name: Set innodb_fast_shutdown=0 before shutdown
-      script: scripts/01_prepare_mysql.sh
-      args: []
-
-  backup:
-    - id: backup_mysql_system_db
-      name: Backup mysql system database
-      script: scripts/02_backup_mysql_system_db.sh
-      args: []
-
-    - id: backup_application_databases
-      name: Backup application databases (exclude system schemas)
-      script: scripts/02b_backup_application_databases.sh
-      args: []
-
-  transform:
-    - id: generate_fix_sql
-      name: Generate SQL fixes (auth/json/collations) (optional)
-      script: scripts/03_generate_fix_sql.sh
-      args: []
-
-  stop_and_swap:
-    - id: stop_mysql_and_remove_packages
-      name: Stop MySQL and remove MySQL packages
-      script: scripts/04_stop_mysql_and_remove_packages.sh
-      args: []
-
-  import:
-    - id: install_mariadb
-      name: Install MariaDB
-      script: scripts/05_install_mariadb.sh
-      args: []
-
-    - id: start_upgrade
-      name: Start MariaDB and run mariadb-upgrade
-      script: scripts/06_start_mariadb_and_upgrade.sh
-      args: []
-
-    - id: restore_mysql_system_db
-      name: Restore mysql system database backup (socket-first)
-      script: scripts/08_restore_mysql_system_db.sh
-      args: []
-
   validate:
     - id: validate
       name: Validate after upgrade
@@ -107,11 +36,6 @@ phases:
     - id: preflight_one_step
       name: Preflight checks (one_step)
       script: scripts/00_preflight_one_step.sh
-      args: []
-
-    - id: install_mariadb
-      name: Install MariaDB (target host)
-      script: scripts/05_install_mariadb.sh
       args: []
 
     - id: create_migration_user
@@ -147,22 +71,4 @@ phases:
     - id: two_step_finalize_objects
       name: Apply constraints/indexes/routines after data load
       script: scripts/13_two_step_finalize.sh
-      args: []
-
-  near_zero_replication:
-    - id: near_zero_replica_setup
-      name: Configure MariaDB as replica of MySQL
-      script: scripts/14_near_zero_replication.sh
-      args: []
-
-  near_zero_cdc:
-    - id: near_zero_cdc_stream
-      name: Start CDC (Debezium) stream to MariaDB
-      script: scripts/15_near_zero_cdc.sh
-      args: []
-
-  near_zero_cutover:
-    - id: near_zero_cutover
-      name: Cutover and validation
-      script: scripts/16_near_zero_cutover.sh
       args: []

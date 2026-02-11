@@ -34,6 +34,34 @@ echo "" | tee -a "$COMBINED_OUT"
 
 : > "$COMBINED_ERR"
 
+# Config checker reminder (mariadb-migrate-config-file)
+INTERACTIVE="${INTERACTIVE:-}"
+if [[ -z "$INTERACTIVE" ]]; then
+  if [[ -t 0 ]]; then
+    INTERACTIVE=1
+  else
+    INTERACTIVE=0
+  fi
+fi
+
+CFG_BIN="${MARIADB_MIGRATE_CONFIG_FILE_BIN:-mariadb-migrate-config-file}"
+CFG_ARGS="${MARIADB_MIGRATE_CONFIG_FILE_ARGS:---print}"
+if command -v "$CFG_BIN" >/dev/null 2>&1; then
+  echo "Config checker available: $CFG_BIN" | tee -a "$COMBINED_OUT"
+  if [[ "$INTERACTIVE" == "1" ]]; then
+    read -r -p "Run config checker now? [y/N] " _ans
+    if [[ "$_ans" =~ ^[Yy]$ ]]; then
+      "$CFG_BIN" $CFG_ARGS | tee -a "$COMBINED_OUT" || true
+    else
+      echo "Skipped config checker." | tee -a "$COMBINED_OUT"
+    fi
+  else
+    echo "NOTE: Run '$CFG_BIN $CFG_ARGS' to check my.cnf compatibility." | tee -a "$COMBINED_OUT"
+  fi
+else
+  echo "NOTE: mariadb-migrate-config-file not found; skipping config check." | tee -a "$COMBINED_OUT"
+fi
+
 # IMPORTANT: run each sql/checks/*.sql file individually so each output maps 1:1 to a TSV.
 SQL_FILES=(
   "$CHECKS_DIR/mysql_version.sql"

@@ -19,10 +19,6 @@ TGT_USER="${TGT_USER:-}"
 TGT_PASS="${TGT_PASS:-}"
 
 SQLINESDATA_BIN="${SQLINESDATA_BIN:-}"
-SQLINESDATA_URL="${SQLINESDATA_URL:-}"
-SQLINESDATA_DIR="${SQLINESDATA_DIR:-/usr/local/bin}"
-
-AUTO_FIX="${PREFLIGHT_AUTO_FIX:-0}"
 
 missing=()
 for v in SRC_HOST SRC_USER SRC_PASS TGT_HOST TGT_USER TGT_PASS; do
@@ -65,57 +61,9 @@ if [[ -n "$SQLINESDATA_BIN" ]]; then
 else
   if command -v sqldata >/dev/null 2>&1; then
     echo "sqldata found in PATH (OK)."
-  elif [[ -n "$SQLINESDATA_URL" && "$AUTO_FIX" == "1" ]]; then
-    case "$SQLINESDATA_URL" in
-      *.zip|*.tar.gz|*.tgz|*sqldata*|*sqlinesdata*) ;;
-      *)
-        echo "ERROR: SQLINESDATA_URL does not look like a direct binary/archive. Provide a direct download URL."
-        exit 5
-        ;;
-    esac
-    echo "Attempting to download SQLines Data..."
-    tmpdir="$(mktemp -d)"
-    fname="$tmpdir/sqldata_download"
-    if command -v curl >/dev/null 2>&1; then
-      curl -fL -o "$fname" "$SQLINESDATA_URL"
-    elif command -v wget >/dev/null 2>&1; then
-      wget -O "$fname" "$SQLINESDATA_URL"
-    else
-      echo "ERROR: curl or wget required to download SQLines Data."
-      exit 5
-    fi
-
-    mkdir -p "$SQLINESDATA_DIR"
-    case "$SQLINESDATA_URL" in
-      *.tar.gz|*.tgz)
-        tar -xzf "$fname" -C "$tmpdir"
-        ;;
-      *.zip)
-        unzip -q "$fname" -d "$tmpdir"
-        ;;
-      *)
-        ;;
-    esac
-
-    bin_path="$(find "$tmpdir" -type f -name "sqldata" -o -name "sqlinesdata" | head -n 1 || true)"
-    if [[ -z "$bin_path" ]]; then
-      if [[ -f "$fname" ]]; then
-        bin_path="$fname"
-      fi
-    fi
-
-    if [[ -z "$bin_path" ]]; then
-      echo "ERROR: Could not locate sqldata binary after download."
-      exit 6
-    fi
-
-    install_path="$SQLINESDATA_DIR/$(basename "$bin_path")"
-    cp "$bin_path" "$install_path"
-    chmod +x "$install_path"
-    echo "Installed SQLines Data to $install_path"
   else
     echo "ERROR: SQLINESDATA_BIN not set and sqldata not found in PATH."
-    exit 7
+    exit 5
   fi
 fi
 

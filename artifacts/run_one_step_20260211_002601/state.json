@@ -1,0 +1,41 @@
+{
+  "created_at": "2026-02-10T18:56:01.155143+00:00",
+  "steps": {
+    "create_migration_user": {
+      "meta": {
+        "args": [],
+        "output_tail": [
+          "==> Create migration user on source and target",
+          "Creating migration user on source: 192.168.68.107:3306",
+          "ERROR 1045 (28000): Access denied for user 'root'@'localhost' (using password: YES)",
+          "ERROR 1045 (28000): Access denied for user 'root'@'localhost' (using password: NO)",
+          "ERROR 1045 (28000): Access denied for user 'root'@'192.168.68.107' (using password: YES)"
+        ],
+        "returncode": 1,
+        "script": "scripts/09_create_migration_user.sh"
+      },
+      "status": "FAILED",
+      "updated_at": "2026-02-10T18:56:02.103087+00:00"
+    },
+    "preflight_one_step": {
+      "meta": {
+        "args": [],
+        "output_tail": [
+          "==> Preflight checks (one_step)",
+          "mariadb-dump not found; mysqldump is available (OK).",
+          "Checking source connectivity...",
+          "Checking target SSH connectivity...",
+          "Checking target mariadb client...",
+          "Checking target TCP connectivity...",
+          "pv not found (optional).",
+          "Preflight complete."
+        ],
+        "returncode": 0,
+        "script": "scripts/00_preflight_one_step.sh"
+      },
+      "status": "DONE",
+      "updated_at": "2026-02-10T18:56:01.989979+00:00"
+    }
+  },
+  "version": 1
+}

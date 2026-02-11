@@ -14,20 +14,15 @@ Private repository to design, execute, and validate end-to-end MySQL to MariaDB 
 - Authentication plugin Compatibility
 - Validation & rollback planning
 
-# Supported Versions
+## Supported Versions
 - MySQL: 8.0
 - MariaDB: 11.x (LTS)
 
-## Tools
-- mariadb-dump / mysqlpump
-- SQLines
-- mydumper
-- Custom validation scripts
-
 ## Prerequisites (required)
-- Set `MARIADB_ES_TOKEN` in the environment to download MariaDB Enterprise RPMs.
+- MariaDB must be pre-installed on the target and configured per customer requirements.
 - Ensure network connectivity from the orchestrator host to both source MySQL and target MariaDB.
-- The orchestrator can run on a third host; SSH access to the target is required for install/validation.
+- The orchestrator can run on a third host; SSH access to the target is required for validation.
+- The tool prompts for required inputs if not provided in config/env.
 
 ## Status
 In progress
@@ -43,14 +38,10 @@ Best for smaller databases and standard maintenance windows.
 Best for larger datasets or tighter windows.
 - Schema-only dump first, then SQLines Data for parallel load, then finalize objects.
 
-### Near zero-downtime (custom)
-Best for mission-critical workloads.
-- Replication + CDC (Debezium) until cutover.
-
 ## Orchestrator usage
-Assessment (read-only):
+Interactive (recommended):
 ```bash
-python3 -m orchestrator.migrationctl assess --config config/source.yaml --out artifacts/assess
+./migration
 ```
 
 Plan:
@@ -81,11 +72,6 @@ Target:
 - `TGT_ADMIN_LOCAL=1` to use socket on target host (recommended)
 - `TGT_SSH_HOST`, `TGT_SSH_USER`, `TGT_SSH_OPTS` (required when running from a third host)
 
-Install (target):
-- `MARIADB_ES_TOKEN` (exported env var; do not commit)
-- `MARIADB_ES_OS` (e.g., `rhel-10`), `MARIADB_ES_ARCH` (e.g., `aarch64`)
-- `MARIADB_INSTALL_HOST` (target IP) and SSH settings
-
 ## Two-step required envs (config/migration.yaml)
 Source:
 - `SRC_HOST`, `SRC_PORT`, `SRC_USER`, `SRC_PASS`
@@ -97,7 +83,7 @@ Target:
 
 SQLines Data:
 - SQLines Data is available for Linux/Windows only. Run two-step from a Linux host (e.g., a third VM).
-- `SQLINESDATA_BIN` (path to sqldata/sqlinesdata binary) or set `SQLINESDATA_URL` + `SQLINESDATA_DIR`
+- `SQLINESDATA_BIN` (path to sqldata/sqlinesdata binary)
 - `SQLINESDATA_CMD` and `SQLINESDATA_CMD_FINALIZE` (single DB)
 - `SQLINESDATA_CMD_TEMPLATE` and `SQLINESDATA_CMD_FINALIZE_TEMPLATE` (multi-DB; use `{DB}` placeholder)
 
@@ -123,14 +109,4 @@ SRC_DBS: "sakila,world"
 
 ## Notes
 - Use a fresh `--out` directory per run to avoid step skips.
-- If you want a truly clean install on target, remove existing MySQL/MariaDB packages and data.
-## Workflow (quick onboarding)
-1. Run precheck to assess source MySQL and gather blockers.
-2. Prepare MySQL and take backups (system + application schemas).
-3. Optionally generate fix SQL for auth plugins/JSON columns.
-4. Stop MySQL and swap packages to MariaDB (offline cutover).
-5. Start MariaDB, run upgrade, restore system DB, and validate.
-
-Notes:
-- Orchestrator mode: `python -m orchestrator.migrationctl assess/run --config config/*.yaml --out artifacts`
-- Manual mode: run scripts in `scripts/` in numeric order.
+- Orchestrator mode: `python -m orchestrator.migrationctl plan/run --config config/migration.yaml --mode <one_step|two_step> --out artifacts/<dir>`

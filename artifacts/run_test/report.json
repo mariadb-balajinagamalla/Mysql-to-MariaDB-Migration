@@ -1,0 +1,93 @@
+{
+  "schema_version": 1,
+  "run_id": "20260210T181336Z",
+  "mode": "run",
+  "config_path": "config/migration.yaml",
+  "started_at": "2026-02-10T18:13:36.266564+00:00",
+  "finished_at": "2026-02-10T18:13:37.174015+00:00",
+  "success": false,
+  "message": "Run failed at step: create_migration_user",
+  "source": {},
+  "target": {},
+  "gates": [],
+  "warnings": [],
+  "inventory": {},
+  "plan": {
+    "mode": "one_step",
+    "phases": [
+      "one_step_prepare",
+      "precheck_only",
+      "one_step",
+      "validate"
+    ],
+    "steps": [
+      {
+        "id": "preflight_one_step",
+        "name": "Preflight checks (one_step)",
+        "script": "scripts/00_preflight_one_step.sh",
+        "args": []
+      },
+      {
+        "id": "create_migration_user",
+        "name": "Create migration user on source and target",
+        "script": "scripts/09_create_migration_user.sh",
+        "args": []
+      },
+      {
+        "id": "precheck",
+        "name": "Precheck source variables and blockers",
+        "script": "scripts/00_precheck.sh",
+        "args": []
+      },
+      {
+        "id": "one_step_dump_restore",
+        "name": "One-step dump/restore (mariadb-dump | mariadb)",
+        "script": "scripts/10_one_step_migration.sh",
+        "args": []
+      },
+      {
+        "id": "validate",
+        "name": "Validate after upgrade",
+        "script": "scripts/07_validate.sh",
+        "args": []
+      }
+    ]
+  },
+  "steps": [
+    {
+      "id": "preflight_one_step",
+      "name": "Preflight checks (one_step)",
+      "status": "DONE",
+      "details": {
+        "script": "scripts/00_preflight_one_step.sh",
+        "args": [],
+        "returncode": 0,
+        "output_tail": [
+          "==> Preflight checks (one_step)",
+          "mariadb-dump not found; mysqldump is available (OK).",
+          "Checking source connectivity...",
+          "Checking target SSH connectivity...",
+          "Checking target mariadb client...",
+          "Checking target TCP connectivity...",
+          "pv not found (optional).",
+          "Preflight complete."
+        ]
+      }
+    },
+    {
+      "id": "create_migration_user",
+      "name": "Create migration user on source and target",
+      "status": "FAILED",
+      "details": {
+        "script": "scripts/09_create_migration_user.sh",
+        "args": [],
+        "returncode": 1,
+        "output_tail": [
+          "==> Create migration user on source and target",
+          "Creating migration user on source: 192.168.68.107:3306",
+          "ERROR 1045 (28000): Access denied for user 'root'@'192.168.68.107' (using password: YES)"
+        ]
+      }
+    }
+  ]
+}
