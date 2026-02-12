@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "run_id": "20260212T140606Z",
+  "mode": "assessment",
+  "config_path": "config/migration.yaml",
+  "started_at": "2026-02-12T14:06:06.674997+00:00",
+  "finished_at": "2026-02-12T14:06:06.698323+00:00",
+  "success": false,
+  "message": "Assessment failed during checks: precheck failed rc=3 (see artifacts/precheck/precheck.err)",
+  "source": {},
+  "target": {},
+  "gates": [],
+  "warnings": [],
+  "inventory": {},
+  "plan": {},
+  "steps": []
+}

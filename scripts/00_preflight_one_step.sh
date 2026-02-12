@@ -21,6 +21,7 @@ TGT_PASS="${TGT_PASS:-}"
 TGT_SSH_HOST="${TGT_SSH_HOST:-}"
 TGT_SSH_USER="${TGT_SSH_USER:-root}"
 TGT_SSH_OPTS="${TGT_SSH_OPTS:-}"
+ALLOW_TARGET_DB_OVERWRITE="${ALLOW_TARGET_DB_OVERWRITE:-0}"
 
 AUTO_FIX="${PREFLIGHT_AUTO_FIX:-0}"
 AUTO_FIX_TARGET="${PREFLIGHT_AUTO_FIX_TARGET:-$AUTO_FIX}"
@@ -58,6 +59,40 @@ MYSQL_PWD="$SRC_PASS" "$MYSQL_BIN" -h"$SRC_HOST" -P"$SRC_PORT" -u"$SRC_USER" \
   --connect-timeout=5 --batch --skip-column-names \
   -e "SELECT 1;" >/dev/null
 
+echo "Checking source database(s) exist..."
+sql_escape() {
+  local s="$1"
+  s="${s//\'/\'\'}"
+  printf "%s" "$s"
+}
+source_db_exists() {
+  local db="$1"
+  local db_esc
+  db_esc="$(sql_escape "$db")"
+  local q="SELECT COUNT(*) FROM information_schema.schemata WHERE schema_name='${db_esc}';"
+  local out
+  out="$(MYSQL_PWD="$SRC_PASS" "$MYSQL_BIN" -h"$SRC_HOST" -P"$SRC_PORT" -u"$SRC_USER" \
+    --batch --skip-column-names -e "$q")"
+  [[ "${out:-0}" -gt 0 ]]
+}
+if [[ -n "$SRC_DBS" ]]; then
+  IFS=',' read -r -a SRC_DB_LIST <<< "$SRC_DBS"
+else
+  SRC_DB_LIST=("$SRC_DB")
+fi
+missing_src=()
+for db in "${SRC_DB_LIST[@]}"; do
+  db="${db// /}"
+  [[ -z "$db" ]] && continue
+  if ! source_db_exists "$db"; then
+    missing_src+=("$db")
+  fi
+done
+if [[ "${#missing_src[@]}" -gt 0 ]]; then
+  echo "ERROR: Source DB does not exist: ${missing_src[*]}"
+  exit 5
+fi
+
 if [[ -n "$TGT_SSH_HOST" ]]; then
   echo "Checking target SSH connectivity..."
   if ! ssh ${TGT_SSH_OPTS} "${TGT_SSH_USER}@${TGT_SSH_HOST}" "true" >/dev/null 2>&1; then
@@ -79,6 +114,45 @@ if [[ -n "$TGT_SSH_HOST" ]]; then
   if ! ssh ${TGT_SSH_OPTS} "${TGT_SSH_USER}@${TGT_SSH_HOST}" \
     "MYSQL_PWD='${TGT_PASS}' mariadb -h'${TGT_HOST}' -P'${TGT_PORT}' -u'${TGT_USER}' --connect-timeout=5 -e 'SELECT 1;' >/dev/null 2>&1"; then
     echo "WARN: target TCP connect failed. Will attempt socket path during user creation/validate."
+  fi
+fi
+
+if [[ "$ALLOW_TARGET_DB_OVERWRITE" != "1" ]]; then
+  target_db_exists() {
+    local db="$1"
+    local db_esc
+    db_esc="$(sql_escape "$db")"
+    local q="SELECT COUNT(*) FROM information_schema.schemata WHERE schema_name='${db_esc}';"
+    local out=""
+    if [[ -n "$TGT_SSH_HOST" ]]; then
+      local tgt_pass_q
+      tgt_pass_q="$(printf '%q' "$TGT_PASS")"
+      out="$(ssh ${TGT_SSH_OPTS} "${TGT_SSH_USER}@${TGT_SSH_HOST}" \
+        "MYSQL_PWD=$tgt_pass_q mariadb -h'${TGT_HOST}' -P'${TGT_PORT}' -u'${TGT_USER}' --batch --skip-column-names -e \"$q\"")"
+    else
+      out="$(MYSQL_PWD="$TGT_PASS" mariadb -h"$TGT_HOST" -P"$TGT_PORT" -u"$TGT_USER" \
+        --batch --skip-column-names -e "$q")"
+    fi
+    [[ "${out:-0}" -gt 0 ]]
+  }
+
+  existing=()
+  if [[ -n "$SRC_DBS" ]]; then
+    IFS=',' read -r -a DB_LIST <<< "$SRC_DBS"
+  else
+    DB_LIST=("$SRC_DB")
+  fi
+  for db in "${DB_LIST[@]}"; do
+    db="${db// /}"
+    [[ -z "$db" ]] && continue
+    if target_db_exists "$db"; then
+      existing+=("$db")
+    fi
+  done
+  if [[ "${#existing[@]}" -gt 0 ]]; then
+    echo "ERROR: Target DB already exists: ${existing[*]}"
+    echo "Set ALLOW_TARGET_DB_OVERWRITE=1 only if overwrite is intended."
+    exit 6
   fi
 fi
 

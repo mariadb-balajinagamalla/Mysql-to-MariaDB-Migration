@@ -1,6 +1,24 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+run_signature() {
+  printf "%s\n" \
+    "MODE=$MODE" \
+    "SRC_HOST=$SRC_HOST" \
+    "SRC_PORT=$SRC_PORT" \
+    "SRC_ADMIN_USER=$SRC_ADMIN_USER" \
+    "SRC_DBS_INPUT=$SRC_DBS_INPUT" \
+    "TGT_HOST=$TGT_HOST" \
+    "TGT_PORT=$TGT_PORT" \
+    "TGT_ADMIN_USER=$TGT_ADMIN_USER" \
+    "TGT_SSH_HOST=$TGT_SSH_HOST" \
+    "TGT_SSH_USER=$TGT_SSH_USER" \
+    "MIGRATE_APP_USERS=$MIGRATE_APP_USERS" \
+    "SQLINESDATA_BIN=$SQLINESDATA_BIN" \
+    "SQLINESDATA_CMD=$SQLINESDATA_CMD" \
+    "SQLINESDATA_CMD_FINALIZE=$SQLINESDATA_CMD_FINALIZE"
+}
+
 prompt() {
   local label="$1"
   local def="${2:-}"
@@ -211,22 +229,37 @@ TS="$(date +%Y%m%d_%H%M%S)"
 ASSESS_DIR="artifacts/assess_${TS}"
 PLAN_DIR="artifacts/plan_${TS}"
 RUN_DIR_FILE=".migration_last_run"
+RUN_SIG_FILE=".migration_last_signature"
 
 RUN_DIR=""
 if [[ -f "$RUN_DIR_FILE" ]]; then
   RUN_DIR="$(cat "$RUN_DIR_FILE" | tr -d '\n')"
 fi
 
-if [[ -n "$RUN_DIR" && -d "$RUN_DIR" && -f "$RUN_DIR/state.json" ]]; then
+CURRENT_SIG="$(run_signature)"
+LAST_SIG=""
+if [[ -f "$RUN_SIG_FILE" ]]; then
+  LAST_SIG="$(cat "$RUN_SIG_FILE")"
+fi
+
+if [[ -n "$RUN_DIR" && -d "$RUN_DIR" && -f "$RUN_DIR/state.json" && -n "$LAST_SIG" && "$CURRENT_SIG" == "$LAST_SIG" ]]; then
   echo "==> Resuming: $MODE (out: $RUN_DIR)"
   python3 -m orchestrator.migrationctl resume --config config/migration.yaml --mode "$MODE" --out "$RUN_DIR"
   STATUS=$?
 else
+  if [[ -n "$RUN_DIR" && -d "$RUN_DIR" && -f "$RUN_DIR/state.json" ]]; then
+    echo "==> Previous run found, but inputs changed. Starting a new run directory."
+  fi
+  # Drop stale resume pointers before a fresh assess/plan/run attempt.
+  rm -f "$RUN_DIR_FILE" "$RUN_SIG_FILE"
   if [[ -f "config/source.yaml" ]]; then
     echo "==> Assessing (out: $ASSESS_DIR)"
     python3 -m orchestrator.migrationctl assess --config config/source.yaml --out "$ASSESS_DIR"
+  elif [[ -f "config/migration.yaml" ]]; then
+    echo "==> Assessing (out: $ASSESS_DIR)"
+    python3 -m orchestrator.migrationctl assess --config config/migration.yaml --out "$ASSESS_DIR"
   else
-    echo "==> Skipping assess (config/source.yaml not found)"
+    echo "==> Skipping assess (config/source.yaml and config/migration.yaml not found)"
   fi
 
   echo "==> Planning: $MODE (out: $PLAN_DIR)"
@@ -234,6 +267,7 @@ else
 
   RUN_DIR="artifacts/run_${MODE}_${TS}"
   echo "$RUN_DIR" > "$RUN_DIR_FILE"
+  printf "%s" "$CURRENT_SIG" > "$RUN_SIG_FILE"
   echo "==> Running: $MODE (out: $RUN_DIR)"
   python3 -m orchestrator.migrationctl run --config config/migration.yaml --mode "$MODE" --out "$RUN_DIR"
   STATUS=$?
@@ -241,5 +275,6 @@ fi
 
 if [[ $STATUS -eq 0 ]]; then
   rm -f "$RUN_DIR_FILE"
+  rm -f "$RUN_SIG_FILE"
 fi
 exit $STATUS

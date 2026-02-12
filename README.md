@@ -100,3 +100,4 @@ SRC_DBS: "sakila,world"
 ## Notes
 - Use a fresh `--out` directory per run to avoid step skips.
 - Orchestrator mode: `python -m orchestrator.migrationctl plan/run --config config/migration.yaml --mode <one_step|two_step> --out artifacts/<dir>`
+- Safety default: migration fails if target DB already exists. Set `ALLOW_TARGET_DB_OVERWRITE=1` only when overwrite is intentional.

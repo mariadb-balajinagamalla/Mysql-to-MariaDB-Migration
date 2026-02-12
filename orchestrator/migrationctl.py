@@ -21,6 +21,22 @@ DEFAULT_STATE = "state.json"
 DEFAULT_REPORT = "report.json"
 DEFAULT_LOG = "run.log"
 
+def _failure_hint_from_meta(meta: Optional[Dict[str, Any]]) -> Optional[str]:
+    if not meta:
+        return None
+    tail = meta.get("output_tail") or []
+    if not isinstance(tail, list):
+        return None
+    for line in reversed(tail):
+        s = str(line)
+        if "ERROR:" in s or "Got error:" in s:
+            return s
+    for line in reversed(tail):
+        s = str(line).strip()
+        if s:
+            return s
+    return None
+
 def _load_yaml(path: Path) -> Dict[str, Any]:
     if not path.exists():
         raise typer.BadParameter(f"Config file not found: {path}")
@@ -111,8 +127,15 @@ def assess(
     cfg = _load_yaml(config)
     report.start_run(mode="assessment", config_path=str(config))
 
-    # Perform assessment checks (read-only)
-    result: AssessmentResult = run_assessment_checks(cfg, report, repo_root, out)
+    try:
+        # Perform assessment checks (read-only)
+        result: AssessmentResult = run_assessment_checks(cfg, report, repo_root, out)
+    except Exception as exc:
+        msg = f"Assessment failed during checks: {exc}"
+        report.log(f"ERROR: {msg}")
+        report.finish_run(success=False, message=msg)
+        typer.echo("ASSESSMENT: FAIL (see artifacts/report.json and run.log)")
+        raise typer.Exit(code=2)
 
     # Persist summary
     report.set_source(result.source)
@@ -291,6 +314,7 @@ def run(
         )
 
     failures = []
+    failure_meta: Optional[Dict[str, Any]] = None
     for s in steps:
         step_id = s["id"]
         name = s.get("name", step_id)
@@ -311,12 +335,16 @@ def run(
         else:
             state.mark_failed(step_id, meta=meta)
             report.add_step(step_id, name, StepStatus.FAILED, details=meta)
+            failure_meta = meta
             failures.append(step_id)
             break  # fail-fast
 
     if failures:
         report.finish_run(success=False, message=f"Run failed at step: {failures[0]}")
         typer.echo(f"RUN: FAIL at {failures[0]} (see artifacts/run.log)")
+        failure_hint = _failure_hint_from_meta(failure_meta)
+        if failure_hint:
+            typer.echo(f"OUT {failure_hint}")
         raise typer.Exit(code=3)
 
     report.finish_run(success=True, message="Run completed successfully.")

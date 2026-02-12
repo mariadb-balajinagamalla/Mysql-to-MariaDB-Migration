@@ -1,9 +1,10 @@
 from __future__ import annotations
 
+import os
 import subprocess
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional, Tuple
 
 from .report import Gate, GateStatus, WarningItem, Report
 
@@ -29,25 +30,128 @@ def _read_tsv(path: Path) -> List[List[str]]:
     return rows
 
 
+def _effective_env_cfg(cfg: Dict[str, Any]) -> Dict[str, str]:
+    env_cfg = {str(k): str(v) for k, v in (cfg.get("env", {}) or {}).items()}
+    # Allow interactive wrapper exports to override assessment config.
+    override_keys = [
+        "SRC_HOST",
+        "SRC_PORT",
+        "SRC_USER",
+        "SRC_PASS",
+        "SRC_ADMIN_USER",
+        "SRC_ADMIN_PASS",
+        "SRC_DB",
+        "SRC_DBS",
+        "MYSQL_PWD",
+        "MYSQL_BIN",
+    ]
+    for k in override_keys:
+        v = os.environ.get(k)
+        if v is not None and str(v) != "":
+            env_cfg[k] = str(v)
+    return env_cfg
+
+
+def _select_source_credentials(cfg: Dict[str, Any], env_cfg: Dict[str, str]) -> Tuple[Optional[str], Optional[str], str]:
+    client = cfg.get("client", {}) or {}
+    mysql_bin = str(env_cfg.get("MYSQL_BIN", client.get("mysql_bin", "mysql")))
+    host = str(env_cfg.get("SRC_HOST", client.get("host", "127.0.0.1")))
+    port = str(env_cfg.get("SRC_PORT", client.get("port", 3306)))
+
+    # Priority: explicit assess creds -> admin creds -> migration creds -> source-config creds.
+    candidates: List[Tuple[str, str, str]] = []
+    explicit_user = str(env_cfg.get("SRC_ASSESS_USER", "")).strip()
+    explicit_pass = str(env_cfg.get("SRC_ASSESS_PASS", "")).strip()
+    if explicit_user:
+        candidates.append((explicit_user, explicit_pass, "SRC_ASSESS_USER"))
+
+    admin_user = str(env_cfg.get("SRC_ADMIN_USER", "")).strip()
+    admin_pass = str(env_cfg.get("SRC_ADMIN_PASS", "")).strip()
+    if admin_user:
+        candidates.append((admin_user, admin_pass, "SRC_ADMIN_USER"))
+
+    src_user = str(env_cfg.get("SRC_USER", "")).strip()
+    src_pass = str(env_cfg.get("SRC_PASS", "")).strip()
+    if src_user:
+        candidates.append((src_user, src_pass, "SRC_USER"))
+
+    client_user = str(client.get("user", "")).strip()
+    client_pass = str(env_cfg.get("MYSQL_PWD", "")).strip()
+    if client_user:
+        candidates.append((client_user, client_pass, "client.user"))
+
+    # De-dupe by (user, pass) while preserving order.
+    seen = set()
+    deduped: List[Tuple[str, str, str]] = []
+    for user, pwd, src in candidates:
+        key = (user, pwd)
+        if key in seen:
+            continue
+        seen.add(key)
+        deduped.append((user, pwd, src))
+
+    last_err = "no_source_credentials_available"
+    for user, pwd, src in deduped:
+        env = dict(os.environ)
+        if pwd:
+            env["MYSQL_PWD"] = pwd
+        elif "MYSQL_PWD" in env:
+            del env["MYSQL_PWD"]
+        try:
+            p = subprocess.run(
+                [mysql_bin, f"-h{host}", f"-P{port}", f"-u{user}", "--batch", "--skip-column-names", "-e", "SELECT 1;"],
+                capture_output=True,
+                text=True,
+                env=env,
+            )
+        except FileNotFoundError:
+            return None, None, f"mysql client not found: {mysql_bin}"
+        if p.returncode == 0:
+            return user, pwd, src
+        err = (p.stderr or p.stdout or "").strip().replace("\n", " ")
+        last_err = f"{src} ({user}) failed: {err[:240]}"
+
+    return None, None, last_err
+
+
 def _run_precheck(repo_root: Path, cfg: Dict[str, Any], outdir: Path, log) -> Path:
     precheck_out = outdir / "precheck"
     precheck_out.mkdir(parents=True, exist_ok=True)
 
     client = cfg.get("client", {}) or {}
-    env_cfg = cfg.get("env", {}) or {}
+    env_cfg = _effective_env_cfg(cfg)
+
+    user, password, cred_source = _select_source_credentials(cfg, env_cfg)
+    if not user:
+        raise RuntimeError(f"unable to authenticate to source for assessment: {cred_source}")
+    log(f"Assessment source auth selected: {cred_source} ({user})")
 
     env = {
-        "MYSQL_BIN": str(client.get("mysql_bin", "mysql")),
-        "HOST": str(client.get("host", "127.0.0.1")),
-        "PORT": str(client.get("port", 3306)),
-        "USER": str(client.get("user", "root")),
+        "MYSQL_BIN": str(env_cfg.get("MYSQL_BIN", client.get("mysql_bin", "mysql"))),
+        "HOST": str(env_cfg.get("SRC_HOST", client.get("host", "127.0.0.1"))),
+        "PORT": str(env_cfg.get("SRC_PORT", client.get("port", 3306))),
+        "USER": user,
         "OUTDIR": str(precheck_out),
         "CHECKS_DIR": str(repo_root / "sql" / "checks"),
     }
-
-    # Pass through env vars like MYSQL_PWD (do not log secrets)
+    # Pass through env vars first.
     for k, v in env_cfg.items():
         env[str(k)] = str(v)
+
+    # Then force the effective credentials (and password) used by precheck.
+    env["MYSQL_BIN"] = str(env_cfg.get("MYSQL_BIN", client.get("mysql_bin", "mysql")))
+    env["HOST"] = str(env_cfg.get("SRC_HOST", client.get("host", "127.0.0.1")))
+    env["PORT"] = str(env_cfg.get("SRC_PORT", client.get("port", 3306)))
+    env["USER"] = user
+    env["SRC_USER"] = user
+    if password:
+        env["MYSQL_PWD"] = password
+    elif "MYSQL_PWD" in env:
+        del env["MYSQL_PWD"]
+    if password:
+        env["SRC_PASS"] = password
+    elif "SRC_PASS" in env:
+        del env["SRC_PASS"]
 
     script = repo_root / "scripts" / "00_precheck.sh"
     if not script.exists():
@@ -71,9 +175,75 @@ def _run_precheck(repo_root: Path, cfg: Dict[str, Any], outdir: Path, log) -> Pa
             log(ln)
 
     if p.returncode != 0:
-        raise RuntimeError(f"precheck failed rc={p.returncode} (see artifacts/precheck/precheck.err)")
+        raise RuntimeError(f"precheck failed rc={p.returncode} (see {precheck_out}/precheck.err)")
 
     return precheck_out
+
+
+def _source_db_gate(cfg: Dict[str, Any]) -> Gate:
+    env_cfg = _effective_env_cfg(cfg)
+    src_db = str(env_cfg.get("SRC_DB", "")).strip()
+    src_dbs = str(env_cfg.get("SRC_DBS", "")).strip()
+    dbs: List[str] = []
+    if src_dbs:
+        dbs = [x.strip() for x in src_dbs.split(",") if x.strip()]
+    elif src_db:
+        dbs = [src_db]
+
+    if not dbs:
+        return Gate(
+            "source_databases_exist",
+            GateStatus.FAIL,
+            {"reason": "SRC_DB_or_SRC_DBS_missing_for_assessment"},
+        )
+
+    client = cfg.get("client", {}) or {}
+    mysql_bin = str(env_cfg.get("MYSQL_BIN", client.get("mysql_bin", "mysql")))
+    host = str(env_cfg.get("SRC_HOST", client.get("host", "127.0.0.1")))
+    port = str(env_cfg.get("SRC_PORT", client.get("port", 3306)))
+    user, password, cred_source = _select_source_credentials(cfg, env_cfg)
+    if not user:
+        return Gate(
+            "source_databases_exist",
+            GateStatus.FAIL,
+            {"requested": dbs, "missing": dbs, "reason": f"source auth failed: {cred_source}"},
+        )
+
+    def sql_escape(s: str) -> str:
+        return s.replace("'", "''")
+
+    missing: List[str] = []
+    for db in dbs:
+        query = (
+            "SELECT COUNT(*) FROM information_schema.schemata "
+            f"WHERE schema_name='{sql_escape(db)}';"
+        )
+        env = dict(os.environ)
+        if password:
+            env["MYSQL_PWD"] = password
+        elif "MYSQL_PWD" in env:
+            del env["MYSQL_PWD"]
+        try:
+            p = subprocess.run(
+                [mysql_bin, f"-h{host}", f"-P{port}", f"-u{user}", "--batch", "--skip-column-names", "-e", query],
+                capture_output=True,
+                text=True,
+                env=env,
+            )
+        except FileNotFoundError:
+            return Gate(
+                "source_databases_exist",
+                GateStatus.FAIL,
+                {"requested": dbs, "missing": dbs, "reason": f"mysql client not found: {mysql_bin}"},
+            )
+        if p.returncode != 0 or (p.stdout or "").strip() != "1":
+            missing.append(db)
+
+    return Gate(
+        "source_databases_exist",
+        GateStatus.PASS if not missing else GateStatus.FAIL,
+        {"requested": dbs, "missing": missing, "auth_source": cred_source},
+    )
 
 
 def run_assessment_checks(cfg: Dict[str, Any], report: Report, repo_root: Path, outdir: Path) -> AssessmentResult:
@@ -102,11 +272,12 @@ def run_assessment_checks(cfg: Dict[str, Any], report: Report, repo_root: Path, 
 
     # Source/target
     version = mysql_version[0][0].strip() if mysql_version and mysql_version[0] else ""
+    env_cfg = _effective_env_cfg(cfg)
     source = {
         "type": "mysql",
         "version": version,
-        "host": (cfg.get("client", {}) or {}).get("host", ""),
-        "port": (cfg.get("client", {}) or {}).get("port", ""),
+        "host": env_cfg.get("SRC_HOST", (cfg.get("client", {}) or {}).get("host", "")),
+        "port": env_cfg.get("SRC_PORT", (cfg.get("client", {}) or {}).get("port", "")),
     }
     target = cfg.get("target", {"type": "mariadb", "version": "LTS"})
 
@@ -134,6 +305,7 @@ def run_assessment_checks(cfg: Dict[str, Any], report: Report, repo_root: Path, 
             {"value": innodb_file_per_table},
         )
     )
+    gates.append(_source_db_gate(cfg))
 
     # Warnings/Inventory
     if innodb_fast_shutdown and innodb_fast_shutdown != "0":

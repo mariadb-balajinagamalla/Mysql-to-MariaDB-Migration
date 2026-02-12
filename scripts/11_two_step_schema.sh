@@ -22,6 +22,7 @@ TGT_PASS="${TGT_PASS:-}"
 TGT_SSH_HOST="${TGT_SSH_HOST:-}"
 TGT_SSH_USER="${TGT_SSH_USER:-root}"
 TGT_SSH_OPTS="${TGT_SSH_OPTS:-}"
+ALLOW_TARGET_DB_OVERWRITE="${ALLOW_TARGET_DB_OVERWRITE:-0}"
 
 if [[ -z "$SRC_HOST" || -z "$SRC_USER" || -z "$SRC_PASS" || ( -z "$SRC_DB" && -z "$SRC_DBS" ) ]]; then
   echo "ERROR: Missing source envs. Set SRC_HOST, SRC_USER, SRC_PASS, and SRC_DB or SRC_DBS."
@@ -32,6 +33,30 @@ if [[ -z "$TGT_HOST" || -z "$TGT_USER" || -z "$TGT_PASS" ]]; then
   echo "ERROR: Missing target envs. Set TGT_HOST, TGT_USER, TGT_PASS (TGT_PORT optional)."
   exit 1
 fi
+
+sql_escape() {
+  local s="$1"
+  s="${s//\'/\'\'}"
+  printf "%s" "$s"
+}
+
+target_db_exists() {
+  local db="$1"
+  local db_esc
+  db_esc="$(sql_escape "$db")"
+  local q="SELECT COUNT(*) FROM information_schema.schemata WHERE schema_name='${db_esc}';"
+  local out=""
+  if [[ -n "$TGT_SSH_HOST" ]]; then
+    local tgt_pass_q
+    tgt_pass_q="$(printf '%q' "$TGT_PASS")"
+    out="$(ssh ${TGT_SSH_OPTS} "${TGT_SSH_USER}@${TGT_SSH_HOST}" \
+      "MYSQL_PWD=$tgt_pass_q ${MARIADB_BIN} -h'${TGT_HOST}' -P'${TGT_PORT}' -u'${TGT_USER}' --batch --skip-column-names -e \"$q\"")"
+  else
+    out="$(MYSQL_PWD="$TGT_PASS" "$MARIADB_BIN" -h"$TGT_HOST" -P"$TGT_PORT" -u"$TGT_USER" \
+      --batch --skip-column-names -e "$q")"
+  fi
+  [[ "${out:-0}" -gt 0 ]]
+}
 
 if ! command -v "$MARIADB_DUMP_BIN" >/dev/null 2>&1; then
   if command -v mysqldump >/dev/null 2>&1; then
@@ -79,6 +104,22 @@ if [[ -n "$SRC_DBS" ]]; then
   IFS=',' read -r -a DB_LIST <<< "$SRC_DBS"
 else
   DB_LIST=("$SRC_DB")
+fi
+
+if [[ "$ALLOW_TARGET_DB_OVERWRITE" != "1" ]]; then
+  existing=()
+  for db in "${DB_LIST[@]}"; do
+    db="${db// /}"
+    [[ -z "$db" ]] && continue
+    if target_db_exists "$db"; then
+      existing+=("$db")
+    fi
+  done
+  if [[ "${#existing[@]}" -gt 0 ]]; then
+    echo "ERROR: Target DB already exists: ${existing[*]}"
+    echo "Set ALLOW_TARGET_DB_OVERWRITE=1 only if you explicitly want to overwrite existing DBs."
+    exit 8
+  fi
 fi
 
 for db in "${DB_LIST[@]}"; do

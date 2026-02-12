@@ -1,0 +1,102 @@
+{
+  "schema_version": 1,
+  "run_id": "20260212T134800Z",
+  "mode": "run",
+  "config_path": "config/migration.yaml",
+  "started_at": "2026-02-12T13:48:00.133180+00:00",
+  "finished_at": "2026-02-12T13:48:00.622846+00:00",
+  "success": false,
+  "message": "Run failed at step: one_step_dump_restore",
+  "source": {},
+  "target": {},
+  "gates": [],
+  "warnings": [],
+  "inventory": {},
+  "plan": {
+    "mode": "one_step",
+    "phases": [
+      "one_step_prepare",
+      "precheck_only",
+      "one_step",
+      "validate"
+    ],
+    "steps": [
+      {
+        "id": "preflight_one_step",
+        "name": "Preflight checks (one_step)",
+        "script": "scripts/00_preflight_one_step.sh",
+        "args": []
+      },
+      {
+        "id": "create_migration_user",
+        "name": "Create migration user on source and target",
+        "script": "scripts/09_create_migration_user.sh",
+        "args": []
+      },
+      {
+        "id": "precheck",
+        "name": "Precheck source variables and blockers",
+        "script": "scripts/00_precheck.sh",
+        "args": []
+      },
+      {
+        "id": "one_step_dump_restore",
+        "name": "One-step dump/restore (mariadb-dump | mariadb)",
+        "script": "scripts/10_one_step_migration.sh",
+        "args": []
+      },
+      {
+        "id": "validate",
+        "name": "Validate after upgrade",
+        "script": "scripts/07_validate.sh",
+        "args": []
+      }
+    ]
+  },
+  "steps": [
+    {
+      "id": "preflight_one_step",
+      "name": "Preflight checks (one_step)",
+      "status": "SKIPPED",
+      "details": {
+        "reason": "already_done"
+      }
+    },
+    {
+      "id": "create_migration_user",
+      "name": "Create migration user on source and target",
+      "status": "SKIPPED",
+      "details": {
+        "reason": "already_done"
+      }
+    },
+    {
+      "id": "precheck",
+      "name": "Precheck source variables and blockers",
+      "status": "SKIPPED",
+      "details": {
+        "reason": "already_done"
+      }
+    },
+    {
+      "id": "one_step_dump_restore",
+      "name": "One-step dump/restore (mariadb-dump | mariadb)",
+      "status": "FAILED",
+      "details": {
+        "script": "scripts/10_one_step_migration.sh",
+        "args": [],
+        "returncode": 2,
+        "output_tail": [
+          "==> One-step migration (mariadb-dump | mariadb)",
+          "mariadb-dump not found; using mysqldump.",
+          "Source: 192.168.68.107:3306  DB: xyzab",
+          "Target: 192.168.64.3:3306",
+          "pv not found; running without progress meter.",
+          "WARNING: option --ssl-verify-server-cert is disabled, because of an insecure passwordless login.",
+          "mysqldump: Got error: 1049: Unknown database 'xyzab' when selecting the database",
+          "WARNING: option --ssl-verify-server-cert is disabled, because of an insecure passwordless login."
+        ]
+      }
+    }
+  ]
+}
