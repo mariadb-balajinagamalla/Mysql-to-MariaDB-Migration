@@ -36,12 +36,21 @@ Best for smaller databases and standard maintenance windows.
 
 ### Two-step (schema + parallel data)
 Best for larger datasets or tighter windows.
-- Schema-only dump first, then SQLines Data for parallel load, then finalize objects.
+- Schema-only dump first, then parallel load, then finalize objects.
 
 ## Orchestrator usage
 Interactive (recommended):
 ```bash
 ./migration
+```
+
+Orchestrator CLI (non-interactive):
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r orchestrator/requirements.txt
+python -m orchestrator.migrationctl plan --config config/migration.yaml --mode one_step --out artifacts/plan
+python -m orchestrator.migrationctl run --config config/migration.yaml --mode one_step --out artifacts/run
 ```
 
 Plan:
@@ -67,12 +76,10 @@ Source:
 - `SRC_HOST`, `SRC_PORT`, `SRC_USER`, `SRC_PASS`
 - `SRC_DB` or `SRC_DBS` (comma-separated)
 - `SRC_ADMIN_USER`, `SRC_ADMIN_PASS` (for creating migration user)
-- `SRC_ADMIN_LOCAL=1` to use local socket on source host (recommended)
 
 Target:
 - `TGT_HOST`, `TGT_PORT`, `TGT_USER`, `TGT_PASS`
 - `TGT_ADMIN_USER`, `TGT_ADMIN_PASS`
-- `TGT_ADMIN_LOCAL=1` to use socket on target host (recommended)
 - `TGT_SSH_HOST`, `TGT_SSH_USER`, `TGT_SSH_OPTS` (required when running from a third host)
 
 ## Two-step required envs (config/migration.yaml)
@@ -84,26 +91,6 @@ Target:
 - `TGT_HOST`, `TGT_PORT`, `TGT_USER`, `TGT_PASS`
 - `TGT_SSH_HOST`, `TGT_SSH_USER`, `TGT_SSH_OPTS` (if running from a third host)
 
-SQLines Data:
-- SQLines Data is available for Linux/Windows only. Run two-step from a Linux host (e.g., a third VM).
-- `SQLINESDATA_BIN` (path to sqldata/sqlinesdata binary)
-- `SQLINESDATA_CMD` and `SQLINESDATA_CMD_FINALIZE` (single DB)
-- `SQLINESDATA_CMD_TEMPLATE` and `SQLINESDATA_CMD_FINALIZE_TEMPLATE` (multi-DB; use `{DB}` placeholder)
-
-## Two-step examples
-Single DB:
-```yaml
-SRC_DB: sakila
-SQLINESDATA_CMD: "./sqlinesdata -sd=mysql,user/pass@src:3306/sakila -td=mysql,user/pass@tgt:3306/sakila -smap=sakila:sakila -ss=6 -t=sakila.* -constraints=no -indexes=no -triggers=no -views=no -procedures=no"
-SQLINESDATA_CMD_FINALIZE: "./sqlinesdata -sd=mysql,user/pass@src:3306/sakila -td=mysql,user/pass@tgt:3306/sakila -smap=sakila:sakila -ss=6 -t=sakila.* -data=no -ddl_tables=no -constraints=yes -indexes=yes -triggers=yes -views=yes -procedures=yes"
-```
-
-Multiple DBs (loop):
-```yaml
-SRC_DBS: "sakila,world"
-SQLINESDATA_CMD_TEMPLATE: "./sqlinesdata -sd=mysql,user/pass@src:3306/{DB} -td=mysql,user/pass@tgt:3306/{DB} -smap={DB}:{DB} -ss=6 -t={DB}.* -constraints=no -indexes=no -triggers=no -views=no -procedures=no"
-SQLINESDATA_CMD_FINALIZE_TEMPLATE: "./sqlinesdata -sd=mysql,user/pass@src:3306/{DB} -td=mysql,user/pass@tgt:3306/{DB} -smap={DB}:{DB} -ss=6 -t={DB}.* -data=no -ddl_tables=no -constraints=yes -indexes=yes -triggers=yes -views=yes -procedures=yes"
-```
 
 ## Multi-DB example
 ```yaml

@@ -7,7 +7,7 @@ env:
   SRC_USER: "migrate"
   SRC_PASS: "Migrate123!"
   #SRC_DB: testdb
-  SRC_DBS: "sakila,world,testdb"
+  SRC_DBS: "sakila,testdb,world"
   SRC_SSL_MODE: "DISABLED"  # e.g., DISABLED | REQUIRED | VERIFY_CA | VERIFY_IDENTITY
   SRC_ADMIN_USER: "root"
   SRC_ADMIN_PASS: "Root@1234"
