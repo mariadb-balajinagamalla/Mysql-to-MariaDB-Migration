@@ -22,8 +22,3 @@ env:
   TGT_SSH_OPTS: "-o StrictHostKeyChecking=no"
   MIGRATE_APP_USERS: "0"
   APP_USER_DEFAULT_PASSWORD: ""
-
-  # Two-step SQLines Data
-  SQLINESDATA_BIN: ""
-  SQLINESDATA_CMD: ""
-  SQLINESDATA_CMD_FINALIZE: ""

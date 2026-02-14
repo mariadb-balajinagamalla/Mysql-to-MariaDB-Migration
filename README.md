@@ -37,6 +37,7 @@ Best for smaller databases and standard maintenance windows.
 ### Two-step (schema + parallel data)
 Best for larger datasets or tighter windows.
 - Schema-only dump first, then parallel load, then finalize objects.
+- Assumes SQLines Data is installed and available on `PATH` (`sqldata` or `sqlinesdata`), or set `SQLINESDATA_BIN`.
 
 ## Orchestrator usage
 Interactive (recommended):
@@ -90,6 +91,9 @@ Source:
 Target:
 - `TGT_HOST`, `TGT_PORT`, `TGT_USER`, `TGT_PASS`
 - `TGT_SSH_HOST`, `TGT_SSH_USER`, `TGT_SSH_OPTS` (if running from a third host)
+
+Optional:
+- `SQLINESDATA_BIN` (auto-detected: `sqldata` then `sqlinesdata`)
 
 
 ## Multi-DB example

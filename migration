@@ -13,10 +13,7 @@ run_signature() {
     "TGT_ADMIN_USER=$TGT_ADMIN_USER" \
     "TGT_SSH_HOST=$TGT_SSH_HOST" \
     "TGT_SSH_USER=$TGT_SSH_USER" \
-    "MIGRATE_APP_USERS=$MIGRATE_APP_USERS" \
-    "SQLINESDATA_BIN=$SQLINESDATA_BIN" \
-    "SQLINESDATA_CMD=$SQLINESDATA_CMD" \
-    "SQLINESDATA_CMD_FINALIZE=$SQLINESDATA_CMD_FINALIZE"
+    "MIGRATE_APP_USERS=$MIGRATE_APP_USERS"
 }
 
 prompt() {
@@ -104,15 +101,6 @@ else
   APP_USER_DEFAULT_PASSWORD=""
 fi
 
-SQLINESDATA_BIN=""
-SQLINESDATA_CMD=""
-SQLINESDATA_CMD_FINALIZE=""
-if [[ "$MODE" == "two_step" ]]; then
-  SQLINESDATA_BIN="$(trim_ws "$(prompt "SQLines Data binary path" "/usr/local/bin/sqldata")")"
-  SQLINESDATA_CMD="$(trim_ws "$(prompt "SQLines Data CMD (schema+data)" "")")"
-  SQLINESDATA_CMD_FINALIZE="$(trim_ws "$(prompt "SQLines Data CMD (finalize objects)" "")")"
-fi
-
 yaml_quote() {
   local s="$1"
   s="${s//$'\n'/ }"
@@ -156,9 +144,6 @@ save_config() {
       -v tgt_ssh_opts="$(yaml_quote "$TGT_SSH_OPTS")" \
       -v mig_app_users="$(yaml_quote "$MIGRATE_APP_USERS")" \
       -v app_user_pass="$(yaml_quote "$APP_USER_DEFAULT_PASSWORD")" \
-      -v sqldata_bin="$(yaml_quote "$SQLINESDATA_BIN")" \
-      -v sqldata_cmd="$(yaml_quote "$SQLINESDATA_CMD")" \
-      -v sqldata_cmd_fin="$(yaml_quote "$SQLINESDATA_CMD_FINALIZE")" \
       '
 BEGIN { in_env=0 }
 {
@@ -185,9 +170,6 @@ BEGIN { in_env=0 }
     if ($0 ~ /^  TGT_SSH_OPTS:/) { print "  TGT_SSH_OPTS: " tgt_ssh_opts; next }
     if ($0 ~ /^  MIGRATE_APP_USERS:/) { print "  MIGRATE_APP_USERS: " mig_app_users; next }
     if ($0 ~ /^  APP_USER_DEFAULT_PASSWORD:/) { print "  APP_USER_DEFAULT_PASSWORD: " app_user_pass; next }
-    if ($0 ~ /^  SQLINESDATA_BIN:/) { print "  SQLINESDATA_BIN: " sqldata_bin; next }
-    if ($0 ~ /^  SQLINESDATA_CMD:/) { print "  SQLINESDATA_CMD: " sqldata_cmd; next }
-    if ($0 ~ /^  SQLINESDATA_CMD_FINALIZE:/) { print "  SQLINESDATA_CMD_FINALIZE: " sqldata_cmd_fin; next }
   }
   print
 }
@@ -212,10 +194,6 @@ if [[ "$SRC_DBS_INPUT" == *","* ]]; then
   export SRC_DBS="$SRC_DBS_INPUT"
 else
   export SRC_DB="$SRC_DBS_INPUT"
-fi
-
-if [[ "$MODE" == "two_step" ]]; then
-  export SQLINESDATA_BIN SQLINESDATA_CMD SQLINESDATA_CMD_FINALIZE
 fi
 
 confirm_save="$(prompt "Save inputs to config/migration.yaml? (y/n)" "y")"
