@@ -1,4 +1,4 @@
-mode: "one_step"
+mode: "two_step"
 
 env:
   # Playbook envs (one_step / two_step)
@@ -7,7 +7,7 @@ env:
   SRC_USER: "admin"
   SRC_PASS: "Admin123!"
   #SRC_DB: testdb
-  SRC_DBS: "world,testdb"
+  SRC_DBS: ""
   SRC_SSL_MODE: "DISABLED"  # e.g., DISABLED | REQUIRED | VERIFY_CA | VERIFY_IDENTITY
   SRC_ADMIN_USER: "admin"
   SRC_ADMIN_PASS: "Admin123!"

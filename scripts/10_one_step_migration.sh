@@ -83,7 +83,16 @@ fi
 
 SRC_SSL_ARGS=()
 if [[ -n "$SRC_SSL_MODE" ]]; then
-  SRC_SSL_ARGS=( --ssl-mode="$SRC_SSL_MODE" )
+  if [[ "$MARIADB_DUMP_BIN" == "mysqldump" ]]; then
+    SRC_SSL_ARGS=( --ssl-mode="$SRC_SSL_MODE" )
+  else
+    if [[ "$SRC_SSL_MODE" == "DISABLED" ]]; then
+      SRC_SSL_ARGS=()
+    else
+      # mariadb-dump does not support --ssl-mode on some builds.
+      SRC_SSL_ARGS=( --ssl )
+    fi
+  fi
 fi
 
 if [[ "${#PIPE_CMD[@]}" -eq 0 ]]; then
@@ -100,7 +109,11 @@ if [[ "$STRIP_DEFINERS" == "1" ]]; then
   if [[ "$MARIADB_DUMP_BIN" == "mysqldump" ]]; then
     FILTER_CMD=( sed -E 's/\/\*!50017 DEFINER=`[^`]+`@`[^`]+`\*\/ ?//g; s/DEFINER=`[^`]+`@`[^`]+`//g' )
   else
-    DUMP_ARGS+=(--skip-definer)
+    if "$MARIADB_DUMP_BIN" --help 2>/dev/null | grep -q -- '--skip-definer'; then
+      DUMP_ARGS+=(--skip-definer)
+    else
+      FILTER_CMD=( sed -E 's/\/\*!50017 DEFINER=`[^`]+`@`[^`]+`\*\/ ?//g; s/DEFINER=`[^`]+`@`[^`]+`//g' )
+    fi
   fi
 fi
 if [[ -n "$SRC_DBS" ]]; then

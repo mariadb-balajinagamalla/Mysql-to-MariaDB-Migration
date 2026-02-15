@@ -1,0 +1,11 @@
+sakila.category
+sakila.address
+sakila.actor
+sakila.country
+sakila.city
+sakila.customer
+sakila.film
+sakila.inventory
+sakila.language
+sakila.staff
+sakila.store

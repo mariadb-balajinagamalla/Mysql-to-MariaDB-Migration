@@ -1,4 +1,4 @@
-mode: "one_step"
+mode: "two_step"
 
 env:
   # Playbook envs (one_step / two_step)
