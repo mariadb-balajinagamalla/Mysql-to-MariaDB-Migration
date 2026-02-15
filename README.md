@@ -37,6 +37,8 @@ Best for smaller databases and standard maintenance windows.
 ### Two-step (schema + parallel data)
 Best for larger datasets or tighter windows.
 - Schema-only dump first, then parallel load, then finalize objects.
+- Assumes SQLines Data is installed and available on `PATH` (`sqldata` or `sqlinesdata`), or set `SQLINESDATA_BIN`.
+- Requires existing migration users (`SRC_USER`/`TGT_USER`); preflight fails fast if those logins are not ready.
 
 ## Orchestrator usage
 Interactive (recommended):
@@ -70,6 +72,8 @@ python3 -m orchestrator.migrationctl resume --config config/migration.yaml --mod
 
 Notes:
 - `./migration` runs assess → plan → run, and resumes automatically if a previous run failed.
+- `./migration` asks for source/target admin credentials at runtime; root is blocked by default unless `ALLOW_ROOT_USERS=1`.
+- Saving `config/migration.yaml` is optional and defaults to `No`; if saved, passwords are redacted by default.
 
 ## One-step required envs (config/migration.yaml)
 Source:
@@ -86,10 +90,15 @@ Target:
 Source:
 - `SRC_HOST`, `SRC_PORT`, `SRC_USER`, `SRC_PASS`
 - `SRC_DB` (single DB) or `SRC_DBS` (comma-separated, looped one by one)
+- `SRC_ADMIN_USER`, `SRC_ADMIN_PASS`
 
 Target:
 - `TGT_HOST`, `TGT_PORT`, `TGT_USER`, `TGT_PASS`
+- `TGT_ADMIN_USER`, `TGT_ADMIN_PASS`
 - `TGT_SSH_HOST`, `TGT_SSH_USER`, `TGT_SSH_OPTS` (if running from a third host)
+
+Optional:
+- `SQLINESDATA_BIN` (auto-detected: `sqldata` then `sqlinesdata`)
 
 
 ## Multi-DB example

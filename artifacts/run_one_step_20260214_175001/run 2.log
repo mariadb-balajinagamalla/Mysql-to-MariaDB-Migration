@@ -1,0 +1,55 @@
+2026-02-14T17:50:03.300798+00:00 START mode=run config=config/migration.yaml
+2026-02-14T17:50:03.313092+00:00 RUN  preflight_one_step (Preflight checks (one_step)) -> scripts/00_preflight_one_step.sh
+2026-02-14T17:50:03.320244+00:00 CMD /mnt/macshare/scripts/00_preflight_one_step.sh
+2026-02-14T17:50:03.328701+00:00 OUT ==> Preflight checks (one_step)
+2026-02-14T17:50:03.331621+00:00 OUT mariadb-dump not found; mysqldump is available (OK).
+2026-02-14T17:50:03.333689+00:00 OUT Checking source connectivity...
+2026-02-14T17:50:03.346053+00:00 OUT Checking source migration user readiness...
+2026-02-14T17:50:03.363994+00:00 OUT WARN: Source migration user login failed for migrate@192.168.64.7:3306.
+2026-02-14T17:50:03.366866+00:00 OUT one_step will continue and attempt to create migration users in the next step.
+2026-02-14T17:50:03.370769+00:00 OUT Checking source database(s) exist...
+2026-02-14T17:50:03.382140+00:00 OUT Checking target SSH connectivity...
+2026-02-14T17:50:03.642787+00:00 OUT Checking target mariadb client...
+2026-02-14T17:50:03.866818+00:00 OUT Checking target TCP connectivity...
+2026-02-14T17:50:04.068369+00:00 OUT Checking target migration user readiness...
+2026-02-14T17:50:04.546346+00:00 OUT WARNING: option --ssl-verify-server-cert is disabled, because of an insecure passwordless login.
+2026-02-14T17:50:04.559020+00:00 OUT pv not found (optional).
+2026-02-14T17:50:04.563602+00:00 OUT Preflight complete.
+2026-02-14T17:50:04.572972+00:00 RUN  create_migration_user (Create migration user on source and target) -> scripts/09_create_migration_user.sh
+2026-02-14T17:50:04.578322+00:00 CMD /mnt/macshare/scripts/09_create_migration_user.sh
+2026-02-14T17:50:04.585251+00:00 OUT ==> Create migration user on source and target
+2026-02-14T17:50:04.595081+00:00 OUT Creating migration user on source: 192.168.64.7:3306
+2026-02-14T17:50:04.599430+00:00 OUT ERROR 1045 (28000): Access denied for user 'admin'@'localhost' (using password: YES)
+2026-02-14T17:50:04.603030+00:00 OUT ERROR 1045 (28000): Access denied for user 'admin'@'localhost' (using password: NO)
+2026-02-14T17:50:04.626129+00:00 OUT ERROR 1045 (28000) at line 2: Access denied for user 'admin'@'192.168.64.7' (using password: YES)
+2026-02-14T17:50:04.636574+00:00 FINISH success=False message=Run failed at step: create_migration_user
+2026-02-14T18:24:03.312297+00:00 START mode=run config=config/migration.yaml
+2026-02-14T18:24:03.327513+00:00 SKIP preflight_one_step (Preflight checks (one_step)) - already DONE
+2026-02-14T18:24:03.332788+00:00 RUN  create_migration_user (Create migration user on source and target) -> scripts/09_create_migration_user.sh
+2026-02-14T18:24:03.335786+00:00 CMD /mnt/macshare/scripts/09_create_migration_user.sh
+2026-02-14T18:24:03.340864+00:00 OUT ==> Create migration user on source and target
+2026-02-14T18:24:03.351511+00:00 OUT Creating migration user on source: 192.168.64.7:3306
+2026-02-14T18:24:03.371581+00:00 OUT ERROR 1045 (28000) at line 2: Access denied for user 'admin'@'localhost' (using password: YES)
+2026-02-14T18:24:03.375088+00:00 OUT ERROR 1045 (28000): Access denied for user 'admin'@'localhost' (using password: NO)
+2026-02-14T18:24:03.396820+00:00 OUT ERROR 1045 (28000) at line 2: Access denied for user 'admin'@'192.168.64.7' (using password: YES)
+2026-02-14T18:24:03.406269+00:00 FINISH success=False message=Run failed at step: create_migration_user
+2026-02-14T18:34:44.278425+00:00 START mode=run config=config/migration.yaml
+2026-02-14T18:34:44.341716+00:00 SKIP preflight_one_step (Preflight checks (one_step)) - already DONE
+2026-02-14T18:34:44.353480+00:00 RUN  create_migration_user (Create migration user on source and target) -> scripts/09_create_migration_user.sh
+2026-02-14T18:34:44.358350+00:00 CMD /mnt/macshare/scripts/09_create_migration_user.sh
+2026-02-14T18:34:44.364559+00:00 OUT ==> Create migration user on source and target
+2026-02-14T18:34:44.386467+00:00 OUT Creating migration user on source: 192.168.64.7:3306
+2026-02-14T18:34:44.418293+00:00 OUT ERROR 1045 (28000) at line 2: Access denied for user 'admin'@'localhost' (using password: YES)
+2026-02-14T18:34:44.422849+00:00 OUT ERROR 1045 (28000): Access denied for user 'admin'@'localhost' (using password: NO)
+2026-02-14T18:34:44.444849+00:00 OUT ERROR 1045 (28000) at line 2: Access denied for user 'admin'@'192.168.64.7' (using password: YES)
+2026-02-14T18:34:44.453713+00:00 FINISH success=False message=Run failed at step: create_migration_user
+2026-02-14T18:36:19.157835+00:00 START mode=run config=config/migration.yaml
+2026-02-14T18:36:19.173535+00:00 SKIP preflight_one_step (Preflight checks (one_step)) - already DONE
+2026-02-14T18:36:19.179716+00:00 RUN  create_migration_user (Create migration user on source and target) -> scripts/09_create_migration_user.sh
+2026-02-14T18:36:19.183619+00:00 CMD /mnt/macshare/scripts/09_create_migration_user.sh
+2026-02-14T18:36:19.189338+00:00 OUT ==> Create migration user on source and target
+2026-02-14T18:36:19.200304+00:00 OUT Creating migration user on source: 192.168.64.7:3306
+2026-02-14T18:36:19.221593+00:00 OUT ERROR 1045 (28000) at line 2: Access denied for user 'admin'@'localhost' (using password: YES)
+2026-02-14T18:36:19.225473+00:00 OUT ERROR 1045 (28000): Access denied for user 'admin'@'localhost' (using password: NO)
+2026-02-14T18:36:19.248968+00:00 OUT ERROR 1045 (28000) at line 2: Access denied for user 'admin'@'192.168.64.7' (using password: YES)
+2026-02-14T18:36:19.257909+00:00 FINISH success=False message=Run failed at step: create_migration_user

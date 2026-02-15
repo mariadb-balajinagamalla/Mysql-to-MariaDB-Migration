@@ -46,22 +46,15 @@ if [[ -z "$TGT_HOST" || -z "$TGT_USER" || -z "$TGT_PASS" ]]; then
 fi
 
 if [[ "${ALLOW_ROOT_USERS}" != "1" ]]; then
-  if [[ "$SRC_USER" == "root" || "$TGT_USER" == "root" ]]; then
-    echo "ERROR: SRC_USER/TGT_USER must not be root. Set ALLOW_ROOT_USERS=1 to override."
+  if [[ "$SRC_USER" == "root" || "$TGT_USER" == "root" || "$SRC_ADMIN_USER" == "root" || "$TGT_ADMIN_USER" == "root" ]]; then
+    echo "ERROR: SRC/TGT admin and migration users must not be root. Set ALLOW_ROOT_USERS=1 to override."
     exit 1
   fi
 fi
 
-if [[ -z "$SRC_ADMIN_USER" || -z "$SRC_ADMIN_PASS" ]]; then
-  echo "WARN: SRC_ADMIN_USER/PASS not set; using SRC_USER/PASS as admin."
-  SRC_ADMIN_USER="$SRC_USER"
-  SRC_ADMIN_PASS="$SRC_PASS"
-fi
-
-if [[ -z "$TGT_ADMIN_USER" || -z "$TGT_ADMIN_PASS" ]]; then
-  echo "WARN: TGT_ADMIN_USER/PASS not set; using TGT_USER/PASS as admin."
-  TGT_ADMIN_USER="$TGT_USER"
-  TGT_ADMIN_PASS="$TGT_PASS"
+if [[ -z "$SRC_ADMIN_USER" || -z "$SRC_ADMIN_PASS" || -z "$TGT_ADMIN_USER" || -z "$TGT_ADMIN_PASS" ]]; then
+  echo "ERROR: Missing admin credentials. Set SRC_ADMIN_USER/PASS and TGT_ADMIN_USER/PASS."
+  exit 1
 fi
 
 sql_escape() {
@@ -72,6 +65,13 @@ sql_escape() {
 
 run_source_admin_sql() {
   local sql="$1"
+  # For remote source hosts, use TCP directly.
+  if [[ "$SRC_HOST" != "localhost" && "$SRC_HOST" != "127.0.0.1" ]]; then
+    MYSQL_PWD="$SRC_ADMIN_PASS" "$MYSQL_BIN" --protocol=TCP -h"$SRC_HOST" -P"$SRC_PORT" -u"$SRC_ADMIN_USER" \
+      --batch --skip-column-names -e "$sql"
+    return 0
+  fi
+
   local args=()
   local socket_paths=()
   socket_paths+=(/var/lib/mysql/mysql.sock /run/mysqld/mysqld.sock /tmp/mysql.sock)
@@ -86,14 +86,6 @@ run_source_admin_sql() {
       if MYSQL_PWD="" "$MYSQL_BIN" --protocol=SOCKET -u"$SRC_ADMIN_USER" ${args[@]+"${args[@]}"} \
         --batch --skip-column-names -e "$sql"; then
         return 0
-      fi
-      if [[ "$SRC_ADMIN_USER" == "root" ]] && command -v sudo >/dev/null 2>&1; then
-        if sudo -n "$MYSQL_BIN" --protocol=SOCKET -u"$SRC_ADMIN_USER" ${args[@]+"${args[@]}"} \
-          --batch --skip-column-names -e "$sql" >/dev/null 2>&1; then
-          sudo -n "$MYSQL_BIN" --protocol=SOCKET -u"$SRC_ADMIN_USER" ${args[@]+"${args[@]}"} \
-            --batch --skip-column-names -e "$sql"
-          return 0
-        fi
       fi
     fi
   done
@@ -128,15 +120,25 @@ echo "$sock";
 run_target_sql() {
   local sql="$1"
   if [[ -n "${TGT_SSH_HOST:-}" ]]; then
-    ensure_target_socket
-    if [[ -n "$TARGET_SOCKET" ]]; then
-      printf '%s\n' "$sql" | ssh ${TGT_ADMIN_SSH_OPTS} "${TGT_ADMIN_SSH_USER}@${TGT_SSH_HOST}" \
-        "sudo /usr/bin/mariadb --protocol=SOCKET -u'${TGT_ADMIN_USER}' --socket='${TARGET_SOCKET}' --batch --skip-column-names"
+    # Prefer TCP+password for explicit admin users; this works for non-root service admins.
+    TGT_PASS_Q="$(printf '%q' "$TGT_ADMIN_PASS")"
+    local tcp_out
+    if tcp_out="$(printf '%s\n' "$sql" | ssh ${TGT_ADMIN_SSH_OPTS} "${TGT_ADMIN_SSH_USER}@${TGT_SSH_HOST}" \
+      "MYSQL_PWD=$TGT_PASS_Q /usr/bin/mariadb --protocol=TCP -h'${TGT_HOST}' -P'${TGT_PORT}' -u'${TGT_ADMIN_USER}' --batch --skip-column-names" 2>&1)"; then
+      [[ -n "$tcp_out" ]] && printf '%s\n' "$tcp_out"
       return 0
     fi
-    TGT_PASS_Q="$(printf '%q' "$TGT_ADMIN_PASS")"
-    printf '%s\n' "$sql" | ssh ${TGT_ADMIN_SSH_OPTS} "${TGT_ADMIN_SSH_USER}@${TGT_SSH_HOST}" \
-      "MYSQL_PWD=$TGT_PASS_Q /usr/bin/mariadb --protocol=TCP -h'${TGT_HOST}' -P'${TGT_PORT}' -u'${TGT_ADMIN_USER}' --batch --skip-column-names"
+    echo "$tcp_out" >&2
+    # Optional fallback to local socket only for root override mode.
+    if [[ "$ALLOW_ROOT_USERS" == "1" && "$TGT_ADMIN_USER" == "root" ]]; then
+      ensure_target_socket
+      if [[ -n "$TARGET_SOCKET" ]]; then
+        printf '%s\n' "$sql" | ssh ${TGT_ADMIN_SSH_OPTS} "${TGT_ADMIN_SSH_USER}@${TGT_SSH_HOST}" \
+          "sudo /usr/bin/mariadb --protocol=SOCKET -u'${TGT_ADMIN_USER}' --socket='${TARGET_SOCKET}' --batch --skip-column-names"
+        return 0
+      fi
+    fi
+    return 1
   else
     MYSQL_PWD="$TGT_ADMIN_PASS" "$MARIADB_BIN" --protocol=TCP -h"$TGT_HOST" -P"$TGT_PORT" -u"$TGT_ADMIN_USER" \
       --batch --skip-column-names -e "$sql"

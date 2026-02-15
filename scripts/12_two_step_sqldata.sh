@@ -4,47 +4,66 @@ set -euo pipefail
 echo "==> Two-step migration: parallel data transfer (SQLines Data)"
 
 SQLINESDATA_BIN="${SQLINESDATA_BIN:-}"
-SQLINESDATA_CMD="${SQLINESDATA_CMD:-}"
-SQLINESDATA_CMD_TEMPLATE="${SQLINESDATA_CMD_TEMPLATE:-}"
 SRC_DBS="${SRC_DBS:-}"
+SRC_DB="${SRC_DB:-}"
 
-if [[ -z "$SQLINESDATA_BIN" && -z "$SQLINESDATA_CMD" ]]; then
-  echo "ERROR: Provide SQLINESDATA_BIN + SQLINESDATA_ARGS or SQLINESDATA_CMD."
-  echo "Example:"
-  echo "  export SQLINESDATA_BIN=./sqlinesdata"
-  echo "  export SQLINESDATA_ARGS='-sd=mysql,user/pass@src:3306/db -td=mysql,user/pass@tgt:3306/db -smap=db:db -ss=6 -t=db.* -constraints=no -indexes=no -triggers=no -views=no -procedures=no'"
+SRC_HOST="${SRC_HOST:-}"
+SRC_PORT="${SRC_PORT:-3306}"
+SRC_USER="${SRC_USER:-}"
+SRC_PASS="${SRC_PASS:-}"
+
+TGT_HOST="${TGT_HOST:-}"
+TGT_PORT="${TGT_PORT:-3306}"
+TGT_USER="${TGT_USER:-}"
+TGT_PASS="${TGT_PASS:-}"
+
+if [[ -z "$SQLINESDATA_BIN" ]]; then
+  if command -v sqldata >/dev/null 2>&1; then
+    SQLINESDATA_BIN="sqldata"
+  elif command -v sqlinesdata >/dev/null 2>&1; then
+    SQLINESDATA_BIN="sqlinesdata"
+  fi
+fi
+
+if [[ -z "$SQLINESDATA_BIN" ]] || ! command -v "$SQLINESDATA_BIN" >/dev/null 2>&1; then
+  echo "ERROR: sqldata binary not found (SQLINESDATA_BIN=$SQLINESDATA_BIN)."
+  exit 1
+fi
+
+missing=()
+for v in SRC_HOST SRC_USER SRC_PASS TGT_HOST TGT_USER TGT_PASS; do
+  if [[ -z "${!v:-}" ]]; then
+    missing+=("$v")
+  fi
+done
+if [[ -z "$SRC_DB" && -z "$SRC_DBS" ]]; then
+  missing+=("SRC_DB_or_SRC_DBS")
+fi
+if [[ "${#missing[@]}" -gt 0 ]]; then
+  echo "ERROR: Missing env vars for sqldata transfer: ${missing[*]}"
   exit 1
 fi
 
 if [[ -n "$SRC_DBS" ]]; then
-  if [[ -z "$SQLINESDATA_CMD_TEMPLATE" ]]; then
-    echo "ERROR: SRC_DBS set but SQLINESDATA_CMD_TEMPLATE is empty."
-    exit 1
-  fi
   IFS=',' read -r -a DB_LIST <<< "$SRC_DBS"
-  for db in "${DB_LIST[@]}"; do
-    db="${db// /}"
-    if [[ -z "$db" ]]; then
-      continue
-    fi
-    cmd="${SQLINESDATA_CMD_TEMPLATE//\{DB\}/$db}"
-    bash -c "$cmd"
-  done
-  echo "SQLines Data transfer completed."
-  exit 0
+else
+  DB_LIST=("$SRC_DB")
 fi
 
-if [[ -n "$SQLINESDATA_CMD" ]]; then
-  bash -c "$SQLINESDATA_CMD"
-  echo "SQLines Data transfer completed."
-  exit 0
-fi
+for db in "${DB_LIST[@]}"; do
+  db="${db// /}"
+  [[ -z "$db" ]] && continue
+  "$SQLINESDATA_BIN" \
+    "-sd=mysql,${SRC_USER}/${SRC_PASS}@${SRC_HOST}:${SRC_PORT}/${db}" \
+    "-td=mariadb,${TGT_USER}/${TGT_PASS}@${TGT_HOST}:${TGT_PORT}/${db}" \
+    "-smap=${db}:${db}" \
+    -ss=6 \
+    "-t=${db}.*" \
+    -constraints=no \
+    -indexes=no \
+    -triggers=no \
+    -views=no \
+    -procedures=no
+done
 
-SQLINESDATA_ARGS="${SQLINESDATA_ARGS:-}"
-if [[ -z "$SQLINESDATA_ARGS" ]]; then
-  echo "ERROR: SQLINESDATA_ARGS is empty."
-  exit 1
-fi
-
-"$SQLINESDATA_BIN" $SQLINESDATA_ARGS
 echo "SQLines Data transfer completed."

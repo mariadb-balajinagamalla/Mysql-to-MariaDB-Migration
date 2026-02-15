@@ -97,14 +97,12 @@ def _prompt_required_env(env: Dict[str, str], mode_value: str, non_interactive: 
     _prompt_env(env, "TGT_PORT", "Target port")
     _prompt_env(env, "TGT_USER", "Target user")
     _prompt_env(env, "TGT_PASS", "Target password", secret=True)
+    _prompt_env(env, "SRC_ADMIN_USER", "Source admin user")
+    _prompt_env(env, "SRC_ADMIN_PASS", "Source admin password", secret=True)
+    _prompt_env(env, "TGT_ADMIN_USER", "Target admin user")
+    _prompt_env(env, "TGT_ADMIN_PASS", "Target admin password", secret=True)
 
-    if mode_value == "two_step":
-        if env.get("SRC_DBS"):
-            _prompt_env(env, "SQLINESDATA_CMD_TEMPLATE", "SQLines Data command template")
-            _prompt_env(env, "SQLINESDATA_CMD_FINALIZE_TEMPLATE", "SQLines Data finalize template")
-        else:
-            _prompt_env(env, "SQLINESDATA_CMD", "SQLines Data command")
-            _prompt_env(env, "SQLINESDATA_CMD_FINALIZE", "SQLines Data finalize command")
+    # two_step uses installed sqldata by default; no SQLINESDATA_CMD* prompts required.
 
 @app.command()
 def assess(
@@ -194,32 +192,23 @@ def plan(
             ["SRC_HOST", "SRC_USER", "SRC_PASS", "TGT_HOST", "TGT_USER", "TGT_PASS"],
             mode_value,
         )
+        _require_env(
+            env,
+            ["SRC_ADMIN_USER", "SRC_ADMIN_PASS", "TGT_ADMIN_USER", "TGT_ADMIN_PASS"],
+            mode_value,
+        )
         if not (env.get("SRC_DB") or env.get("SRC_DBS")):
             raise typer.BadParameter("Missing SRC_DB or SRC_DBS for one_step/two_step.")
-        if mode_value == "two_step" and env.get("SRC_DBS"):
-            if not (env.get("SQLINESDATA_CMD_TEMPLATE") and env.get("SQLINESDATA_CMD_FINALIZE_TEMPLATE")):
-                raise typer.BadParameter(
-                    "two_step with SRC_DBS requires SQLINESDATA_CMD_TEMPLATE and SQLINESDATA_CMD_FINALIZE_TEMPLATE."
-                )
-        if mode_value == "one_step":
-            if not (env.get("SRC_ADMIN_USER") and env.get("SRC_ADMIN_PASS")):
-                report.log("WARN: SRC_ADMIN_USER/PASS not set; using SRC_USER/PASS as admin.")
-            if not (env.get("TGT_ADMIN_USER") and env.get("TGT_ADMIN_PASS")):
-                report.log("WARN: TGT_ADMIN_USER/PASS not set; using TGT_USER/PASS as admin.")
         if env.get("ALLOW_ROOT_USERS") not in ("1", "true", "TRUE", "True"):
-            if env.get("SRC_USER") == "root" or env.get("TGT_USER") == "root":
-                raise typer.BadParameter("SRC_USER/TGT_USER must not be root. Set ALLOW_ROOT_USERS=1 to override.")
-    if mode_value == "two_step":
-        if not (env.get("SQLINESDATA_CMD") or env.get("SQLINESDATA_BIN")):
-            raise typer.BadParameter(
-                "Missing SQLines configuration for mode 'two_step': "
-                "set SQLINESDATA_CMD or SQLINESDATA_BIN + SQLINESDATA_ARGS"
-            )
-        if not (env.get("SQLINESDATA_CMD_FINALIZE") or env.get("SQLINESDATA_ARGS_FINALIZE")):
-            raise typer.BadParameter(
-                "Missing finalize configuration for mode 'two_step': "
-                "set SQLINESDATA_CMD_FINALIZE or SQLINESDATA_ARGS_FINALIZE"
-            )
+            if (
+                env.get("SRC_USER") == "root"
+                or env.get("TGT_USER") == "root"
+                or env.get("SRC_ADMIN_USER") == "root"
+                or env.get("TGT_ADMIN_USER") == "root"
+            ):
+                raise typer.BadParameter(
+                    "SRC/TGT admin and migration users must not be root. Set ALLOW_ROOT_USERS=1 to override."
+                )
     if mode_value == "near_zero":
         _require_env(
             env,
@@ -280,32 +269,23 @@ def run(
             ["SRC_HOST", "SRC_USER", "SRC_PASS", "TGT_HOST", "TGT_USER", "TGT_PASS"],
             mode_value,
         )
+        _require_env(
+            env,
+            ["SRC_ADMIN_USER", "SRC_ADMIN_PASS", "TGT_ADMIN_USER", "TGT_ADMIN_PASS"],
+            mode_value,
+        )
         if not (env.get("SRC_DB") or env.get("SRC_DBS")):
             raise typer.BadParameter("Missing SRC_DB or SRC_DBS for one_step/two_step.")
-        if mode_value == "two_step" and env.get("SRC_DBS"):
-            if not (env.get("SQLINESDATA_CMD_TEMPLATE") and env.get("SQLINESDATA_CMD_FINALIZE_TEMPLATE")):
-                raise typer.BadParameter(
-                    "two_step with SRC_DBS requires SQLINESDATA_CMD_TEMPLATE and SQLINESDATA_CMD_FINALIZE_TEMPLATE."
-                )
-        if mode_value == "one_step":
-            if not (env.get("SRC_ADMIN_USER") and env.get("SRC_ADMIN_PASS")):
-                report.log("WARN: SRC_ADMIN_USER/PASS not set; using SRC_USER/PASS as admin.")
-            if not (env.get("TGT_ADMIN_USER") and env.get("TGT_ADMIN_PASS")):
-                report.log("WARN: TGT_ADMIN_USER/PASS not set; using TGT_USER/PASS as admin.")
         if env.get("ALLOW_ROOT_USERS") not in ("1", "true", "TRUE", "True"):
-            if env.get("SRC_USER") == "root" or env.get("TGT_USER") == "root":
-                raise typer.BadParameter("SRC_USER/TGT_USER must not be root. Set ALLOW_ROOT_USERS=1 to override.")
-    if mode_value == "two_step":
-        if not (env.get("SQLINESDATA_CMD") or env.get("SQLINESDATA_BIN")):
-            raise typer.BadParameter(
-                "Missing SQLines configuration for mode 'two_step': "
-                "set SQLINESDATA_CMD or SQLINESDATA_BIN + SQLINESDATA_ARGS"
-            )
-        if not (env.get("SQLINESDATA_CMD_FINALIZE") or env.get("SQLINESDATA_ARGS_FINALIZE")):
-            raise typer.BadParameter(
-                "Missing finalize configuration for mode 'two_step': "
-                "set SQLINESDATA_CMD_FINALIZE or SQLINESDATA_ARGS_FINALIZE"
-            )
+            if (
+                env.get("SRC_USER") == "root"
+                or env.get("TGT_USER") == "root"
+                or env.get("SRC_ADMIN_USER") == "root"
+                or env.get("TGT_ADMIN_USER") == "root"
+            ):
+                raise typer.BadParameter(
+                    "SRC/TGT admin and migration users must not be root. Set ALLOW_ROOT_USERS=1 to override."
+                )
     if mode_value == "near_zero":
         _require_env(
             env,

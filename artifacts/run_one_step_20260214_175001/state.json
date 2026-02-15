@@ -1,0 +1,47 @@
+{
+  "created_at": "2026-02-14T17:50:03.297676+00:00",
+  "steps": {
+    "create_migration_user": {
+      "meta": {
+        "args": [],
+        "output_tail": [
+          "==> Create migration user on source and target",
+          "Creating migration user on source: 192.168.64.7:3306",
+          "ERROR 1045 (28000) at line 2: Access denied for user 'admin'@'localhost' (using password: YES)",
+          "ERROR 1045 (28000): Access denied for user 'admin'@'localhost' (using password: NO)",
+          "ERROR 1045 (28000) at line 2: Access denied for user 'admin'@'192.168.64.7' (using password: YES)"
+        ],
+        "returncode": 1,
+        "script": "scripts/09_create_migration_user.sh"
+      },
+      "status": "FAILED",
+      "updated_at": "2026-02-14T18:36:19.251876+00:00"
+    },
+    "preflight_one_step": {
+      "meta": {
+        "args": [],
+        "output_tail": [
+          "==> Preflight checks (one_step)",
+          "mariadb-dump not found; mysqldump is available (OK).",
+          "Checking source connectivity...",
+          "Checking source migration user readiness...",
+          "WARN: Source migration user login failed for migrate@192.168.64.7:3306.",
+          "one_step will continue and attempt to create migration users in the next step.",
+          "Checking source database(s) exist...",
+          "Checking target SSH connectivity...",
+          "Checking target mariadb client...",
+          "Checking target TCP connectivity...",
+          "Checking target migration user readiness...",
+          "WARNING: option --ssl-verify-server-cert is disabled, because of an insecure passwordless login.",
+          "pv not found (optional).",
+          "Preflight complete."
+        ],
+        "returncode": 0,
+        "script": "scripts/00_preflight_one_step.sh"
+      },
+      "status": "DONE",
+      "updated_at": "2026-02-14T17:50:04.566402+00:00"
+    }
+  },
+  "version": 1
+}
