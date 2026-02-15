@@ -1,8 +1,0 @@
-== Precheck runner ==
-Host: 192.168.68.107  Port: 3306  User: migrate
-Checks dir: /Users/balajin/Documents/GitHub/Mysql-to-MariaDB-Migration/sql/checks
-Outdir: artifacts/assess_20260214_134306/precheck
-
-NOTE: mariadb-migrate-config-file not found; skipping config check.
----- mysql_version ----
-ERROR: mysql failed for mysql_version (see artifacts/assess_20260214_134306/precheck/precheck.err)

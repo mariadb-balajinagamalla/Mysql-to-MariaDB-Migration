@@ -1,4 +1,0 @@
-migrate	%	caching_sha2_password
-migrate	192.168.64.2	caching_sha2_password
-packer	%	caching_sha2_password
-root	localhost	caching_sha2_password
