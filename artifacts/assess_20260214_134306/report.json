@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "run_id": "20260214T081306Z",
+  "mode": "assessment",
+  "config_path": "config/source.yaml",
+  "started_at": "2026-02-14T08:13:06.969714+00:00",
+  "finished_at": "2026-02-14T08:13:07.128438+00:00",
+  "success": false,
+  "message": "Assessment failed during checks: precheck failed rc=3 (see artifacts/assess_20260214_134306/precheck/precheck.err)",
+  "source": {},
+  "target": {},
+  "gates": [],
+  "warnings": [],
+  "inventory": {},
+  "plan": {},
+  "steps": []
+}

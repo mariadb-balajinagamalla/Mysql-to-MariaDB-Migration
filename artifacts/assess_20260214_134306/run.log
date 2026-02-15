@@ -1,0 +1,13 @@
+2026-02-14T08:13:06.969734+00:00 START mode=assessment config=config/source.yaml
+2026-02-14T08:13:07.103760+00:00 Assessment source auth selected: SRC_USER (migrate)
+2026-02-14T08:13:07.103988+00:00 RUN precheck -> /Users/balajin/Documents/GitHub/Mysql-to-MariaDB-Migration/scripts/00_precheck.sh
+2026-02-14T08:13:07.128094+00:00 == Precheck runner ==
+2026-02-14T08:13:07.128217+00:00 Host: 192.168.68.107  Port: 3306  User: migrate
+2026-02-14T08:13:07.128252+00:00 Checks dir: /Users/balajin/Documents/GitHub/Mysql-to-MariaDB-Migration/sql/checks
+2026-02-14T08:13:07.128275+00:00 Outdir: artifacts/assess_20260214_134306/precheck
+2026-02-14T08:13:07.128298+00:00 
+2026-02-14T08:13:07.128319+00:00 NOTE: mariadb-migrate-config-file not found; skipping config check.
+2026-02-14T08:13:07.128344+00:00 ---- mysql_version ----
+2026-02-14T08:13:07.128364+00:00 ERROR: mysql failed for mysql_version (see artifacts/assess_20260214_134306/precheck/precheck.err)
+2026-02-14T08:13:07.128404+00:00 ERROR: Assessment failed during checks: precheck failed rc=3 (see artifacts/assess_20260214_134306/precheck/precheck.err)
+2026-02-14T08:13:07.128443+00:00 FINISH success=False message=Assessment failed during checks: precheck failed rc=3 (see artifacts/assess_20260214_134306/precheck/precheck.err)

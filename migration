@@ -71,7 +71,7 @@ fi
 
 SRC_HOST="$(trim_ws "$(prompt "Source host" "")")"
 SRC_PORT="$(trim_ws "$(prompt "Source port" "3306")")"
-SRC_ADMIN_USER="$(trim_ws "$(prompt "Source admin user" "root")")"
+SRC_ADMIN_USER="$(trim_ws "$(prompt "Source admin user" "")")"
 SRC_ADMIN_PASS="$(trim_ws "$(prompt_secret "Source admin password")")"
 SRC_USER="$(trim_ws "$(yaml_env "SRC_USER")")"
 SRC_PASS="$(trim_ws "$(yaml_env "SRC_PASS")")"
@@ -81,7 +81,7 @@ SRC_DBS_INPUT="$(trim_ws "$(prompt "Database name(s) (comma-separated)" "")")"
 
 TGT_HOST="$(trim_ws "$(prompt "Target host" "")")"
 TGT_PORT="$(trim_ws "$(prompt "Target port" "3306")")"
-TGT_ADMIN_USER="$(trim_ws "$(prompt "Target admin user" "root")")"
+TGT_ADMIN_USER="$(trim_ws "$(prompt "Target admin user" "")")"
 TGT_ADMIN_PASS="$(trim_ws "$(prompt_secret "Target admin password")")"
 TGT_SSH_HOST="$(trim_ws "$(prompt "Target SSH host (leave blank if not using SSH)" "")")"
 TGT_SSH_USER="$(trim_ws "$(prompt "Target SSH user" "root")")"
@@ -101,6 +101,18 @@ else
   APP_USER_DEFAULT_PASSWORD=""
 fi
 
+ALLOW_ROOT_USERS="${ALLOW_ROOT_USERS:-0}"
+if [[ -z "$SRC_ADMIN_USER" || -z "$SRC_ADMIN_PASS" || -z "$TGT_ADMIN_USER" || -z "$TGT_ADMIN_PASS" ]]; then
+  echo "ERROR: Source/Target admin user and password are required."
+  exit 1
+fi
+if [[ "$ALLOW_ROOT_USERS" != "1" ]]; then
+  if [[ "$SRC_ADMIN_USER" == "root" || "$TGT_ADMIN_USER" == "root" || "$SRC_USER" == "root" || "$TGT_USER" == "root" ]]; then
+    echo "ERROR: root user is not allowed for admin or migration users. Set ALLOW_ROOT_USERS=1 only if explicitly intended."
+    exit 1
+  fi
+fi
+
 yaml_quote() {
   local s="$1"
   s="${s//$'\n'/ }"
@@ -114,6 +126,20 @@ save_config() {
   local tmp
   tmp="$(mktemp)"
   local backup="${cfg}.bak"
+  local include_secrets="${1:-0}"
+
+  local src_pass_save="$SRC_PASS"
+  local src_admin_pass_save="$SRC_ADMIN_PASS"
+  local tgt_pass_save="$TGT_PASS"
+  local tgt_admin_pass_save="$TGT_ADMIN_PASS"
+  local app_user_pass_save="$APP_USER_DEFAULT_PASSWORD"
+  if [[ "$include_secrets" != "1" ]]; then
+    src_pass_save=""
+    src_admin_pass_save=""
+    tgt_pass_save=""
+    tgt_admin_pass_save=""
+    app_user_pass_save=""
+  fi
 
   local mode_val="$MODE"
   local src_db_val=""
@@ -130,20 +156,20 @@ save_config() {
       -v src_host="$(yaml_quote "$SRC_HOST")" \
       -v src_port="$(yaml_quote "$SRC_PORT")" \
       -v src_user="$(yaml_quote "$SRC_USER")" \
-      -v src_pass="$(yaml_quote "$SRC_PASS")" \
+      -v src_pass="$(yaml_quote "$src_pass_save")" \
       -v src_admin_user="$(yaml_quote "$SRC_ADMIN_USER")" \
-      -v src_admin_pass="$(yaml_quote "$SRC_ADMIN_PASS")" \
+      -v src_admin_pass="$(yaml_quote "$src_admin_pass_save")" \
       -v tgt_host="$(yaml_quote "$TGT_HOST")" \
       -v tgt_port="$(yaml_quote "$TGT_PORT")" \
       -v tgt_user="$(yaml_quote "$TGT_USER")" \
-      -v tgt_pass="$(yaml_quote "$TGT_PASS")" \
+      -v tgt_pass="$(yaml_quote "$tgt_pass_save")" \
       -v tgt_admin_user="$(yaml_quote "$TGT_ADMIN_USER")" \
-      -v tgt_admin_pass="$(yaml_quote "$TGT_ADMIN_PASS")" \
+      -v tgt_admin_pass="$(yaml_quote "$tgt_admin_pass_save")" \
       -v tgt_ssh_host="$(yaml_quote "$TGT_SSH_HOST")" \
       -v tgt_ssh_user="$(yaml_quote "$TGT_SSH_USER")" \
       -v tgt_ssh_opts="$(yaml_quote "$TGT_SSH_OPTS")" \
       -v mig_app_users="$(yaml_quote "$MIGRATE_APP_USERS")" \
-      -v app_user_pass="$(yaml_quote "$APP_USER_DEFAULT_PASSWORD")" \
+      -v app_user_pass="$(yaml_quote "$app_user_pass_save")" \
       '
 BEGIN { in_env=0 }
 {
@@ -196,9 +222,15 @@ else
   export SRC_DB="$SRC_DBS_INPUT"
 fi
 
-confirm_save="$(prompt "Save inputs to config/migration.yaml? (y/n)" "y")"
+confirm_save="$(prompt "Save inputs to config/migration.yaml? (y/n)" "n")"
 if [[ "$(printf "%s" "$confirm_save" | tr '[:upper:]' '[:lower:]')" == "y" ]]; then
-  save_config
+  save_with_passwords="$(prompt "Include passwords/secrets in saved config? (y/n)" "n")"
+  if [[ "$(printf "%s" "$save_with_passwords" | tr '[:upper:]' '[:lower:]')" == "y" ]]; then
+    save_config 1
+  else
+    save_config 0
+    echo "==> Saved config with passwords redacted."
+  fi
 else
   echo "==> Skipping config save."
 fi

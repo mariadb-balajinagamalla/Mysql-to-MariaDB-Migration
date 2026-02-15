@@ -11,6 +11,8 @@ SRC_HOST="${SRC_HOST:-}"
 SRC_PORT="${SRC_PORT:-3306}"
 SRC_USER="${SRC_USER:-}"
 SRC_PASS="${SRC_PASS:-}"
+SRC_ADMIN_USER="${SRC_ADMIN_USER:-}"
+SRC_ADMIN_PASS="${SRC_ADMIN_PASS:-}"
 SRC_DB="${SRC_DB:-}"
 SRC_DBS="${SRC_DBS:-}"
 
@@ -18,6 +20,8 @@ TGT_HOST="${TGT_HOST:-}"
 TGT_PORT="${TGT_PORT:-3306}"
 TGT_USER="${TGT_USER:-}"
 TGT_PASS="${TGT_PASS:-}"
+TGT_ADMIN_USER="${TGT_ADMIN_USER:-}"
+TGT_ADMIN_PASS="${TGT_ADMIN_PASS:-}"
 TGT_SSH_HOST="${TGT_SSH_HOST:-}"
 TGT_SSH_USER="${TGT_SSH_USER:-root}"
 TGT_SSH_OPTS="${TGT_SSH_OPTS:-}"
@@ -27,7 +31,7 @@ AUTO_FIX="${PREFLIGHT_AUTO_FIX:-0}"
 AUTO_FIX_TARGET="${PREFLIGHT_AUTO_FIX_TARGET:-$AUTO_FIX}"
 
 missing=()
-for v in SRC_HOST SRC_USER SRC_PASS TGT_HOST TGT_USER TGT_PASS; do
+for v in SRC_HOST SRC_USER SRC_PASS SRC_ADMIN_USER SRC_ADMIN_PASS TGT_HOST TGT_USER TGT_PASS TGT_ADMIN_USER TGT_ADMIN_PASS; do
   if [[ -z "${!v:-}" ]]; then
     missing+=("$v")
   fi
@@ -55,9 +59,16 @@ if ! command -v "$MARIADB_DUMP_BIN" >/dev/null 2>&1; then
 fi
 
 echo "Checking source connectivity..."
-MYSQL_PWD="$SRC_PASS" "$MYSQL_BIN" -h"$SRC_HOST" -P"$SRC_PORT" -u"$SRC_USER" \
+MYSQL_PWD="$SRC_ADMIN_PASS" "$MYSQL_BIN" -h"$SRC_HOST" -P"$SRC_PORT" -u"$SRC_ADMIN_USER" \
   --connect-timeout=5 --batch --skip-column-names \
   -e "SELECT 1;" >/dev/null
+
+echo "Checking source migration user readiness..."
+if ! MYSQL_PWD="$SRC_PASS" "$MYSQL_BIN" -h"$SRC_HOST" -P"$SRC_PORT" -u"$SRC_USER" \
+  --connect-timeout=5 --batch --skip-column-names -e "SELECT 1;" >/dev/null 2>&1; then
+  echo "WARN: Source migration user login failed for ${SRC_USER}@${SRC_HOST}:${SRC_PORT}."
+  echo "one_step will continue and attempt to create migration users in the next step."
+fi
 
 echo "Checking source database(s) exist..."
 sql_escape() {
@@ -71,7 +82,7 @@ source_db_exists() {
   db_esc="$(sql_escape "$db")"
   local q="SELECT COUNT(*) FROM information_schema.schemata WHERE schema_name='${db_esc}';"
   local out
-  out="$(MYSQL_PWD="$SRC_PASS" "$MYSQL_BIN" -h"$SRC_HOST" -P"$SRC_PORT" -u"$SRC_USER" \
+  out="$(MYSQL_PWD="$SRC_ADMIN_PASS" "$MYSQL_BIN" -h"$SRC_HOST" -P"$SRC_PORT" -u"$SRC_ADMIN_USER" \
     --batch --skip-column-names -e "$q")"
   [[ "${out:-0}" -gt 0 ]]
 }
@@ -112,8 +123,15 @@ if [[ -n "$TGT_SSH_HOST" ]]; then
 
   echo "Checking target TCP connectivity..."
   if ! ssh ${TGT_SSH_OPTS} "${TGT_SSH_USER}@${TGT_SSH_HOST}" \
-    "MYSQL_PWD='${TGT_PASS}' mariadb -h'${TGT_HOST}' -P'${TGT_PORT}' -u'${TGT_USER}' --connect-timeout=5 -e 'SELECT 1;' >/dev/null 2>&1"; then
+    "MYSQL_PWD='${TGT_ADMIN_PASS}' mariadb -h'${TGT_HOST}' -P'${TGT_PORT}' -u'${TGT_ADMIN_USER}' --connect-timeout=5 -e 'SELECT 1;' >/dev/null 2>&1"; then
     echo "WARN: target TCP connect failed. Will attempt socket path during user creation/validate."
+  fi
+
+  echo "Checking target migration user readiness..."
+  if ! ssh ${TGT_SSH_OPTS} "${TGT_SSH_USER}@${TGT_SSH_HOST}" \
+    "MYSQL_PWD='${TGT_PASS}' mariadb -h'${TGT_HOST}' -P'${TGT_PORT}' -u'${TGT_USER}' --connect-timeout=5 -e 'SELECT 1;' >/dev/null 2>&1"; then
+    echo "WARN: Target migration user login failed for ${TGT_USER}@${TGT_HOST}:${TGT_PORT}."
+    echo "one_step will continue and attempt to create migration users in the next step."
   fi
 fi
 
@@ -126,11 +144,11 @@ if [[ "$ALLOW_TARGET_DB_OVERWRITE" != "1" ]]; then
     local out=""
     if [[ -n "$TGT_SSH_HOST" ]]; then
       local tgt_pass_q
-      tgt_pass_q="$(printf '%q' "$TGT_PASS")"
+      tgt_pass_q="$(printf '%q' "$TGT_ADMIN_PASS")"
       out="$(ssh ${TGT_SSH_OPTS} "${TGT_SSH_USER}@${TGT_SSH_HOST}" \
-        "MYSQL_PWD=$tgt_pass_q mariadb -h'${TGT_HOST}' -P'${TGT_PORT}' -u'${TGT_USER}' --batch --skip-column-names -e \"$q\"")"
+        "MYSQL_PWD=$tgt_pass_q mariadb -h'${TGT_HOST}' -P'${TGT_PORT}' -u'${TGT_ADMIN_USER}' --batch --skip-column-names -e \"$q\"")"
     else
-      out="$(MYSQL_PWD="$TGT_PASS" mariadb -h"$TGT_HOST" -P"$TGT_PORT" -u"$TGT_USER" \
+      out="$(MYSQL_PWD="$TGT_ADMIN_PASS" mariadb -h"$TGT_HOST" -P"$TGT_PORT" -u"$TGT_ADMIN_USER" \
         --batch --skip-column-names -e "$q")"
     fi
     [[ "${out:-0}" -gt 0 ]]

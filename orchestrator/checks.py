@@ -58,7 +58,8 @@ def _select_source_credentials(cfg: Dict[str, Any], env_cfg: Dict[str, str]) -> 
     host = str(env_cfg.get("SRC_HOST", client.get("host", "127.0.0.1")))
     port = str(env_cfg.get("SRC_PORT", client.get("port", 3306)))
 
-    # Priority: explicit assess creds -> admin creds -> migration creds -> source-config creds.
+    allow_root = str(env_cfg.get("ALLOW_ROOT_USERS", "0")) in ("1", "true", "TRUE", "True")
+    # Priority: explicit assess creds -> admin creds.
     candidates: List[Tuple[str, str, str]] = []
     explicit_user = str(env_cfg.get("SRC_ASSESS_USER", "")).strip()
     explicit_pass = str(env_cfg.get("SRC_ASSESS_PASS", "")).strip()
@@ -70,20 +71,12 @@ def _select_source_credentials(cfg: Dict[str, Any], env_cfg: Dict[str, str]) -> 
     if admin_user:
         candidates.append((admin_user, admin_pass, "SRC_ADMIN_USER"))
 
-    src_user = str(env_cfg.get("SRC_USER", "")).strip()
-    src_pass = str(env_cfg.get("SRC_PASS", "")).strip()
-    if src_user:
-        candidates.append((src_user, src_pass, "SRC_USER"))
-
-    client_user = str(client.get("user", "")).strip()
-    client_pass = str(env_cfg.get("MYSQL_PWD", "")).strip()
-    if client_user:
-        candidates.append((client_user, client_pass, "client.user"))
-
     # De-dupe by (user, pass) while preserving order.
     seen = set()
     deduped: List[Tuple[str, str, str]] = []
     for user, pwd, src in candidates:
+        if not allow_root and user == "root":
+            continue
         key = (user, pwd)
         if key in seen:
             continue

@@ -10,6 +10,8 @@ SRC_HOST="${SRC_HOST:-}"
 SRC_PORT="${SRC_PORT:-3306}"
 SRC_USER="${SRC_USER:-}"
 SRC_PASS="${SRC_PASS:-}"
+SRC_ADMIN_USER="${SRC_ADMIN_USER:-}"
+SRC_ADMIN_PASS="${SRC_ADMIN_PASS:-}"
 SRC_DB="${SRC_DB:-}"
 SRC_DBS="${SRC_DBS:-}"
 
@@ -17,6 +19,8 @@ TGT_HOST="${TGT_HOST:-}"
 TGT_PORT="${TGT_PORT:-3306}"
 TGT_USER="${TGT_USER:-}"
 TGT_PASS="${TGT_PASS:-}"
+TGT_ADMIN_USER="${TGT_ADMIN_USER:-}"
+TGT_ADMIN_PASS="${TGT_ADMIN_PASS:-}"
 TGT_SSH_HOST="${TGT_SSH_HOST:-}"
 TGT_SSH_USER="${TGT_SSH_USER:-root}"
 TGT_SSH_OPTS="${TGT_SSH_OPTS:-}"
@@ -25,7 +29,7 @@ ALLOW_TARGET_DB_OVERWRITE="${ALLOW_TARGET_DB_OVERWRITE:-0}"
 SQLINESDATA_BIN="${SQLINESDATA_BIN:-}"
 
 missing=()
-for v in SRC_HOST SRC_USER SRC_PASS TGT_HOST TGT_USER TGT_PASS; do
+for v in SRC_HOST SRC_USER SRC_PASS SRC_ADMIN_USER SRC_ADMIN_PASS TGT_HOST TGT_USER TGT_PASS TGT_ADMIN_USER TGT_ADMIN_PASS; do
   if [[ -z "${!v:-}" ]]; then
     missing+=("$v")
   fi
@@ -53,9 +57,37 @@ if ! command -v "$MARIADB_DUMP_BIN" >/dev/null 2>&1; then
 fi
 
 echo "Checking source connectivity..."
-MYSQL_PWD="$SRC_PASS" "$MYSQL_BIN" -h"$SRC_HOST" -P"$SRC_PORT" -u"$SRC_USER" \
+MYSQL_PWD="$SRC_ADMIN_PASS" "$MYSQL_BIN" -h"$SRC_HOST" -P"$SRC_PORT" -u"$SRC_ADMIN_USER" \
   --connect-timeout=5 --batch --skip-column-names \
   -e "SELECT 1;" >/dev/null
+
+echo "Checking source migration user connectivity..."
+if ! MYSQL_PWD="$SRC_PASS" "$MYSQL_BIN" -h"$SRC_HOST" -P"$SRC_PORT" -u"$SRC_USER" \
+  --connect-timeout=5 --batch --skip-column-names -e "SELECT 1;" >/dev/null 2>&1; then
+  echo "ERROR: Source migration user login failed: ${SRC_USER}@${SRC_HOST}:${SRC_PORT}"
+  echo "two_step mode does not auto-create migration users."
+  echo "Create migration users first or use one_step to bootstrap users."
+  exit 7
+fi
+
+echo "Checking target migration user connectivity..."
+if [[ -n "$TGT_SSH_HOST" ]]; then
+  if ! ssh ${TGT_SSH_OPTS} "${TGT_SSH_USER}@${TGT_SSH_HOST}" \
+    "MYSQL_PWD='${TGT_PASS}' mariadb -h'${TGT_HOST}' -P'${TGT_PORT}' -u'${TGT_USER}' --connect-timeout=5 -e 'SELECT 1;' >/dev/null 2>&1"; then
+    echo "ERROR: Target migration user login failed: ${TGT_USER}@${TGT_HOST}:${TGT_PORT}"
+    echo "two_step mode does not auto-create migration users."
+    echo "Create migration users first or run one_step bootstrap."
+    exit 8
+  fi
+else
+  if ! MYSQL_PWD="$TGT_PASS" mariadb -h"$TGT_HOST" -P"$TGT_PORT" -u"$TGT_USER" \
+    --connect-timeout=5 -e "SELECT 1;" >/dev/null 2>&1; then
+    echo "ERROR: Target migration user login failed: ${TGT_USER}@${TGT_HOST}:${TGT_PORT}"
+    echo "two_step mode does not auto-create migration users."
+    echo "Create migration users first or run one_step bootstrap."
+    exit 8
+  fi
+fi
 
 if [[ "$ALLOW_TARGET_DB_OVERWRITE" != "1" ]]; then
   sql_escape() {
@@ -71,11 +103,11 @@ if [[ "$ALLOW_TARGET_DB_OVERWRITE" != "1" ]]; then
     local out=""
     if [[ -n "$TGT_SSH_HOST" ]]; then
       local tgt_pass_q
-      tgt_pass_q="$(printf '%q' "$TGT_PASS")"
+      tgt_pass_q="$(printf '%q' "$TGT_ADMIN_PASS")"
       out="$(ssh ${TGT_SSH_OPTS} "${TGT_SSH_USER}@${TGT_SSH_HOST}" \
-        "MYSQL_PWD=$tgt_pass_q mariadb -h'${TGT_HOST}' -P'${TGT_PORT}' -u'${TGT_USER}' --batch --skip-column-names -e \"$q\"")"
+        "MYSQL_PWD=$tgt_pass_q mariadb -h'${TGT_HOST}' -P'${TGT_PORT}' -u'${TGT_ADMIN_USER}' --batch --skip-column-names -e \"$q\"")"
     else
-      out="$(MYSQL_PWD="$TGT_PASS" mariadb -h"$TGT_HOST" -P"$TGT_PORT" -u"$TGT_USER" \
+      out="$(MYSQL_PWD="$TGT_ADMIN_PASS" mariadb -h"$TGT_HOST" -P"$TGT_PORT" -u"$TGT_ADMIN_USER" \
         --batch --skip-column-names -e "$q")"
     fi
     [[ "${out:-0}" -gt 0 ]]

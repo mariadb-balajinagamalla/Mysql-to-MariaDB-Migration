@@ -1,20 +1,22 @@
 == Precheck runner ==
-Host: 192.168.68.107  Port: 3306  User: migrate
-Checks dir: /Users/balajin/Documents/GitHub/Mysql-to-MariaDB-Migration/sql/checks
-Outdir: /Users/balajin/Documents/GitHub/Mysql-to-MariaDB-Migration/artifacts/precheck
+Host: 192.168.64.7  Port: 3306  User: admin
+Checks dir: /mnt/macshare/sql/checks
+Outdir: /mnt/macshare/artifacts/precheck
 
 NOTE: mariadb-migrate-config-file not found; skipping config check.
 ---- mysql_version ----
-8.4.8
+8.0.45-0ubuntu0.24.04.1
 
 ---- innodb_settings ----
 1	1
 
 ---- auth_plugins ----
+admin	%	caching_sha2_password
+admin	192.168.64.3	caching_sha2_password
+admin	192.168.64.7	caching_sha2_password
+admin	localhost	caching_sha2_password
+debian-sys-maint	localhost	caching_sha2_password
 migrate	%	caching_sha2_password
-migrate	192.168.64.2	caching_sha2_password
-packer	%	caching_sha2_password
-root	localhost	caching_sha2_password
 
 ---- json_columns ----
 testdb	orders_json	data_json	json
@@ -23,22 +25,20 @@ testdb	orders_json	data_json	json
 (no rows)
 
 ---- engines_summary ----
-PERFORMANCE_SCHEMA	113
-InnoDB	65
+PERFORMANCE_SCHEMA	111
+InnoDB	56
 CSV	2
 
 ---- schema_sizes ----
 testdb	38.56
 sakila	6.45
-mysql	2.61
+mysql	2.66
 world	0.77
-classicmodels	0.50
 sys	0.02
 information_schema	0.00
 performance_schema	0.00
 
 ---- schema_charsets ----
-classicmodels	latin1	latin1_swedish_ci
 sakila	utf8mb4	utf8mb4_0900_ai_ci
 testdb	utf8mb4	utf8mb4_0900_ai_ci
 world	utf8mb4	utf8mb4_0900_ai_ci
@@ -116,13 +116,12 @@ sakila	staff	username	utf8mb4_0900_ai_ci
 sakila	staff_list	address	utf8mb4_0900_ai_ci
 sakila	staff_list	city	utf8mb4_0900_ai_ci
 sakila	staff_list	country	utf8mb4_0900_ai_ci
-... (truncated; full output in /Users/balajin/Documents/GitHub/Mysql-to-MariaDB-Migration/artifacts/precheck/mysql8_column_collations.tsv)
+... (truncated; full output in /mnt/macshare/artifacts/precheck/mysql8_column_collations.tsv)
 
 ---- sql_mode ----
 ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION
 
 ---- definers_inventory ----
-ROUTINE	root@localhost	6
 TRIGGER	root@localhost	6
 VIEW	root@localhost	7
 
@@ -131,6 +130,7 @@ VIEW	root@localhost	7
 
 ---- active_plugins ----
 ARCHIVE	ACTIVE
+auth_socket	ACTIVE
 binlog	ACTIVE
 BLACKHOLE	ACTIVE
 caching_sha2_password	ACTIVE
@@ -168,6 +168,7 @@ MRG_MYISAM	ACTIVE
 MyISAM	ACTIVE
 mysqlx	ACTIVE
 mysqlx_cache_cleaner	ACTIVE
+mysql_native_password	ACTIVE
 ngram	ACTIVE
 PERFORMANCE_SCHEMA	ACTIVE
 sha256_password	ACTIVE
@@ -193,7 +194,8 @@ TempTable	ACTIVE
 sakila	address	location	0
 
 ---- resource_groups ----
-(no rows)
+USR_default	USER	1	0-9	0
+SYS_default	SYSTEM	1	0-9	0
 
 ---- xplugin_status ----
 mysqlx	ACTIVE
@@ -205,4 +207,4 @@ mysqlx	ACTIVE
 (no rows)
 
 Precheck complete.
-TSV outputs: /Users/balajin/Documents/GitHub/Mysql-to-MariaDB-Migration/artifacts/precheck/*.tsv
+TSV outputs: /mnt/macshare/artifacts/precheck/*.tsv
