@@ -24,6 +24,25 @@ Private repository to design, execute, and validate end-to-end MySQL to MariaDB 
 - The orchestrator can run on a third host; SSH access to the target is required for validation.
 - The tool prompts for required inputs if not provided in config/env.
 
+## Prerequisites (two_step data load)
+If you hit foreign key / unique constraint ordering errors during `two_step_parallel_data`, run the following on the **target MariaDB** before starting `two_step`:
+
+```sql
+SET GLOBAL FOREIGN_KEY_CHECKS=0;
+SET GLOBAL UNIQUE_CHECKS=0;
+```
+
+After `two_step_finalize_objects` completes, re-enable both:
+
+```sql
+SET GLOBAL FOREIGN_KEY_CHECKS=1;
+SET GLOBAL UNIQUE_CHECKS=1;
+```
+
+Notes:
+- Run these statements using an account with sufficient privileges to set global variables.
+- This is a manual DBA pre/post step; the scripts do not toggle these globals automatically.
+
 ## Status
 In progress
 
