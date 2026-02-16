@@ -24,6 +24,36 @@ Private repository to design, execute, and validate end-to-end MySQL to MariaDB 
 - The orchestrator can run on a third host; SSH access to the target is required for validation.
 - The tool prompts for required inputs if not provided in config/env.
 
+## Prerequisites (user privileges)
+The tool expects valid privileges to already exist for the entered users.
+
+Admin users (`SRC_ADMIN_USER` / `TGT_ADMIN_USER`):
+- Must be able to connect from the orchestrator host.
+- Must be able to create/grant migration users.
+- Must be able to check/create/drop target database objects as needed by workflow.
+- In practice, this usually means admin-level privileges, including grant capability.
+
+Migration users (`SRC_USER` / `TGT_USER`):
+- Must be able to connect from the orchestrator host.
+- Must have enough source read privileges and target write/object privileges for selected DBs.
+- If using one-step with `create_migration_user`, the script attempts to create/grant these users via admin credentials.
+
+Quick verification (run from orchestrator host):
+
+```bash
+MYSQL_PWD='***' mysql --protocol=TCP -h<SRC_HOST> -P<SRC_PORT> -u<SRC_ADMIN_USER> -e "SELECT 1;"
+MYSQL_PWD='***' mysql --protocol=TCP -h<TGT_HOST> -P<TGT_PORT> -u<TGT_ADMIN_USER> -e "SELECT 1;"
+MYSQL_PWD='***' mysql --protocol=TCP -h<SRC_HOST> -P<SRC_PORT> -u<SRC_USER> -e "SELECT 1;"
+MYSQL_PWD='***' mysql --protocol=TCP -h<TGT_HOST> -P<TGT_PORT> -u<TGT_USER> -e "SELECT 1;"
+```
+
+Optional grant inspection:
+
+```sql
+SHOW GRANTS FOR 'admin'@'<orchestrator_ip_or_%>';
+SHOW GRANTS FOR 'migrate'@'<orchestrator_ip_or_%>';
+```
+
 ## Prerequisites (two_step data load)
 If you hit foreign key / unique constraint ordering errors during `two_step_parallel_data`, run the following on the **target MariaDB** before starting `two_step`:
 
