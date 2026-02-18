@@ -101,6 +101,9 @@ def _prompt_required_env(env: Dict[str, str], mode_value: str, non_interactive: 
     _prompt_env(env, "SRC_ADMIN_PASS", "Source admin password", secret=True)
     _prompt_env(env, "TGT_ADMIN_USER", "Target admin user")
     _prompt_env(env, "TGT_ADMIN_PASS", "Target admin password", secret=True)
+    if mode_value == "binlog":
+        _prompt_env(env, "REPL_USER", "Replication user")
+        _prompt_env(env, "REPL_PASS", "Replication password", secret=True)
 
     # two_step uses installed sqldata by default; no SQLINESDATA_CMD* prompts required.
 
@@ -186,7 +189,7 @@ def plan(
     # Allow environment variables to override/extend config envs.
     env = {**env, **os.environ}
     _prompt_required_env(env, mode_value, non_interactive=False)
-    if mode_value in ("one_step", "two_step"):
+    if mode_value in ("one_step", "two_step", "binlog"):
         _require_env(
             env,
             ["SRC_HOST", "SRC_USER", "SRC_PASS", "TGT_HOST", "TGT_USER", "TGT_PASS"],
@@ -198,7 +201,9 @@ def plan(
             mode_value,
         )
         if not (env.get("SRC_DB") or env.get("SRC_DBS")):
-            raise typer.BadParameter("Missing SRC_DB or SRC_DBS for one_step/two_step.")
+            raise typer.BadParameter("Missing SRC_DB or SRC_DBS for one_step/two_step/binlog.")
+        if mode_value == "binlog":
+            _require_env(env, ["REPL_USER", "REPL_PASS"], mode_value)
         if env.get("ALLOW_ROOT_USERS") not in ("1", "true", "TRUE", "True"):
             if (
                 env.get("SRC_USER") == "root"
@@ -263,7 +268,7 @@ def run(
     env = {**env, **os.environ}
     _prompt_required_env(env, mode_value, non_interactive)
 
-    if mode_value in ("one_step", "two_step"):
+    if mode_value in ("one_step", "two_step", "binlog"):
         _require_env(
             env,
             ["SRC_HOST", "SRC_USER", "SRC_PASS", "TGT_HOST", "TGT_USER", "TGT_PASS"],
@@ -275,7 +280,9 @@ def run(
             mode_value,
         )
         if not (env.get("SRC_DB") or env.get("SRC_DBS")):
-            raise typer.BadParameter("Missing SRC_DB or SRC_DBS for one_step/two_step.")
+            raise typer.BadParameter("Missing SRC_DB or SRC_DBS for one_step/two_step/binlog.")
+        if mode_value == "binlog":
+            _require_env(env, ["REPL_USER", "REPL_PASS"], mode_value)
         if env.get("ALLOW_ROOT_USERS") not in ("1", "true", "TRUE", "True"):
             if (
                 env.get("SRC_USER") == "root"

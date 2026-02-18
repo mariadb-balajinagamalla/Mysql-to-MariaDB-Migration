@@ -20,6 +20,13 @@ modes:
     - two_step_finalize
     - validate
 
+  binlog:
+    - binlog_prepare
+    - precheck_only
+    - binlog_seed
+    - binlog_replication
+    - binlog_verify
+
 phases:
   precheck_only:
     - id: precheck
@@ -49,6 +56,12 @@ phases:
       script: scripts/00_preflight_two_step.sh
       args: []
 
+  binlog_prepare:
+    - id: preflight_binlog
+      name: Preflight checks (binlog)
+      script: scripts/00_preflight_binlog.sh
+      args: []
+
   one_step:
     - id: one_step_dump_restore
       name: One-step dump/restore (mariadb-dump | mariadb)
@@ -71,4 +84,22 @@ phases:
     - id: two_step_finalize_objects
       name: Apply constraints/indexes/routines after data load
       script: scripts/13_two_step_finalize.sh
+      args: []
+
+  binlog_seed:
+    - id: binlog_seed_dump_restore
+      name: Seed target with dump/restore snapshot
+      script: scripts/14_binlog_seed.sh
+      args: []
+
+  binlog_replication:
+    - id: binlog_start_replication
+      name: Configure and start MariaDB replication from MySQL binlog
+      script: scripts/15_binlog_start_replication.sh
+      args: []
+
+  binlog_verify:
+    - id: binlog_verify_replication
+      name: Verify replication status and lag
+      script: scripts/16_binlog_verify.sh
       args: []

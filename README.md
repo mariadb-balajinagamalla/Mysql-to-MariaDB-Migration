@@ -89,6 +89,12 @@ Best for larger datasets or tighter windows.
 - Assumes SQLines Data is installed and available on `PATH` (`sqldata` or `sqlinesdata`), or set `SQLINESDATA_BIN`.
 - Requires existing migration users (`SRC_USER`/`TGT_USER`); preflight fails fast if those logins are not ready.
 
+### Binlog (seed + replication)
+Best for low-downtime cutover.
+- Seeds target from a consistent dump snapshot with embedded binlog coordinates.
+- Starts MariaDB replication from MySQL binlog using `REPL_USER`/`REPL_PASS`.
+- Verifies replication thread health and lag after start.
+
 ## Orchestrator usage
 Interactive (recommended):
 ```bash
@@ -149,6 +155,22 @@ Target:
 Optional:
 - `SQLINESDATA_BIN` (auto-detected: `sqldata` then `sqlinesdata`)
 
+## Binlog required envs (config/migration.yaml)
+Source:
+- `SRC_HOST`, `SRC_PORT`, `SRC_USER`, `SRC_PASS`
+- `SRC_DB` (single DB) or `SRC_DBS` (comma-separated)
+- `SRC_ADMIN_USER`, `SRC_ADMIN_PASS`
+
+Target:
+- `TGT_HOST`, `TGT_PORT`, `TGT_USER`, `TGT_PASS`
+- `TGT_ADMIN_USER`, `TGT_ADMIN_PASS`
+
+Replication:
+- `REPL_USER`, `REPL_PASS`
+- Optional: `SRC_BINLOG_FILE`, `SRC_BINLOG_POS` (auto-captured during seed if not set)
+- Optional: `BINLOG_COORD_FILE` (default: `artifacts/binlog_coords.env`)
+- Optional: `BINLOG_MAX_LAG_SECS` (default: `30`)
+
 
 ## Multi-DB example
 ```yaml
@@ -157,5 +179,5 @@ SRC_DBS: "sakila,world"
 
 ## Notes
 - Use a fresh `--out` directory per run to avoid step skips.
-- Orchestrator mode: `python -m orchestrator.migrationctl plan/run --config config/migration.yaml --mode <one_step|two_step> --out artifacts/<dir>`
+- Orchestrator mode: `python -m orchestrator.migrationctl plan/run --config config/migration.yaml --mode <one_step|two_step|binlog> --out artifacts/<dir>`
 - Safety default: migration fails if target DB already exists. Set `ALLOW_TARGET_DB_OVERWRITE=1` only when overwrite is intentional.

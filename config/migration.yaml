@@ -22,3 +22,5 @@ env:
   TGT_SSH_OPTS: "-o StrictHostKeyChecking=no"
   MIGRATE_APP_USERS: "0"
   APP_USER_DEFAULT_PASSWORD: ""
+  REPL_USER: "repl"
+  REPL_PASS: ""
