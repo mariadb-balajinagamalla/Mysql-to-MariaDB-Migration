@@ -13,7 +13,8 @@ run_signature() {
     "TGT_ADMIN_USER=$TGT_ADMIN_USER" \
     "TGT_SSH_HOST=$TGT_SSH_HOST" \
     "TGT_SSH_USER=$TGT_SSH_USER" \
-    "MIGRATE_APP_USERS=$MIGRATE_APP_USERS"
+    "MIGRATE_APP_USERS=$MIGRATE_APP_USERS" \
+    "REPL_USER=$REPL_USER"
 }
 
 prompt() {
@@ -62,10 +63,10 @@ yaml_env() {
 }
 
 echo "==> MySQL to MariaDB Migration"
-MODE="$(prompt "Mode (one_step|two_step)" "one_step")"
+MODE="$(prompt "Mode (one_step|two_step|binlog)" "one_step")"
 MODE="${MODE// /}"
-if [[ "$MODE" != "one_step" && "$MODE" != "two_step" ]]; then
-  echo "ERROR: mode must be one_step or two_step"
+if [[ "$MODE" != "one_step" && "$MODE" != "two_step" && "$MODE" != "binlog" ]]; then
+  echo "ERROR: mode must be one_step, two_step or binlog"
   exit 1
 fi
 
@@ -101,9 +102,20 @@ else
   APP_USER_DEFAULT_PASSWORD=""
 fi
 
+REPL_USER="$(trim_ws "$(yaml_env "REPL_USER")")"
+REPL_PASS="$(trim_ws "$(yaml_env "REPL_PASS")")"
+if [[ "$MODE" == "binlog" ]]; then
+  REPL_USER="$(trim_ws "$(prompt "Replication user" "${REPL_USER:-repl}")")"
+  REPL_PASS="$(trim_ws "$(prompt_secret "Replication password")")"
+fi
+
 ALLOW_ROOT_USERS="${ALLOW_ROOT_USERS:-0}"
 if [[ -z "$SRC_ADMIN_USER" || -z "$SRC_ADMIN_PASS" || -z "$TGT_ADMIN_USER" || -z "$TGT_ADMIN_PASS" ]]; then
   echo "ERROR: Source/Target admin user and password are required."
+  exit 1
+fi
+if [[ "$MODE" == "binlog" && ( -z "$REPL_USER" || -z "$REPL_PASS" ) ]]; then
+  echo "ERROR: Replication user and password are required for binlog mode."
   exit 1
 fi
 if [[ "$ALLOW_ROOT_USERS" != "1" ]]; then
@@ -133,12 +145,14 @@ save_config() {
   local tgt_pass_save="$TGT_PASS"
   local tgt_admin_pass_save="$TGT_ADMIN_PASS"
   local app_user_pass_save="$APP_USER_DEFAULT_PASSWORD"
+  local repl_pass_save="$REPL_PASS"
   if [[ "$include_secrets" != "1" ]]; then
     src_pass_save=""
     src_admin_pass_save=""
     tgt_pass_save=""
     tgt_admin_pass_save=""
     app_user_pass_save=""
+    repl_pass_save=""
   fi
 
   local mode_val="$MODE"
@@ -170,6 +184,8 @@ save_config() {
       -v tgt_ssh_opts="$(yaml_quote "$TGT_SSH_OPTS")" \
       -v mig_app_users="$(yaml_quote "$MIGRATE_APP_USERS")" \
       -v app_user_pass="$(yaml_quote "$app_user_pass_save")" \
+      -v repl_user="$(yaml_quote "$REPL_USER")" \
+      -v repl_pass="$(yaml_quote "$repl_pass_save")" \
       '
 BEGIN { in_env=0 }
 {
@@ -196,6 +212,8 @@ BEGIN { in_env=0 }
     if ($0 ~ /^  TGT_SSH_OPTS:/) { print "  TGT_SSH_OPTS: " tgt_ssh_opts; next }
     if ($0 ~ /^  MIGRATE_APP_USERS:/) { print "  MIGRATE_APP_USERS: " mig_app_users; next }
     if ($0 ~ /^  APP_USER_DEFAULT_PASSWORD:/) { print "  APP_USER_DEFAULT_PASSWORD: " app_user_pass; next }
+    if ($0 ~ /^  REPL_USER:/) { print "  REPL_USER: " repl_user; next }
+    if ($0 ~ /^  REPL_PASS:/) { print "  REPL_PASS: " repl_pass; next }
   }
   print
 }
@@ -212,6 +230,8 @@ BEGIN { in_env=0 }
 export SRC_HOST SRC_PORT SRC_USER SRC_PASS SRC_ADMIN_USER SRC_ADMIN_PASS
 export TGT_HOST TGT_PORT TGT_USER TGT_PASS TGT_ADMIN_USER TGT_ADMIN_PASS
 export MIGRATE_APP_USERS APP_USER_DEFAULT_PASSWORD
+if [[ -n "${REPL_USER:-}" ]]; then export REPL_USER; fi
+if [[ -n "${REPL_PASS:-}" ]]; then export REPL_PASS; fi
 
 if [[ -n "$TGT_SSH_HOST" ]]; then export TGT_SSH_HOST; fi
 if [[ -n "$TGT_SSH_USER" ]]; then export TGT_SSH_USER; fi
