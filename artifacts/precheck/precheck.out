@@ -11,12 +11,7 @@ NOTE: mariadb-migrate-config-file not found; skipping config check.
 1	1
 
 ---- auth_plugins ----
-admin	%	caching_sha2_password
-admin	192.168.64.3	caching_sha2_password
-admin	192.168.64.7	caching_sha2_password
-admin	localhost	caching_sha2_password
 debian-sys-maint	localhost	caching_sha2_password
-migrate	%	caching_sha2_password
 
 ---- json_columns ----
 testdb	orders_json	data_json	json
@@ -194,7 +189,8 @@ TempTable	ACTIVE
 sakila	address	location	0
 
 ---- resource_groups ----
-(no rows)
+USR_default	USER	1	0-9	0
+SYS_default	SYSTEM	1	0-9	0
 
 ---- xplugin_status ----
 mysqlx	ACTIVE

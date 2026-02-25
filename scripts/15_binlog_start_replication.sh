@@ -50,11 +50,11 @@ if [[ "$BINLOG_CREATE_REPL_USER" == "1" ]]; then
   repl_user_esc="${REPL_USER//\'/\'\'}"
   repl_pass_esc="${REPL_PASS//\'/\'\'}"
   MYSQL_PWD="$SRC_ADMIN_PASS" "$MYSQL_BIN" --protocol=TCP -h"$SRC_HOST" -P"$SRC_PORT" -u"$SRC_ADMIN_USER" \
-    --batch --skip-column-names -e "CREATE USER IF NOT EXISTS '${repl_user_esc}'@'%' IDENTIFIED BY '${repl_pass_esc}';" || true
+    --batch --skip-column-names -e "CREATE USER IF NOT EXISTS '${repl_user_esc}'@'%' IDENTIFIED WITH mysql_native_password BY '${repl_pass_esc}';" || true
+  MYSQL_PWD="$SRC_ADMIN_PASS" "$MYSQL_BIN" --protocol=TCP -h"$SRC_HOST" -P"$SRC_PORT" -u"$SRC_ADMIN_USER" \
+    --batch --skip-column-names -e "ALTER USER '${repl_user_esc}'@'%' IDENTIFIED WITH mysql_native_password BY '${repl_pass_esc}';" || true
   MYSQL_PWD="$SRC_ADMIN_PASS" "$MYSQL_BIN" --protocol=TCP -h"$SRC_HOST" -P"$SRC_PORT" -u"$SRC_ADMIN_USER" \
     --batch --skip-column-names -e "GRANT REPLICATION SLAVE, REPLICATION CLIENT ON *.* TO '${repl_user_esc}'@'%';" || true
-  MYSQL_PWD="$SRC_ADMIN_PASS" "$MYSQL_BIN" --protocol=TCP -h"$SRC_HOST" -P"$SRC_PORT" -u"$SRC_ADMIN_USER" \
-    --batch --skip-column-names -e "GRANT REPLICATION REPLICA, REPLICATION CLIENT ON *.* TO '${repl_user_esc}'@'%';" || true
   MYSQL_PWD="$SRC_ADMIN_PASS" "$MYSQL_BIN" --protocol=TCP -h"$SRC_HOST" -P"$SRC_PORT" -u"$SRC_ADMIN_USER" \
     --batch --skip-column-names -e "FLUSH PRIVILEGES;"
 fi

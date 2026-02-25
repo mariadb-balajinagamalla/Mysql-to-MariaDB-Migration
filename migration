@@ -272,7 +272,11 @@ if [[ -f "$RUN_SIG_FILE" ]]; then
   LAST_SIG="$(cat "$RUN_SIG_FILE")"
 fi
 
-if [[ -n "$RUN_DIR" && -d "$RUN_DIR" && -f "$RUN_DIR/state.json" && -n "$LAST_SIG" && "$CURRENT_SIG" == "$LAST_SIG" ]]; then
+if [[ "$MODE" == "binlog" && -n "$RUN_DIR" && -d "$RUN_DIR" && -f "$RUN_DIR/state.json" && "${FORCE_NEW_RUN:-0}" != "1" ]]; then
+  echo "==> Resuming: $MODE (out: $RUN_DIR)"
+  python3 -m orchestrator.migrationctl resume --config config/migration.yaml --mode "$MODE" --out "$RUN_DIR"
+  STATUS=$?
+elif [[ -n "$RUN_DIR" && -d "$RUN_DIR" && -f "$RUN_DIR/state.json" && -n "$LAST_SIG" && "$CURRENT_SIG" == "$LAST_SIG" ]]; then
   echo "==> Resuming: $MODE (out: $RUN_DIR)"
   python3 -m orchestrator.migrationctl resume --config config/migration.yaml --mode "$MODE" --out "$RUN_DIR"
   STATUS=$?

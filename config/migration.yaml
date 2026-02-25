@@ -1,4 +1,4 @@
-mode: "two_step"
+mode: "binlog"
 
 env:
   # Playbook envs (one_step / two_step)
@@ -23,4 +23,4 @@ env:
   MIGRATE_APP_USERS: "0"
   APP_USER_DEFAULT_PASSWORD: ""
   REPL_USER: "repl"
-  REPL_PASS: ""
+  REPL_PASS: "MariaDB123!"

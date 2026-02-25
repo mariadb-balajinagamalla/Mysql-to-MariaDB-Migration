@@ -16,26 +16,33 @@ if [[ -z "$TGT_HOST" || -z "$TGT_ADMIN_USER" || -z "$TGT_ADMIN_PASS" ]]; then
   exit 1
 fi
 
-status_line="$(MYSQL_PWD="$TGT_ADMIN_PASS" "$MARIADB_BIN" --protocol=TCP -h"$TGT_HOST" -P"$TGT_PORT" -u"$TGT_ADMIN_USER" \
-  --batch --skip-column-names -e "SHOW REPLICA STATUS\\G" 2>/dev/null | awk -F': ' '
-    $1 ~ /Replica_IO_Running|Slave_IO_Running/ {io=$2}
-    $1 ~ /Replica_SQL_Running|Slave_SQL_Running/ {sql=$2}
-    $1 ~ /Seconds_Behind_Master/ {lag=$2}
-    END {print io"\t"sql"\t"lag}
+status_out=""
+status_line=""
+for q in "SHOW REPLICA STATUS\\G" "SHOW SLAVE STATUS\\G"; do
+  status_out="$(MYSQL_PWD="$TGT_ADMIN_PASS" "$MARIADB_BIN" --protocol=TCP -h"$TGT_HOST" -P"$TGT_PORT" -u"$TGT_ADMIN_USER" -e "$q" 2>&1 || true)"
+  status_line="$(printf "%s\n" "$status_out" | awk -F': ' '
+    {
+      gsub(/^[[:space:]]+/, "", $1)
+    }
+    $1 ~ /^(Replica_IO_Running|Slave_IO_Running)$/ {io=$2}
+    $1 ~ /^(Replica_SQL_Running|Slave_SQL_Running)$/ {sql=$2}
+    $1 == "Seconds_Behind_Master" {lag=$2}
+    END {
+      if (io != "" || sql != "" || lag != "") {
+        print io "\t" sql "\t" lag
+      }
+    }
   ')"
+  if [[ -n "$status_line" ]]; then
+    break
+  fi
+done
 
-if [[ -z "$status_line" || "$status_line" == $'\t\t' ]]; then
-  status_line="$(MYSQL_PWD="$TGT_ADMIN_PASS" "$MARIADB_BIN" --protocol=TCP -h"$TGT_HOST" -P"$TGT_PORT" -u"$TGT_ADMIN_USER" \
-    --batch --skip-column-names -e "SHOW SLAVE STATUS\\G" 2>/dev/null | awk -F': ' '
-      $1 ~ /Slave_IO_Running/ {io=$2}
-      $1 ~ /Slave_SQL_Running/ {sql=$2}
-      $1 ~ /Seconds_Behind_Master/ {lag=$2}
-      END {print io"\t"sql"\t"lag}
-    ')"
-fi
-
-if [[ -z "$status_line" || "$status_line" == $'\t\t' ]]; then
+if [[ -z "$status_line" ]]; then
   echo "ERROR: Could not read replication status from target."
+  if [[ -n "$status_out" ]]; then
+    echo "$status_out"
+  fi
   exit 2
 fi
 
