@@ -80,6 +80,22 @@ if [[ "$log_bin_val" != "ON" && "$log_bin_val" != "1" ]]; then
   exit 5
 fi
 
+echo "Checking source binlog format..."
+required_fmt="MIXED"
+current_fmt="$(MYSQL_PWD="$SRC_ADMIN_PASS" "$MYSQL_BIN" --protocol=TCP -h"$SRC_HOST" -P"$SRC_PORT" -u"$SRC_ADMIN_USER" \
+  --batch --skip-column-names -e "SHOW VARIABLES LIKE 'binlog_format';" | awk 'NR==1 {print toupper($2)}')"
+if [[ "$current_fmt" != "$required_fmt" ]]; then
+  echo "Current source binlog_format is $current_fmt. Setting it to $required_fmt..."
+  MYSQL_PWD="$SRC_ADMIN_PASS" "$MYSQL_BIN" --protocol=TCP -h"$SRC_HOST" -P"$SRC_PORT" -u"$SRC_ADMIN_USER" \
+    --batch --skip-column-names -e "SET GLOBAL binlog_format='${required_fmt}';"
+  current_fmt="$(MYSQL_PWD="$SRC_ADMIN_PASS" "$MYSQL_BIN" --protocol=TCP -h"$SRC_HOST" -P"$SRC_PORT" -u"$SRC_ADMIN_USER" \
+    --batch --skip-column-names -e "SHOW VARIABLES LIKE 'binlog_format';" | awk 'NR==1 {print toupper($2)}')"
+fi
+if [[ "$current_fmt" != "$required_fmt" ]]; then
+  echo "ERROR: source binlog_format is $current_fmt, expected $required_fmt."
+  exit 9
+fi
+
 echo "Checking source master status visibility..."
 if ! MYSQL_PWD="$SRC_ADMIN_PASS" "$MYSQL_BIN" --protocol=TCP -h"$SRC_HOST" -P"$SRC_PORT" -u"$SRC_ADMIN_USER" \
   --batch --skip-column-names -e "SHOW MASTER STATUS;" | head -n1 | grep -q .; then
