@@ -14,7 +14,9 @@ run_signature() {
     "TGT_SSH_HOST=$TGT_SSH_HOST" \
     "TGT_SSH_USER=$TGT_SSH_USER" \
     "MIGRATE_APP_USERS=$MIGRATE_APP_USERS" \
-    "REPL_USER=$REPL_USER"
+    "REPL_USER=$REPL_USER" \
+    "INPLACE_BACKUP_DIR=$INPLACE_BACKUP_DIR" \
+    "INPLACE_EXECUTE=$INPLACE_EXECUTE"
 }
 
 prompt() {
@@ -36,6 +38,32 @@ prompt_secret() {
   read -r -s -p "$label: " var
   printf "\n"
   printf "%s" "$var"
+}
+
+source_version_check_inplace() {
+  local mysql_bin="${MYSQL_BIN:-mysql}"
+  if ! command -v "$mysql_bin" >/dev/null 2>&1; then
+    echo "ERROR: mysql client not found for inplace version check (MYSQL_BIN=$mysql_bin)."
+    exit 1
+  fi
+  local src_version
+  src_version="$(MYSQL_PWD="$SRC_ADMIN_PASS" "$mysql_bin" --protocol=TCP -h"$SRC_HOST" -P"$SRC_PORT" -u"$SRC_ADMIN_USER" \
+    --batch --skip-column-names -e "SELECT VERSION();" 2>/dev/null | head -n1)"
+  if [[ -z "$src_version" ]]; then
+    echo "ERROR: Could not detect source version for inplace mode."
+    exit 1
+  fi
+  local mm
+  mm="$(printf "%s" "$src_version" | sed -E 's/^([0-9]+)\.([0-9]+).*/\1.\2/')"
+  local major minor
+  major="$(printf "%s" "$mm" | cut -d. -f1)"
+  minor="$(printf "%s" "$mm" | cut -d. -f2)"
+  if [[ "$major" -gt 8 || ( "$major" -eq 8 && "$minor" -ge 0 ) ]]; then
+    echo "ERROR: In-place mode is not supported for MySQL 8.0+ in this tool."
+    echo "Detected source version: $src_version"
+    echo "Use one_step, two_step, or binlog mode."
+    exit 1
+  fi
 }
 
 trim_ws() {
@@ -63,10 +91,10 @@ yaml_env() {
 }
 
 echo "==> MySQL to MariaDB Migration"
-MODE="$(prompt "Mode (one_step|two_step|binlog)" "one_step")"
+MODE="$(prompt "Mode (one_step|two_step|binlog|inplace)" "one_step")"
 MODE="${MODE// /}"
-if [[ "$MODE" != "one_step" && "$MODE" != "two_step" && "$MODE" != "binlog" ]]; then
-  echo "ERROR: mode must be one_step, two_step or binlog"
+if [[ "$MODE" != "one_step" && "$MODE" != "two_step" && "$MODE" != "binlog" && "$MODE" != "inplace" ]]; then
+  echo "ERROR: mode must be one_step, two_step, binlog or inplace"
   exit 1
 fi
 
@@ -74,32 +102,82 @@ SRC_HOST="$(trim_ws "$(prompt "Source host" "")")"
 SRC_PORT="$(trim_ws "$(prompt "Source port" "3306")")"
 SRC_ADMIN_USER="$(trim_ws "$(prompt "Source admin user" "")")"
 SRC_ADMIN_PASS="$(trim_ws "$(prompt_secret "Source admin password")")"
+if [[ "$MODE" == "inplace" ]]; then
+  source_version_check_inplace
+fi
 SRC_USER="$(trim_ws "$(yaml_env "SRC_USER")")"
 SRC_PASS="$(trim_ws "$(yaml_env "SRC_PASS")")"
 if [[ -z "$SRC_USER" ]]; then SRC_USER="migrate"; fi
 if [[ -z "$SRC_PASS" ]]; then SRC_PASS="Migrate123!"; fi
-SRC_DBS_INPUT="$(trim_ws "$(prompt "Database name(s) (comma-separated)" "")")"
+SRC_DBS_INPUT=""
+if [[ "$MODE" != "inplace" ]]; then
+  SRC_DBS_INPUT="$(trim_ws "$(prompt "Database name(s) (comma-separated)" "")")"
+fi
 
-TGT_HOST="$(trim_ws "$(prompt "Target host" "")")"
-TGT_PORT="$(trim_ws "$(prompt "Target port" "3306")")"
-TGT_ADMIN_USER="$(trim_ws "$(prompt "Target admin user" "")")"
-TGT_ADMIN_PASS="$(trim_ws "$(prompt_secret "Target admin password")")"
-TGT_SSH_HOST="$(trim_ws "$(prompt "Target SSH host (leave blank if not using SSH)" "")")"
-TGT_SSH_USER="$(trim_ws "$(prompt "Target SSH user" "root")")"
-TGT_SSH_OPTS="$(trim_ws "$(prompt "Target SSH options" "-o StrictHostKeyChecking=no")")"
+TGT_HOST=""
+TGT_PORT="3306"
+TGT_ADMIN_USER=""
+TGT_ADMIN_PASS=""
+TGT_SSH_HOST=""
+TGT_SSH_USER="root"
+TGT_SSH_OPTS="-o StrictHostKeyChecking=no"
+if [[ "$MODE" != "inplace" ]]; then
+  TGT_HOST="$(trim_ws "$(prompt "Target host" "")")"
+  TGT_PORT="$(trim_ws "$(prompt "Target port" "3306")")"
+  TGT_ADMIN_USER="$(trim_ws "$(prompt "Target admin user" "")")"
+  TGT_ADMIN_PASS="$(trim_ws "$(prompt_secret "Target admin password")")"
+  TGT_SSH_HOST="$(trim_ws "$(prompt "Target SSH host (leave blank if not using SSH)" "")")"
+  TGT_SSH_USER="$(trim_ws "$(prompt "Target SSH user" "root")")"
+  TGT_SSH_OPTS="$(trim_ws "$(prompt "Target SSH options" "-o StrictHostKeyChecking=no")")"
+fi
 
 TGT_USER="$(trim_ws "$(yaml_env "TGT_USER")")"
 TGT_PASS="$(trim_ws "$(yaml_env "TGT_PASS")")"
 if [[ -z "$TGT_USER" ]]; then TGT_USER="migrate"; fi
 if [[ -z "$TGT_PASS" ]]; then TGT_PASS="Migrate123!"; fi
 
-MIGRATE_APP_USERS="$(trim_ws "$(prompt "Migrate application users? (y/n)" "y")")"
-if [[ "$(printf "%s" "$MIGRATE_APP_USERS" | tr '[:upper:]' '[:lower:]')" == "y" ]]; then
-  MIGRATE_APP_USERS="1"
-  APP_USER_DEFAULT_PASSWORD="$(trim_ws "$(prompt_secret "Default password for app users")")"
+MIGRATE_APP_USERS="0"
+APP_USER_DEFAULT_PASSWORD=""
+if [[ "$MODE" != "inplace" ]]; then
+  MIGRATE_APP_USERS="$(trim_ws "$(prompt "Migrate application users? (y/n)" "y")")"
+  if [[ "$(printf "%s" "$MIGRATE_APP_USERS" | tr '[:upper:]' '[:lower:]')" == "y" ]]; then
+    MIGRATE_APP_USERS="1"
+    APP_USER_DEFAULT_PASSWORD="$(trim_ws "$(prompt_secret "Default password for app users")")"
+  else
+    MIGRATE_APP_USERS="0"
+    APP_USER_DEFAULT_PASSWORD=""
+  fi
+fi
+
+INPLACE_BACKUP_DIR="$(trim_ws "$(yaml_env "INPLACE_BACKUP_DIR")")"
+INPLACE_EXECUTE="$(trim_ws "$(yaml_env "INPLACE_EXECUTE")")"
+INPLACE_STOP_CMD="$(trim_ws "$(yaml_env "INPLACE_STOP_CMD")")"
+INPLACE_INSTALL_CMD="$(trim_ws "$(yaml_env "INPLACE_INSTALL_CMD")")"
+INPLACE_START_CMD="$(trim_ws "$(yaml_env "INPLACE_START_CMD")")"
+INPLACE_UPGRADE_CMD="$(trim_ws "$(yaml_env "INPLACE_UPGRADE_CMD")")"
+if [[ "$MODE" == "inplace" ]]; then
+  if [[ -z "$INPLACE_BACKUP_DIR" ]]; then INPLACE_BACKUP_DIR="artifacts/inplace_backup"; fi
+  INPLACE_BACKUP_DIR="$(trim_ws "$(prompt "In-place backup directory" "$INPLACE_BACKUP_DIR")")"
+  inplace_execute_answer="$(trim_ws "$(prompt "Execute in-place commands now? (y/n)" "n")")"
+  if [[ "$(printf "%s" "$inplace_execute_answer" | tr '[:upper:]' '[:lower:]')" == "y" ]]; then
+    INPLACE_EXECUTE="1"
+  else
+    INPLACE_EXECUTE="0"
+  fi
+  if [[ -z "$INPLACE_STOP_CMD" ]]; then INPLACE_STOP_CMD="sudo systemctl stop mysql || sudo systemctl stop mysqld"; fi
+  if [[ -z "$INPLACE_START_CMD" ]]; then INPLACE_START_CMD="sudo systemctl start mariadb || sudo systemctl start mysql"; fi
+  if [[ -z "$INPLACE_UPGRADE_CMD" ]]; then INPLACE_UPGRADE_CMD="mariadb-upgrade"; fi
+  INPLACE_STOP_CMD="$(trim_ws "$(prompt "In-place stop command" "$INPLACE_STOP_CMD")")"
+  INPLACE_INSTALL_CMD="$(trim_ws "$(prompt "In-place install command (required if execute=y)" "$INPLACE_INSTALL_CMD")")"
+  INPLACE_START_CMD="$(trim_ws "$(prompt "In-place start command" "$INPLACE_START_CMD")")"
+  INPLACE_UPGRADE_CMD="$(trim_ws "$(prompt "In-place upgrade command" "$INPLACE_UPGRADE_CMD")")"
+  if [[ "$INPLACE_EXECUTE" == "1" && -z "$INPLACE_INSTALL_CMD" ]]; then
+    echo "ERROR: In-place install command is required when execute=y."
+    exit 1
+  fi
 else
-  MIGRATE_APP_USERS="0"
-  APP_USER_DEFAULT_PASSWORD=""
+  if [[ -z "$INPLACE_BACKUP_DIR" ]]; then INPLACE_BACKUP_DIR=""; fi
+  if [[ -z "$INPLACE_EXECUTE" ]]; then INPLACE_EXECUTE="0"; fi
 fi
 
 REPL_USER="$(trim_ws "$(yaml_env "REPL_USER")")"
@@ -110,8 +188,12 @@ if [[ "$MODE" == "binlog" ]]; then
 fi
 
 ALLOW_ROOT_USERS="${ALLOW_ROOT_USERS:-0}"
-if [[ -z "$SRC_ADMIN_USER" || -z "$SRC_ADMIN_PASS" || -z "$TGT_ADMIN_USER" || -z "$TGT_ADMIN_PASS" ]]; then
-  echo "ERROR: Source/Target admin user and password are required."
+if [[ -z "$SRC_ADMIN_USER" || -z "$SRC_ADMIN_PASS" ]]; then
+  echo "ERROR: Source admin user and password are required."
+  exit 1
+fi
+if [[ "$MODE" != "inplace" && ( -z "$TGT_ADMIN_USER" || -z "$TGT_ADMIN_PASS" ) ]]; then
+  echo "ERROR: Target admin user and password are required."
   exit 1
 fi
 if [[ "$MODE" == "binlog" && ( -z "$REPL_USER" || -z "$REPL_PASS" ) ]]; then
@@ -186,6 +268,12 @@ save_config() {
       -v app_user_pass="$(yaml_quote "$app_user_pass_save")" \
       -v repl_user="$(yaml_quote "$REPL_USER")" \
       -v repl_pass="$(yaml_quote "$repl_pass_save")" \
+      -v inplace_backup_dir="$(yaml_quote "$INPLACE_BACKUP_DIR")" \
+      -v inplace_execute="$(yaml_quote "$INPLACE_EXECUTE")" \
+      -v inplace_stop_cmd="$(yaml_quote "$INPLACE_STOP_CMD")" \
+      -v inplace_install_cmd="$(yaml_quote "$INPLACE_INSTALL_CMD")" \
+      -v inplace_start_cmd="$(yaml_quote "$INPLACE_START_CMD")" \
+      -v inplace_upgrade_cmd="$(yaml_quote "$INPLACE_UPGRADE_CMD")" \
       '
 BEGIN { in_env=0 }
 {
@@ -214,6 +302,12 @@ BEGIN { in_env=0 }
     if ($0 ~ /^  APP_USER_DEFAULT_PASSWORD:/) { print "  APP_USER_DEFAULT_PASSWORD: " app_user_pass; next }
     if ($0 ~ /^  REPL_USER:/) { print "  REPL_USER: " repl_user; next }
     if ($0 ~ /^  REPL_PASS:/) { print "  REPL_PASS: " repl_pass; next }
+    if ($0 ~ /^  INPLACE_BACKUP_DIR:/) { print "  INPLACE_BACKUP_DIR: " inplace_backup_dir; next }
+    if ($0 ~ /^  INPLACE_EXECUTE:/) { print "  INPLACE_EXECUTE: " inplace_execute; next }
+    if ($0 ~ /^  INPLACE_STOP_CMD:/) { print "  INPLACE_STOP_CMD: " inplace_stop_cmd; next }
+    if ($0 ~ /^  INPLACE_INSTALL_CMD:/) { print "  INPLACE_INSTALL_CMD: " inplace_install_cmd; next }
+    if ($0 ~ /^  INPLACE_START_CMD:/) { print "  INPLACE_START_CMD: " inplace_start_cmd; next }
+    if ($0 ~ /^  INPLACE_UPGRADE_CMD:/) { print "  INPLACE_UPGRADE_CMD: " inplace_upgrade_cmd; next }
   }
   print
 }
@@ -232,13 +326,19 @@ export TGT_HOST TGT_PORT TGT_USER TGT_PASS TGT_ADMIN_USER TGT_ADMIN_PASS
 export MIGRATE_APP_USERS APP_USER_DEFAULT_PASSWORD
 if [[ -n "${REPL_USER:-}" ]]; then export REPL_USER; fi
 if [[ -n "${REPL_PASS:-}" ]]; then export REPL_PASS; fi
+if [[ -n "${INPLACE_BACKUP_DIR:-}" ]]; then export INPLACE_BACKUP_DIR; fi
+if [[ -n "${INPLACE_EXECUTE:-}" ]]; then export INPLACE_EXECUTE; fi
+if [[ -n "${INPLACE_STOP_CMD:-}" ]]; then export INPLACE_STOP_CMD; fi
+if [[ -n "${INPLACE_INSTALL_CMD:-}" ]]; then export INPLACE_INSTALL_CMD; fi
+if [[ -n "${INPLACE_START_CMD:-}" ]]; then export INPLACE_START_CMD; fi
+if [[ -n "${INPLACE_UPGRADE_CMD:-}" ]]; then export INPLACE_UPGRADE_CMD; fi
 
 if [[ -n "$TGT_SSH_HOST" ]]; then export TGT_SSH_HOST; fi
 if [[ -n "$TGT_SSH_USER" ]]; then export TGT_SSH_USER; fi
 
-if [[ "$SRC_DBS_INPUT" == *","* ]]; then
+if [[ "$MODE" != "inplace" && "$SRC_DBS_INPUT" == *","* ]]; then
   export SRC_DBS="$SRC_DBS_INPUT"
-else
+elif [[ "$MODE" != "inplace" ]]; then
   export SRC_DB="$SRC_DBS_INPUT"
 fi
 

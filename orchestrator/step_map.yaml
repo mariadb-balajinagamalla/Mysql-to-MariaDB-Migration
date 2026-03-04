@@ -27,6 +27,12 @@ modes:
     - binlog_replication
     - binlog_verify
 
+  inplace:
+    - inplace_prepare
+    - inplace_backup
+    - inplace_upgrade
+    - inplace_validate
+
 phases:
   precheck_only:
     - id: precheck
@@ -60,6 +66,12 @@ phases:
     - id: preflight_binlog
       name: Preflight checks (binlog)
       script: scripts/00_preflight_binlog.sh
+      args: []
+
+  inplace_prepare:
+    - id: preflight_inplace
+      name: Preflight checks (inplace)
+      script: scripts/00_preflight_inplace.sh
       args: []
 
   one_step:
@@ -102,4 +114,22 @@ phases:
     - id: binlog_verify_replication
       name: Verify replication status and lag
       script: scripts/16_binlog_verify.sh
+      args: []
+
+  inplace_backup:
+    - id: inplace_backup
+      name: Backup before in-place upgrade
+      script: scripts/17_inplace_backup.sh
+      args: []
+
+  inplace_upgrade:
+    - id: inplace_upgrade
+      name: Execute in-place upgrade steps
+      script: scripts/18_inplace_upgrade.sh
+      args: []
+
+  inplace_validate:
+    - id: inplace_validate
+      name: Validate in-place upgrade result
+      script: scripts/19_inplace_validate.sh
       args: []

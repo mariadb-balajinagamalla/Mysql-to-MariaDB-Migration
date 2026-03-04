@@ -83,27 +83,31 @@ def _prompt_required_env(env: Dict[str, str], mode_value: str, non_interactive: 
         return
     _prompt_env(env, "SRC_HOST", "Source host")
     _prompt_env(env, "SRC_PORT", "Source port")
-    _prompt_env(env, "SRC_USER", "Source user")
-    _prompt_env(env, "SRC_PASS", "Source password", secret=True)
+    if mode_value != "inplace":
+        _prompt_env(env, "SRC_USER", "Source user")
+        _prompt_env(env, "SRC_PASS", "Source password", secret=True)
 
-    if not env.get("SRC_DB") and not env.get("SRC_DBS"):
+    if mode_value != "inplace" and not env.get("SRC_DB") and not env.get("SRC_DBS"):
         dbs = typer.prompt("Source database(s) (comma-separated for multiple)")
         if "," in dbs:
             env["SRC_DBS"] = dbs
         else:
             env["SRC_DB"] = dbs
 
-    _prompt_env(env, "TGT_HOST", "Target host")
-    _prompt_env(env, "TGT_PORT", "Target port")
-    _prompt_env(env, "TGT_USER", "Target user")
-    _prompt_env(env, "TGT_PASS", "Target password", secret=True)
     _prompt_env(env, "SRC_ADMIN_USER", "Source admin user")
     _prompt_env(env, "SRC_ADMIN_PASS", "Source admin password", secret=True)
-    _prompt_env(env, "TGT_ADMIN_USER", "Target admin user")
-    _prompt_env(env, "TGT_ADMIN_PASS", "Target admin password", secret=True)
+    if mode_value != "inplace":
+        _prompt_env(env, "TGT_HOST", "Target host")
+        _prompt_env(env, "TGT_PORT", "Target port")
+        _prompt_env(env, "TGT_USER", "Target user")
+        _prompt_env(env, "TGT_PASS", "Target password", secret=True)
+        _prompt_env(env, "TGT_ADMIN_USER", "Target admin user")
+        _prompt_env(env, "TGT_ADMIN_PASS", "Target admin password", secret=True)
     if mode_value == "binlog":
         _prompt_env(env, "REPL_USER", "Replication user")
         _prompt_env(env, "REPL_PASS", "Replication password", secret=True)
+    if mode_value == "inplace":
+        _prompt_env(env, "INPLACE_BACKUP_DIR", "In-place backup directory")
 
     # two_step uses installed sqldata by default; no SQLINESDATA_CMD* prompts required.
 
@@ -214,6 +218,17 @@ def plan(
                 raise typer.BadParameter(
                     "SRC/TGT admin and migration users must not be root. Set ALLOW_ROOT_USERS=1 to override."
                 )
+    if mode_value == "inplace":
+        _require_env(
+            env,
+            ["SRC_HOST", "SRC_ADMIN_USER", "SRC_ADMIN_PASS", "INPLACE_BACKUP_DIR"],
+            mode_value,
+        )
+        if env.get("ALLOW_ROOT_USERS") not in ("1", "true", "TRUE", "True"):
+            if env.get("SRC_ADMIN_USER") == "root":
+                raise typer.BadParameter(
+                    "SRC admin user must not be root. Set ALLOW_ROOT_USERS=1 to override."
+                )
     if mode_value == "near_zero":
         _require_env(
             env,
@@ -292,6 +307,17 @@ def run(
             ):
                 raise typer.BadParameter(
                     "SRC/TGT admin and migration users must not be root. Set ALLOW_ROOT_USERS=1 to override."
+                )
+    if mode_value == "inplace":
+        _require_env(
+            env,
+            ["SRC_HOST", "SRC_ADMIN_USER", "SRC_ADMIN_PASS", "INPLACE_BACKUP_DIR"],
+            mode_value,
+        )
+        if env.get("ALLOW_ROOT_USERS") not in ("1", "true", "TRUE", "True"):
+            if env.get("SRC_ADMIN_USER") == "root":
+                raise typer.BadParameter(
+                    "SRC admin user must not be root. Set ALLOW_ROOT_USERS=1 to override."
                 )
     if mode_value == "near_zero":
         _require_env(
