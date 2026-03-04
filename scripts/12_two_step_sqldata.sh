@@ -9,13 +9,13 @@ SRC_DB="${SRC_DB:-}"
 
 SRC_HOST="${SRC_HOST:-}"
 SRC_PORT="${SRC_PORT:-3306}"
-SRC_USER="${SRC_USER:-}"
-SRC_PASS="${SRC_PASS:-}"
+SRC_USER="${SRC_ADMIN_USER:-${SRC_USER:-}}"
+SRC_PASS="${SRC_ADMIN_PASS:-${SRC_PASS:-}}"
 
 TGT_HOST="${TGT_HOST:-}"
 TGT_PORT="${TGT_PORT:-3306}"
-TGT_USER="${TGT_USER:-}"
-TGT_PASS="${TGT_PASS:-}"
+TGT_USER="${TGT_ADMIN_USER:-${TGT_USER:-}}"
+TGT_PASS="${TGT_ADMIN_PASS:-${TGT_PASS:-}}"
 
 if [[ -z "$SQLINESDATA_BIN" ]]; then
   if command -v sqldata >/dev/null 2>&1; then

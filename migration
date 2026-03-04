@@ -66,29 +66,46 @@ source_version_check_inplace() {
   fi
 }
 
-trim_ws() {
-  local s="$1"
-  s="${s#"${s%%[![:space:]]*}"}"
-  s="${s%"${s##*[![:space:]]}"}"
-  printf "%s" "$s"
-}
+CFG_REPL_USER=""
+CFG_REPL_PASS=""
+CFG_INPLACE_BACKUP_DIR=""
+CFG_INPLACE_EXECUTE=""
+CFG_INPLACE_STOP_CMD=""
+CFG_INPLACE_INSTALL_CMD=""
+CFG_INPLACE_START_CMD=""
+CFG_INPLACE_UPGRADE_CMD=""
 
-yaml_env() {
-  local key="$1"
-  local cfg="config/migration.yaml"
-  awk -v k="  ${key}:" '
-    $0 ~ /^env:[[:space:]]*$/ { in_env=1; next }
-    in_env && $0 ~ /^[^ ]/ { in_env=0 }
-    in_env && index($0, k) == 1 {
-      sub(/^[^:]*:[[:space:]]*/, "", $0)
-      sub(/[[:space:]]*#.*/, "", $0)
-      gsub(/^"/, "", $0)
-      gsub(/"$/, "", $0)
-      print
-      exit
-    }
-  ' "$cfg"
-}
+if [[ -f "config/migration.yaml" ]]; then
+  while IFS=$'\t' read -r cfg_key cfg_val; do
+    case "$cfg_key" in
+      REPL_USER) CFG_REPL_USER="$cfg_val" ;;
+      REPL_PASS) CFG_REPL_PASS="$cfg_val" ;;
+      INPLACE_BACKUP_DIR) CFG_INPLACE_BACKUP_DIR="$cfg_val" ;;
+      INPLACE_EXECUTE) CFG_INPLACE_EXECUTE="$cfg_val" ;;
+      INPLACE_STOP_CMD) CFG_INPLACE_STOP_CMD="$cfg_val" ;;
+      INPLACE_INSTALL_CMD) CFG_INPLACE_INSTALL_CMD="$cfg_val" ;;
+      INPLACE_START_CMD) CFG_INPLACE_START_CMD="$cfg_val" ;;
+      INPLACE_UPGRADE_CMD) CFG_INPLACE_UPGRADE_CMD="$cfg_val" ;;
+    esac
+  done < <(
+    awk '
+      $0 ~ /^env:[[:space:]]*$/ { in_env=1; next }
+      in_env && $0 ~ /^[^ ]/ { in_env=0 }
+      in_env && $0 ~ /^  [A-Za-z0-9_]+:/ {
+        key=$1
+        sub(":", "", key)
+        $1=""
+        sub(/^[[:space:]]+/, "", $0)
+        sub(/[[:space:]]*#.*/, "", $0)
+        gsub(/^"/, "", $0)
+        gsub(/"$/, "", $0)
+        sub(/^[[:space:]]+/, "", $0)
+        sub(/[[:space:]]+$/, "", $0)
+        print key "\t" $0
+      }
+    ' config/migration.yaml
+  )
+fi
 
 echo "==> MySQL to MariaDB Migration"
 MODE="$(prompt "Mode (one_step|two_step|binlog|inplace)" "one_step")"
@@ -98,20 +115,20 @@ if [[ "$MODE" != "one_step" && "$MODE" != "two_step" && "$MODE" != "binlog" && "
   exit 1
 fi
 
-SRC_HOST="$(trim_ws "$(prompt "Source host" "")")"
-SRC_PORT="$(trim_ws "$(prompt "Source port" "3306")")"
-SRC_ADMIN_USER="$(trim_ws "$(prompt "Source admin user" "")")"
-SRC_ADMIN_PASS="$(trim_ws "$(prompt_secret "Source admin password")")"
+SRC_HOST="$(prompt "Source host" "")"
+SRC_PORT="$(prompt "Source port" "3306")"
+SRC_ADMIN_USER="$(prompt "Source admin user" "")"
+SRC_ADMIN_PASS="$(prompt_secret "Source admin password")"
+SRC_ADMIN_PASS="${SRC_ADMIN_PASS#"${SRC_ADMIN_PASS%%[![:space:]]*}"}"
+SRC_ADMIN_PASS="${SRC_ADMIN_PASS%"${SRC_ADMIN_PASS##*[![:space:]]}"}"
 if [[ "$MODE" == "inplace" ]]; then
   source_version_check_inplace
 fi
-SRC_USER="$(trim_ws "$(yaml_env "SRC_USER")")"
-SRC_PASS="$(trim_ws "$(yaml_env "SRC_PASS")")"
-if [[ -z "$SRC_USER" ]]; then SRC_USER="migrate"; fi
-if [[ -z "$SRC_PASS" ]]; then SRC_PASS="Migrate123!"; fi
+SRC_USER="$SRC_ADMIN_USER"
+SRC_PASS="$SRC_ADMIN_PASS"
 SRC_DBS_INPUT=""
 if [[ "$MODE" != "inplace" ]]; then
-  SRC_DBS_INPUT="$(trim_ws "$(prompt "Database name(s) (comma-separated)" "")")"
+  SRC_DBS_INPUT="$(prompt "Database name(s) (comma-separated)" "")"
 fi
 
 TGT_HOST=""
@@ -122,43 +139,43 @@ TGT_SSH_HOST=""
 TGT_SSH_USER="root"
 TGT_SSH_OPTS="-o StrictHostKeyChecking=no"
 if [[ "$MODE" != "inplace" ]]; then
-  TGT_HOST="$(trim_ws "$(prompt "Target host" "")")"
-  TGT_PORT="$(trim_ws "$(prompt "Target port" "3306")")"
-  TGT_ADMIN_USER="$(trim_ws "$(prompt "Target admin user" "")")"
-  TGT_ADMIN_PASS="$(trim_ws "$(prompt_secret "Target admin password")")"
-  TGT_SSH_HOST="$(trim_ws "$(prompt "Target SSH host (leave blank if not using SSH)" "")")"
-  TGT_SSH_USER="$(trim_ws "$(prompt "Target SSH user" "root")")"
-  TGT_SSH_OPTS="$(trim_ws "$(prompt "Target SSH options" "-o StrictHostKeyChecking=no")")"
+  TGT_HOST="$(prompt "Target host" "")"
+  TGT_PORT="$(prompt "Target port" "3306")"
+  TGT_ADMIN_USER="$(prompt "Target admin user" "")"
+  TGT_ADMIN_PASS="$(prompt_secret "Target admin password")"
+  TGT_ADMIN_PASS="${TGT_ADMIN_PASS#"${TGT_ADMIN_PASS%%[![:space:]]*}"}"
+  TGT_ADMIN_PASS="${TGT_ADMIN_PASS%"${TGT_ADMIN_PASS##*[![:space:]]}"}"
+  TGT_SSH_HOST="$(prompt "Target SSH host (leave blank if not using SSH)" "")"
+  TGT_SSH_USER="$(prompt "Target SSH user" "root")"
+  TGT_SSH_OPTS="$(prompt "Target SSH options" "-o StrictHostKeyChecking=no")"
 fi
 
-TGT_USER="$(trim_ws "$(yaml_env "TGT_USER")")"
-TGT_PASS="$(trim_ws "$(yaml_env "TGT_PASS")")"
-if [[ -z "$TGT_USER" ]]; then TGT_USER="migrate"; fi
-if [[ -z "$TGT_PASS" ]]; then TGT_PASS="Migrate123!"; fi
+TGT_USER="$TGT_ADMIN_USER"
+TGT_PASS="$TGT_ADMIN_PASS"
 
 MIGRATE_APP_USERS="0"
 APP_USER_DEFAULT_PASSWORD=""
 if [[ "$MODE" != "inplace" ]]; then
-  MIGRATE_APP_USERS="$(trim_ws "$(prompt "Migrate application users? (y/n)" "y")")"
+  MIGRATE_APP_USERS="$(prompt "Migrate application users? (y/n)" "y")"
   if [[ "$(printf "%s" "$MIGRATE_APP_USERS" | tr '[:upper:]' '[:lower:]')" == "y" ]]; then
     MIGRATE_APP_USERS="1"
-    APP_USER_DEFAULT_PASSWORD="$(trim_ws "$(prompt_secret "Default password for app users")")"
+    APP_USER_DEFAULT_PASSWORD="$(prompt_secret "Default password for app users")"
   else
     MIGRATE_APP_USERS="0"
     APP_USER_DEFAULT_PASSWORD=""
   fi
 fi
 
-INPLACE_BACKUP_DIR="$(trim_ws "$(yaml_env "INPLACE_BACKUP_DIR")")"
-INPLACE_EXECUTE="$(trim_ws "$(yaml_env "INPLACE_EXECUTE")")"
-INPLACE_STOP_CMD="$(trim_ws "$(yaml_env "INPLACE_STOP_CMD")")"
-INPLACE_INSTALL_CMD="$(trim_ws "$(yaml_env "INPLACE_INSTALL_CMD")")"
-INPLACE_START_CMD="$(trim_ws "$(yaml_env "INPLACE_START_CMD")")"
-INPLACE_UPGRADE_CMD="$(trim_ws "$(yaml_env "INPLACE_UPGRADE_CMD")")"
+INPLACE_BACKUP_DIR="$CFG_INPLACE_BACKUP_DIR"
+INPLACE_EXECUTE="$CFG_INPLACE_EXECUTE"
+INPLACE_STOP_CMD="$CFG_INPLACE_STOP_CMD"
+INPLACE_INSTALL_CMD="$CFG_INPLACE_INSTALL_CMD"
+INPLACE_START_CMD="$CFG_INPLACE_START_CMD"
+INPLACE_UPGRADE_CMD="$CFG_INPLACE_UPGRADE_CMD"
 if [[ "$MODE" == "inplace" ]]; then
   if [[ -z "$INPLACE_BACKUP_DIR" ]]; then INPLACE_BACKUP_DIR="artifacts/inplace_backup"; fi
-  INPLACE_BACKUP_DIR="$(trim_ws "$(prompt "In-place backup directory" "$INPLACE_BACKUP_DIR")")"
-  inplace_execute_answer="$(trim_ws "$(prompt "Execute in-place commands now? (y/n)" "n")")"
+  INPLACE_BACKUP_DIR="$(prompt "In-place backup directory" "$INPLACE_BACKUP_DIR")"
+  inplace_execute_answer="$(prompt "Execute in-place commands now? (y/n)" "n")"
   if [[ "$(printf "%s" "$inplace_execute_answer" | tr '[:upper:]' '[:lower:]')" == "y" ]]; then
     INPLACE_EXECUTE="1"
   else
@@ -167,10 +184,10 @@ if [[ "$MODE" == "inplace" ]]; then
   if [[ -z "$INPLACE_STOP_CMD" ]]; then INPLACE_STOP_CMD="sudo systemctl stop mysql || sudo systemctl stop mysqld"; fi
   if [[ -z "$INPLACE_START_CMD" ]]; then INPLACE_START_CMD="sudo systemctl start mariadb || sudo systemctl start mysql"; fi
   if [[ -z "$INPLACE_UPGRADE_CMD" ]]; then INPLACE_UPGRADE_CMD="mariadb-upgrade"; fi
-  INPLACE_STOP_CMD="$(trim_ws "$(prompt "In-place stop command" "$INPLACE_STOP_CMD")")"
-  INPLACE_INSTALL_CMD="$(trim_ws "$(prompt "In-place install command (required if execute=y)" "$INPLACE_INSTALL_CMD")")"
-  INPLACE_START_CMD="$(trim_ws "$(prompt "In-place start command" "$INPLACE_START_CMD")")"
-  INPLACE_UPGRADE_CMD="$(trim_ws "$(prompt "In-place upgrade command" "$INPLACE_UPGRADE_CMD")")"
+  INPLACE_STOP_CMD="$(prompt "In-place stop command" "$INPLACE_STOP_CMD")"
+  INPLACE_INSTALL_CMD="$(prompt "In-place install command (required if execute=y)" "$INPLACE_INSTALL_CMD")"
+  INPLACE_START_CMD="$(prompt "In-place start command" "$INPLACE_START_CMD")"
+  INPLACE_UPGRADE_CMD="$(prompt "In-place upgrade command" "$INPLACE_UPGRADE_CMD")"
   if [[ "$INPLACE_EXECUTE" == "1" && -z "$INPLACE_INSTALL_CMD" ]]; then
     echo "ERROR: In-place install command is required when execute=y."
     exit 1
@@ -180,11 +197,13 @@ else
   if [[ -z "$INPLACE_EXECUTE" ]]; then INPLACE_EXECUTE="0"; fi
 fi
 
-REPL_USER="$(trim_ws "$(yaml_env "REPL_USER")")"
-REPL_PASS="$(trim_ws "$(yaml_env "REPL_PASS")")"
+REPL_USER="$CFG_REPL_USER"
+REPL_PASS="$CFG_REPL_PASS"
 if [[ "$MODE" == "binlog" ]]; then
-  REPL_USER="$(trim_ws "$(prompt "Replication user" "${REPL_USER:-repl}")")"
-  REPL_PASS="$(trim_ws "$(prompt_secret "Replication password")")"
+  REPL_USER="$(prompt "Replication user" "${REPL_USER:-repl}")"
+  REPL_PASS="$(prompt_secret "Replication password")"
+  REPL_PASS="${REPL_PASS#"${REPL_PASS%%[![:space:]]*}"}"
+  REPL_PASS="${REPL_PASS%"${REPL_PASS##*[![:space:]]}"}"
 fi
 
 ALLOW_ROOT_USERS="${ALLOW_ROOT_USERS:-0}"
@@ -228,6 +247,12 @@ save_config() {
   local tgt_admin_pass_save="$TGT_ADMIN_PASS"
   local app_user_pass_save="$APP_USER_DEFAULT_PASSWORD"
   local repl_pass_save="$REPL_PASS"
+  src_admin_pass_save="${src_admin_pass_save#"${src_admin_pass_save%%[![:space:]]*}"}"
+  src_admin_pass_save="${src_admin_pass_save%"${src_admin_pass_save##*[![:space:]]}"}"
+  tgt_admin_pass_save="${tgt_admin_pass_save#"${tgt_admin_pass_save%%[![:space:]]*}"}"
+  tgt_admin_pass_save="${tgt_admin_pass_save%"${tgt_admin_pass_save##*[![:space:]]}"}"
+  repl_pass_save="${repl_pass_save#"${repl_pass_save%%[![:space:]]*}"}"
+  repl_pass_save="${repl_pass_save%"${repl_pass_save##*[![:space:]]}"}"
   if [[ "$include_secrets" != "1" ]]; then
     src_pass_save=""
     src_admin_pass_save=""

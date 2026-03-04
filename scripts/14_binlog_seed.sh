@@ -10,6 +10,8 @@ SRC_HOST="${SRC_HOST:-}"
 SRC_PORT="${SRC_PORT:-3306}"
 SRC_USER="${SRC_USER:-}"
 SRC_PASS="${SRC_PASS:-}"
+SRC_ADMIN_USER="${SRC_ADMIN_USER:-}"
+SRC_ADMIN_PASS="${SRC_ADMIN_PASS:-}"
 SRC_DB="${SRC_DB:-}"
 SRC_DBS="${SRC_DBS:-}"
 
@@ -23,8 +25,8 @@ TGT_ADMIN_PASS="${TGT_ADMIN_PASS:-}"
 ALLOW_TARGET_DB_OVERWRITE="${ALLOW_TARGET_DB_OVERWRITE:-0}"
 BINLOG_COORD_FILE="${BINLOG_COORD_FILE:-artifacts/binlog_coords.env}"
 
-if [[ -z "$SRC_HOST" || -z "$SRC_USER" || -z "$SRC_PASS" || ( -z "$SRC_DB" && -z "$SRC_DBS" ) ]]; then
-  echo "ERROR: Missing source envs. Set SRC_HOST, SRC_USER, SRC_PASS, and SRC_DB or SRC_DBS."
+if [[ -z "$SRC_HOST" || ( -z "$SRC_USER" && -z "$SRC_ADMIN_USER" ) || ( -z "$SRC_PASS" && -z "$SRC_ADMIN_PASS" ) || ( -z "$SRC_DB" && -z "$SRC_DBS" ) ]]; then
+  echo "ERROR: Missing source envs. Set SRC_HOST, SRC_USER/SRC_ADMIN_USER, SRC_PASS/SRC_ADMIN_PASS, and SRC_DB or SRC_DBS."
   exit 1
 fi
 if [[ -z "$TGT_HOST" || -z "$TGT_USER" || -z "$TGT_PASS" || -z "$TGT_ADMIN_USER" || -z "$TGT_ADMIN_PASS" ]]; then
@@ -64,6 +66,11 @@ for db in "${DB_LIST[@]}"; do
   fi
 done
 
+SRC_DUMP_USER="${SRC_ADMIN_USER:-$SRC_USER}"
+SRC_DUMP_PASS="${SRC_ADMIN_PASS:-$SRC_PASS}"
+TGT_RESTORE_USER="${TGT_ADMIN_USER:-$TGT_USER}"
+TGT_RESTORE_PASS="${TGT_ADMIN_PASS:-$TGT_PASS}"
+
 echo "Creating source snapshot with binlog coordinates..."
 DUMP_ARGS=(
   --single-transaction
@@ -83,7 +90,7 @@ for db in "${DB_LIST[@]}"; do
   [[ -n "$db" ]] && DUMP_ARGS+=("$db")
 done
 
-MYSQL_PWD="$SRC_PASS" "$MARIADB_DUMP_BIN" --protocol=TCP -h"$SRC_HOST" -P"$SRC_PORT" -u"$SRC_USER" \
+MYSQL_PWD="$SRC_DUMP_PASS" "$MARIADB_DUMP_BIN" --protocol=TCP -h"$SRC_HOST" -P"$SRC_PORT" -u"$SRC_DUMP_USER" \
   "${DUMP_ARGS[@]}" > "$DUMP_FILE"
 
 coord_line="$(grep -m1 -E "MASTER_LOG_FILE='[^']+', MASTER_LOG_POS=[0-9]+" "$DUMP_FILE" || true)"
@@ -101,7 +108,7 @@ SRC_BINLOG_POS=${src_pos}
 COORDS
 
 echo "Restoring snapshot to target..."
-MYSQL_PWD="$TGT_PASS" "$MARIADB_BIN" --protocol=TCP -h"$TGT_HOST" -P"$TGT_PORT" -u"$TGT_USER" < "$DUMP_FILE"
+MYSQL_PWD="$TGT_RESTORE_PASS" "$MARIADB_BIN" --protocol=TCP -h"$TGT_HOST" -P"$TGT_PORT" -u"$TGT_RESTORE_USER" < "$DUMP_FILE"
 
 echo "Seed completed."
 echo "Coordinates file: $BINLOG_COORD_FILE"

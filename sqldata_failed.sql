@@ -3,9 +3,9 @@
 
 -- Failed DDL SQL statements executed for the target database
 
--- Current timestamp: 2026:02:15 18:01:08.268
+-- Current timestamp: 2026:03:04 17:39:30.114
 
 CREATE INDEX idx_title_description ON sakila.film_text (`title` ASC, `description` ASC);
 
--- Failed (3 ms)
+-- Failed (2 ms)
 -- Specified key was too long; max key length is 3072 bytes

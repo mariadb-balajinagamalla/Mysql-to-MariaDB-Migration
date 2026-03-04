@@ -29,29 +29,21 @@ The tool expects valid privileges to already exist for the entered users.
 
 Admin users (`SRC_ADMIN_USER` / `TGT_ADMIN_USER`):
 - Must be able to connect from the orchestrator host.
-- Must be able to create/grant migration users.
 - Must be able to check/create/drop target database objects as needed by workflow.
-- In practice, this usually means admin-level privileges, including grant capability.
-
-Migration users (`SRC_USER` / `TGT_USER`):
-- Must be able to connect from the orchestrator host.
-- Must have enough source read privileges and target write/object privileges for selected DBs.
-- If using one-step with `create_migration_user`, the script attempts to create/grant these users via admin credentials.
+- Must be able to run dump/restore and configure replication where applicable.
+- In practice, this means admin-level privileges, including grant capability.
 
 Quick verification (run from orchestrator host):
 
 ```bash
 MYSQL_PWD='***' mysql --protocol=TCP -h<SRC_HOST> -P<SRC_PORT> -u<SRC_ADMIN_USER> -e "SELECT 1;"
 MYSQL_PWD='***' mysql --protocol=TCP -h<TGT_HOST> -P<TGT_PORT> -u<TGT_ADMIN_USER> -e "SELECT 1;"
-MYSQL_PWD='***' mysql --protocol=TCP -h<SRC_HOST> -P<SRC_PORT> -u<SRC_USER> -e "SELECT 1;"
-MYSQL_PWD='***' mysql --protocol=TCP -h<TGT_HOST> -P<TGT_PORT> -u<TGT_USER> -e "SELECT 1;"
 ```
 
 Optional grant inspection:
 
 ```sql
 SHOW GRANTS FOR 'admin'@'<orchestrator_ip_or_%>';
-SHOW GRANTS FOR 'migrate'@'<orchestrator_ip_or_%>';
 ```
 
 ## Prerequisites (two_step data load)
@@ -87,7 +79,7 @@ Best for smaller databases and standard maintenance windows.
 Best for larger datasets or tighter windows.
 - Schema-only dump first, then parallel load, then finalize objects.
 - Assumes SQLines Data is installed and available on `PATH` (`sqldata` or `sqlinesdata`), or set `SQLINESDATA_BIN`.
-- Requires existing migration users (`SRC_USER`/`TGT_USER`); preflight fails fast if those logins are not ready.
+- Requires admin users (`SRC_ADMIN_USER`/`TGT_ADMIN_USER`); preflight fails fast if those logins are not ready.
 
 ### Binlog (seed + replication)
 Best for low-downtime cutover.
@@ -132,24 +124,20 @@ Notes:
 
 ## One-step required envs (config/migration.yaml)
 Source:
-- `SRC_HOST`, `SRC_PORT`, `SRC_USER`, `SRC_PASS`
+- `SRC_HOST`, `SRC_PORT`, `SRC_ADMIN_USER`, `SRC_ADMIN_PASS`
 - `SRC_DB` or `SRC_DBS` (comma-separated)
-- `SRC_ADMIN_USER`, `SRC_ADMIN_PASS` (for creating migration user)
 
 Target:
-- `TGT_HOST`, `TGT_PORT`, `TGT_USER`, `TGT_PASS`
-- `TGT_ADMIN_USER`, `TGT_ADMIN_PASS`
+- `TGT_HOST`, `TGT_PORT`, `TGT_ADMIN_USER`, `TGT_ADMIN_PASS`
 - `TGT_SSH_HOST`, `TGT_SSH_USER`, `TGT_SSH_OPTS` (required when running from a third host)
 
 ## Two-step required envs (config/migration.yaml)
 Source:
-- `SRC_HOST`, `SRC_PORT`, `SRC_USER`, `SRC_PASS`
+- `SRC_HOST`, `SRC_PORT`, `SRC_ADMIN_USER`, `SRC_ADMIN_PASS`
 - `SRC_DB` (single DB) or `SRC_DBS` (comma-separated, looped one by one)
-- `SRC_ADMIN_USER`, `SRC_ADMIN_PASS`
 
 Target:
-- `TGT_HOST`, `TGT_PORT`, `TGT_USER`, `TGT_PASS`
-- `TGT_ADMIN_USER`, `TGT_ADMIN_PASS`
+- `TGT_HOST`, `TGT_PORT`, `TGT_ADMIN_USER`, `TGT_ADMIN_PASS`
 - `TGT_SSH_HOST`, `TGT_SSH_USER`, `TGT_SSH_OPTS` (if running from a third host)
 
 Optional:
@@ -157,13 +145,11 @@ Optional:
 
 ## Binlog required envs (config/migration.yaml)
 Source:
-- `SRC_HOST`, `SRC_PORT`, `SRC_USER`, `SRC_PASS`
+- `SRC_HOST`, `SRC_PORT`, `SRC_ADMIN_USER`, `SRC_ADMIN_PASS`
 - `SRC_DB` (single DB) or `SRC_DBS` (comma-separated)
-- `SRC_ADMIN_USER`, `SRC_ADMIN_PASS`
 
 Target:
-- `TGT_HOST`, `TGT_PORT`, `TGT_USER`, `TGT_PASS`
-- `TGT_ADMIN_USER`, `TGT_ADMIN_PASS`
+- `TGT_HOST`, `TGT_PORT`, `TGT_ADMIN_USER`, `TGT_ADMIN_PASS`
 
 Replication:
 - `REPL_USER`, `REPL_PASS`

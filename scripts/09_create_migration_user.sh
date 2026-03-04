@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+if [[ "${MIGRATION_USERS_DISABLED:-1}" == "1" ]]; then
+  echo "==> Skipping migration user creation (admin-only mode)."
+  exit 0
+fi
+
 echo "==> Create migration user on source and target"
 
 MYSQL_BIN="${MYSQL_BIN:-mysql}"

@@ -5,13 +5,13 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"
 
 MYSQL_BIN="${MYSQL_BIN:-mysql}"
-# Use SRC_* if provided (one_step/two_step), else HOST/PORT/USER.
+# Use admin creds if provided; fall back to SRC_USER/SRC_PASS.
 HOST="${SRC_HOST:-${HOST:-127.0.0.1}}"
 PORT="${SRC_PORT:-${PORT:-3306}}"
-USER="${SRC_USER:-${USER:-root}}"
+USER="${SRC_ADMIN_USER:-${SRC_USER:-${USER:-root}}}"
 
 # Prefer MYSQL_PWD from orchestrator config env.
-PASS="${SRC_PASS:-${PASS:-}}"
+PASS="${SRC_ADMIN_PASS:-${SRC_PASS:-${PASS:-}}}"
 if [[ -n "$PASS" && -z "${MYSQL_PWD:-}" ]]; then
   export MYSQL_PWD="$PASS"
 fi

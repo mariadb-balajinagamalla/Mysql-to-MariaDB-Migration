@@ -83,10 +83,6 @@ def _prompt_required_env(env: Dict[str, str], mode_value: str, non_interactive: 
         return
     _prompt_env(env, "SRC_HOST", "Source host")
     _prompt_env(env, "SRC_PORT", "Source port")
-    if mode_value != "inplace":
-        _prompt_env(env, "SRC_USER", "Source user")
-        _prompt_env(env, "SRC_PASS", "Source password", secret=True)
-
     if mode_value != "inplace" and not env.get("SRC_DB") and not env.get("SRC_DBS"):
         dbs = typer.prompt("Source database(s) (comma-separated for multiple)")
         if "," in dbs:
@@ -99,8 +95,6 @@ def _prompt_required_env(env: Dict[str, str], mode_value: str, non_interactive: 
     if mode_value != "inplace":
         _prompt_env(env, "TGT_HOST", "Target host")
         _prompt_env(env, "TGT_PORT", "Target port")
-        _prompt_env(env, "TGT_USER", "Target user")
-        _prompt_env(env, "TGT_PASS", "Target password", secret=True)
         _prompt_env(env, "TGT_ADMIN_USER", "Target admin user")
         _prompt_env(env, "TGT_ADMIN_PASS", "Target admin password", secret=True)
     if mode_value == "binlog":
@@ -108,6 +102,16 @@ def _prompt_required_env(env: Dict[str, str], mode_value: str, non_interactive: 
         _prompt_env(env, "REPL_PASS", "Replication password", secret=True)
     if mode_value == "inplace":
         _prompt_env(env, "INPLACE_BACKUP_DIR", "In-place backup directory")
+
+    # Admin-only flow: align migration creds with admin creds.
+    if env.get("SRC_ADMIN_USER"):
+        env["SRC_USER"] = env["SRC_ADMIN_USER"]
+    if env.get("SRC_ADMIN_PASS"):
+        env["SRC_PASS"] = env["SRC_ADMIN_PASS"]
+    if env.get("TGT_ADMIN_USER"):
+        env["TGT_USER"] = env["TGT_ADMIN_USER"]
+    if env.get("TGT_ADMIN_PASS"):
+        env["TGT_PASS"] = env["TGT_ADMIN_PASS"]
 
     # two_step uses installed sqldata by default; no SQLINESDATA_CMD* prompts required.
 
@@ -192,11 +196,19 @@ def plan(
     env = {str(k): str(v) for k, v in env.items()}
     # Allow environment variables to override/extend config envs.
     env = {**env, **os.environ}
+    if env.get("SRC_ADMIN_USER"):
+        env.setdefault("SRC_USER", env["SRC_ADMIN_USER"])
+    if env.get("SRC_ADMIN_PASS"):
+        env.setdefault("SRC_PASS", env["SRC_ADMIN_PASS"])
+    if env.get("TGT_ADMIN_USER"):
+        env.setdefault("TGT_USER", env["TGT_ADMIN_USER"])
+    if env.get("TGT_ADMIN_PASS"):
+        env.setdefault("TGT_PASS", env["TGT_ADMIN_PASS"])
     _prompt_required_env(env, mode_value, non_interactive=False)
     if mode_value in ("one_step", "two_step", "binlog"):
         _require_env(
             env,
-            ["SRC_HOST", "SRC_USER", "SRC_PASS", "TGT_HOST", "TGT_USER", "TGT_PASS"],
+            ["SRC_HOST", "TGT_HOST"],
             mode_value,
         )
         _require_env(
@@ -281,12 +293,20 @@ def run(
     env = {str(k): str(v) for k, v in env.items()}
     # Allow environment variables to override/extend config envs.
     env = {**env, **os.environ}
+    if env.get("SRC_ADMIN_USER"):
+        env.setdefault("SRC_USER", env["SRC_ADMIN_USER"])
+    if env.get("SRC_ADMIN_PASS"):
+        env.setdefault("SRC_PASS", env["SRC_ADMIN_PASS"])
+    if env.get("TGT_ADMIN_USER"):
+        env.setdefault("TGT_USER", env["TGT_ADMIN_USER"])
+    if env.get("TGT_ADMIN_PASS"):
+        env.setdefault("TGT_PASS", env["TGT_ADMIN_PASS"])
     _prompt_required_env(env, mode_value, non_interactive)
 
     if mode_value in ("one_step", "two_step", "binlog"):
         _require_env(
             env,
-            ["SRC_HOST", "SRC_USER", "SRC_PASS", "TGT_HOST", "TGT_USER", "TGT_PASS"],
+            ["SRC_HOST", "TGT_HOST"],
             mode_value,
         )
         _require_env(

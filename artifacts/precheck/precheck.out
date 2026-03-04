@@ -23,7 +23,7 @@ testdb	orders_json	data_json	json
 
 ---- engines_summary ----
 PERFORMANCE_SCHEMA	111
-InnoDB	57
+InnoDB	58
 CSV	2
 
 ---- schema_sizes ----
@@ -33,12 +33,14 @@ mysql	2.73
 world	0.77
 sys	0.02
 advanced_test	0.02
+test_replication	0.02
 information_schema	0.00
 performance_schema	0.00
 
 ---- schema_charsets ----
 advanced_test	utf8mb4	utf8mb4_0900_ai_ci
 sakila	utf8mb4	utf8mb4_0900_ai_ci
+test_replication	utf8mb4	utf8mb4_0900_ai_ci
 testdb	utf8mb4	utf8mb4_0900_ai_ci
 world	utf8mb4	utf8mb4_0900_ai_ci
 
@@ -60,6 +62,7 @@ sakila	payment	utf8mb4_0900_ai_ci
 sakila	rental	utf8mb4_0900_ai_ci
 sakila	staff	utf8mb4_0900_ai_ci
 sakila	store	utf8mb4_0900_ai_ci
+test_replication	customers	utf8mb4_0900_ai_ci
 testdb	orders_json	utf8mb4_0900_ai_ci
 world	city	utf8mb4_0900_ai_ci
 world	country	utf8mb4_0900_ai_ci
