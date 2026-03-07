@@ -100,6 +100,13 @@ def _prompt_required_env(env: Dict[str, str], mode_value: str, non_interactive: 
     if mode_value == "binlog":
         _prompt_env(env, "REPL_USER", "Replication user")
         _prompt_env(env, "REPL_PASS", "Replication password", secret=True)
+    if mode_value == "replace_slave":
+        _prompt_env(env, "REPL_USER", "Replication user")
+        _prompt_env(env, "REPL_PASS", "Replication password", secret=True)
+        _prompt_env(env, "TGT_SSH_HOST", "Target SSH host")
+        _prompt_env(env, "TGT_SSH_USER", "Target SSH user")
+        _prompt_env(env, "REPLACE_TARGET_OS", "Target OS (ubuntu|debian|rocky|rhel|centos7|sles)")
+        _prompt_env(env, "REPLACE_MARIADB_VERSION", "MariaDB version (for example 11.8)")
     if mode_value == "inplace":
         _prompt_env(env, "INPLACE_BACKUP_DIR", "In-place backup directory")
 
@@ -205,7 +212,7 @@ def plan(
     if env.get("TGT_ADMIN_PASS"):
         env.setdefault("TGT_PASS", env["TGT_ADMIN_PASS"])
     _prompt_required_env(env, mode_value, non_interactive=False)
-    if mode_value in ("one_step", "two_step", "binlog"):
+    if mode_value in ("one_step", "two_step", "binlog", "replace_slave"):
         _require_env(
             env,
             ["SRC_HOST", "TGT_HOST"],
@@ -218,8 +225,14 @@ def plan(
         )
         if not (env.get("SRC_DB") or env.get("SRC_DBS")):
             raise typer.BadParameter("Missing SRC_DB or SRC_DBS for one_step/two_step/binlog.")
-        if mode_value == "binlog":
+        if mode_value in ("binlog", "replace_slave"):
             _require_env(env, ["REPL_USER", "REPL_PASS"], mode_value)
+        if mode_value == "replace_slave":
+            _require_env(
+                env,
+                ["TGT_SSH_HOST", "TGT_SSH_USER", "REPLACE_TARGET_OS", "REPLACE_MARIADB_VERSION"],
+                mode_value,
+            )
         if env.get("ALLOW_ROOT_USERS") not in ("1", "true", "TRUE", "True"):
             if (
                 env.get("SRC_USER") == "root"
@@ -303,7 +316,7 @@ def run(
         env.setdefault("TGT_PASS", env["TGT_ADMIN_PASS"])
     _prompt_required_env(env, mode_value, non_interactive)
 
-    if mode_value in ("one_step", "two_step", "binlog"):
+    if mode_value in ("one_step", "two_step", "binlog", "replace_slave"):
         _require_env(
             env,
             ["SRC_HOST", "TGT_HOST"],
@@ -316,8 +329,14 @@ def run(
         )
         if not (env.get("SRC_DB") or env.get("SRC_DBS")):
             raise typer.BadParameter("Missing SRC_DB or SRC_DBS for one_step/two_step/binlog.")
-        if mode_value == "binlog":
+        if mode_value in ("binlog", "replace_slave"):
             _require_env(env, ["REPL_USER", "REPL_PASS"], mode_value)
+        if mode_value == "replace_slave":
+            _require_env(
+                env,
+                ["TGT_SSH_HOST", "TGT_SSH_USER", "REPLACE_TARGET_OS", "REPLACE_MARIADB_VERSION"],
+                mode_value,
+            )
         if env.get("ALLOW_ROOT_USERS") not in ("1", "true", "TRUE", "True"):
             if (
                 env.get("SRC_USER") == "root"

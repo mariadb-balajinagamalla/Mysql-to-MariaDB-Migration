@@ -16,7 +16,10 @@ run_signature() {
     "MIGRATE_APP_USERS=$MIGRATE_APP_USERS" \
     "REPL_USER=$REPL_USER" \
     "INPLACE_BACKUP_DIR=$INPLACE_BACKUP_DIR" \
-    "INPLACE_EXECUTE=$INPLACE_EXECUTE"
+    "INPLACE_EXECUTE=$INPLACE_EXECUTE" \
+    "REPLACE_TARGET_OS=$REPLACE_TARGET_OS" \
+    "REPLACE_MARIADB_VERSION=$REPLACE_MARIADB_VERSION" \
+    "REPLACE_DELETE_OLD_MYSQL_DATA=$REPLACE_DELETE_OLD_MYSQL_DATA"
 }
 
 prompt() {
@@ -74,6 +77,14 @@ CFG_INPLACE_STOP_CMD=""
 CFG_INPLACE_INSTALL_CMD=""
 CFG_INPLACE_START_CMD=""
 CFG_INPLACE_UPGRADE_CMD=""
+CFG_REPLACE_BACKUP_CMD=""
+CFG_REPLACE_STOP_MYSQL_CMD=""
+CFG_REPLACE_UNINSTALL_MYSQL_CMD=""
+CFG_REPLACE_TARGET_OS=""
+CFG_REPLACE_MARIADB_VERSION=""
+CFG_REPLACE_START_MARIADB_CMD=""
+CFG_REPLACE_DELETE_OLD_MYSQL_DATA=""
+CFG_REPLACE_CLEANUP_CMD=""
 
 if [[ -f "config/migration.yaml" ]]; then
   while IFS=$'\t' read -r cfg_key cfg_val; do
@@ -86,6 +97,14 @@ if [[ -f "config/migration.yaml" ]]; then
       INPLACE_INSTALL_CMD) CFG_INPLACE_INSTALL_CMD="$cfg_val" ;;
       INPLACE_START_CMD) CFG_INPLACE_START_CMD="$cfg_val" ;;
       INPLACE_UPGRADE_CMD) CFG_INPLACE_UPGRADE_CMD="$cfg_val" ;;
+      REPLACE_BACKUP_CMD) CFG_REPLACE_BACKUP_CMD="$cfg_val" ;;
+      REPLACE_STOP_MYSQL_CMD) CFG_REPLACE_STOP_MYSQL_CMD="$cfg_val" ;;
+      REPLACE_UNINSTALL_MYSQL_CMD) CFG_REPLACE_UNINSTALL_MYSQL_CMD="$cfg_val" ;;
+      REPLACE_TARGET_OS) CFG_REPLACE_TARGET_OS="$cfg_val" ;;
+      REPLACE_MARIADB_VERSION) CFG_REPLACE_MARIADB_VERSION="$cfg_val" ;;
+      REPLACE_START_MARIADB_CMD) CFG_REPLACE_START_MARIADB_CMD="$cfg_val" ;;
+      REPLACE_DELETE_OLD_MYSQL_DATA) CFG_REPLACE_DELETE_OLD_MYSQL_DATA="$cfg_val" ;;
+      REPLACE_CLEANUP_CMD) CFG_REPLACE_CLEANUP_CMD="$cfg_val" ;;
     esac
   done < <(
     awk '
@@ -108,10 +127,10 @@ if [[ -f "config/migration.yaml" ]]; then
 fi
 
 echo "==> MySQL to MariaDB Migration"
-MODE="$(prompt "Mode (one_step|two_step|binlog|inplace)" "one_step")"
+MODE="$(prompt "Mode (one_step|two_step|binlog|inplace|replace_slave)" "one_step")"
 MODE="${MODE// /}"
-if [[ "$MODE" != "one_step" && "$MODE" != "two_step" && "$MODE" != "binlog" && "$MODE" != "inplace" ]]; then
-  echo "ERROR: mode must be one_step, two_step, binlog or inplace"
+if [[ "$MODE" != "one_step" && "$MODE" != "two_step" && "$MODE" != "binlog" && "$MODE" != "inplace" && "$MODE" != "replace_slave" ]]; then
+  echo "ERROR: mode must be one_step, two_step, binlog, inplace or replace_slave"
   exit 1
 fi
 
@@ -199,11 +218,70 @@ fi
 
 REPL_USER="$CFG_REPL_USER"
 REPL_PASS="$CFG_REPL_PASS"
-if [[ "$MODE" == "binlog" ]]; then
+if [[ "$MODE" == "binlog" || "$MODE" == "replace_slave" ]]; then
   REPL_USER="$(prompt "Replication user" "${REPL_USER:-repl}")"
   REPL_PASS="$(prompt_secret "Replication password")"
   REPL_PASS="${REPL_PASS#"${REPL_PASS%%[![:space:]]*}"}"
   REPL_PASS="${REPL_PASS%"${REPL_PASS##*[![:space:]]}"}"
+fi
+
+REPLACE_BACKUP_CMD="$CFG_REPLACE_BACKUP_CMD"
+REPLACE_STOP_MYSQL_CMD="$CFG_REPLACE_STOP_MYSQL_CMD"
+REPLACE_UNINSTALL_MYSQL_CMD="$CFG_REPLACE_UNINSTALL_MYSQL_CMD"
+REPLACE_TARGET_OS="$CFG_REPLACE_TARGET_OS"
+REPLACE_MARIADB_VERSION="$CFG_REPLACE_MARIADB_VERSION"
+REPLACE_START_MARIADB_CMD="$CFG_REPLACE_START_MARIADB_CMD"
+REPLACE_DELETE_OLD_MYSQL_DATA="$CFG_REPLACE_DELETE_OLD_MYSQL_DATA"
+REPLACE_CLEANUP_CMD="$CFG_REPLACE_CLEANUP_CMD"
+if [[ "$MODE" == "replace_slave" ]]; then
+  if [[ -z "$TGT_SSH_HOST" ]]; then
+    echo "ERROR: Target SSH host is required for replace_slave mode."
+    exit 1
+  fi
+  if [[ -z "$REPLACE_BACKUP_CMD" ]]; then
+    REPLACE_BACKUP_CMD="sudo tar -czf /tmp/mysql_slave_backup_\$(date +%Y%m%d_%H%M%S).tgz /var/lib/mysql /etc/mysql /etc/my.cnf 2>/dev/null || true"
+  fi
+  if [[ -z "$REPLACE_STOP_MYSQL_CMD" ]]; then
+    REPLACE_STOP_MYSQL_CMD="sudo systemctl stop mysql || sudo systemctl stop mysqld"
+  fi
+  if [[ -z "$REPLACE_START_MARIADB_CMD" ]]; then
+    REPLACE_START_MARIADB_CMD="sudo systemctl start mariadb || sudo systemctl start mysql"
+  fi
+  replace_cleanup_check="$(printf "%s" "$REPLACE_CLEANUP_CMD" | tr '[:upper:]' '[:lower:]' | xargs)"
+  case "$replace_cleanup_check" in
+    y|yes|n|no|true|false) REPLACE_CLEANUP_CMD="" ;;
+  esac
+  if [[ -z "$REPLACE_TARGET_OS" ]]; then REPLACE_TARGET_OS="ubuntu"; fi
+  if [[ -z "$REPLACE_MARIADB_VERSION" ]]; then REPLACE_MARIADB_VERSION="11.8"; fi
+  REPLACE_TARGET_OS="$(prompt "Target OS for MariaDB install (ubuntu|debian|rocky|rhel|centos7|sles)" "$REPLACE_TARGET_OS")"
+  REPLACE_TARGET_OS="$(printf "%s" "$REPLACE_TARGET_OS" | tr '[:upper:]' '[:lower:]' | xargs)"
+  REPLACE_MARIADB_VERSION="$(prompt "MariaDB version to install (for example 11.8)" "$REPLACE_MARIADB_VERSION")"
+  REPLACE_MARIADB_VERSION="$(printf "%s" "$REPLACE_MARIADB_VERSION" | xargs)"
+  case "$REPLACE_TARGET_OS" in
+    ubuntu|debian|rocky|rhel|centos7|sles)
+      ;;
+    *)
+      echo "ERROR: Unsupported target OS '$REPLACE_TARGET_OS'. Use ubuntu|debian|rocky|rhel|centos7|sles."
+      exit 1
+      ;;
+  esac
+  replace_customize_cmds="$(prompt "Customize backup/stop/start/uninstall commands? (y/n)" "n")"
+  if [[ "$(printf "%s" "$replace_customize_cmds" | tr '[:upper:]' '[:lower:]')" == "y" ]]; then
+    REPLACE_BACKUP_CMD="$(prompt "Backup command on target host" "$REPLACE_BACKUP_CMD")"
+    REPLACE_STOP_MYSQL_CMD="$(prompt "Stop MySQL command on target host" "$REPLACE_STOP_MYSQL_CMD")"
+    REPLACE_UNINSTALL_MYSQL_CMD="$(prompt "Uninstall MySQL command on target host (optional)" "$REPLACE_UNINSTALL_MYSQL_CMD")"
+    REPLACE_START_MARIADB_CMD="$(prompt "Start MariaDB command on target host" "$REPLACE_START_MARIADB_CMD")"
+  else
+    echo "Using default backup/stop/start commands from config."
+  fi
+  replace_cleanup_answer="$(prompt "Delete old MySQL data after successful replacement? (y/n)" "n")"
+  if [[ "$(printf "%s" "$replace_cleanup_answer" | tr '[:upper:]' '[:lower:]')" == "y" ]]; then
+    REPLACE_DELETE_OLD_MYSQL_DATA="1"
+    REPLACE_CLEANUP_CMD="$(prompt "Cleanup command on target host (required when delete=y)" "$REPLACE_CLEANUP_CMD")"
+  else
+    REPLACE_DELETE_OLD_MYSQL_DATA="0"
+    REPLACE_CLEANUP_CMD=""
+  fi
 fi
 
 ALLOW_ROOT_USERS="${ALLOW_ROOT_USERS:-0}"
@@ -215,8 +293,16 @@ if [[ "$MODE" != "inplace" && ( -z "$TGT_ADMIN_USER" || -z "$TGT_ADMIN_PASS" ) ]
   echo "ERROR: Target admin user and password are required."
   exit 1
 fi
-if [[ "$MODE" == "binlog" && ( -z "$REPL_USER" || -z "$REPL_PASS" ) ]]; then
-  echo "ERROR: Replication user and password are required for binlog mode."
+if [[ ( "$MODE" == "binlog" || "$MODE" == "replace_slave" ) && ( -z "$REPL_USER" || -z "$REPL_PASS" ) ]]; then
+  echo "ERROR: Replication user and password are required for binlog/replace_slave mode."
+  exit 1
+fi
+if [[ "$MODE" == "replace_slave" && -z "$REPLACE_MARIADB_VERSION" ]]; then
+  echo "ERROR: MariaDB version is required for replace_slave mode."
+  exit 1
+fi
+if [[ "$MODE" == "replace_slave" && "$REPLACE_DELETE_OLD_MYSQL_DATA" == "1" && -z "$REPLACE_CLEANUP_CMD" ]]; then
+  echo "ERROR: Cleanup command is required when delete old MySQL data is enabled."
   exit 1
 fi
 if [[ "$ALLOW_ROOT_USERS" != "1" ]]; then
@@ -299,6 +385,14 @@ save_config() {
       -v inplace_install_cmd="$(yaml_quote "$INPLACE_INSTALL_CMD")" \
       -v inplace_start_cmd="$(yaml_quote "$INPLACE_START_CMD")" \
       -v inplace_upgrade_cmd="$(yaml_quote "$INPLACE_UPGRADE_CMD")" \
+      -v replace_backup_cmd="$(yaml_quote "$REPLACE_BACKUP_CMD")" \
+      -v replace_stop_mysql_cmd="$(yaml_quote "$REPLACE_STOP_MYSQL_CMD")" \
+      -v replace_uninstall_mysql_cmd="$(yaml_quote "$REPLACE_UNINSTALL_MYSQL_CMD")" \
+      -v replace_target_os="$(yaml_quote "$REPLACE_TARGET_OS")" \
+      -v replace_mariadb_version="$(yaml_quote "$REPLACE_MARIADB_VERSION")" \
+      -v replace_start_mariadb_cmd="$(yaml_quote "$REPLACE_START_MARIADB_CMD")" \
+      -v replace_delete_old_mysql_data="$(yaml_quote "$REPLACE_DELETE_OLD_MYSQL_DATA")" \
+      -v replace_cleanup_cmd="$(yaml_quote "$REPLACE_CLEANUP_CMD")" \
       '
 BEGIN { in_env=0 }
 {
@@ -333,6 +427,15 @@ BEGIN { in_env=0 }
     if ($0 ~ /^  INPLACE_INSTALL_CMD:/) { print "  INPLACE_INSTALL_CMD: " inplace_install_cmd; next }
     if ($0 ~ /^  INPLACE_START_CMD:/) { print "  INPLACE_START_CMD: " inplace_start_cmd; next }
     if ($0 ~ /^  INPLACE_UPGRADE_CMD:/) { print "  INPLACE_UPGRADE_CMD: " inplace_upgrade_cmd; next }
+    if ($0 ~ /^  REPLACE_BACKUP_CMD:/) { print "  REPLACE_BACKUP_CMD: " replace_backup_cmd; next }
+    if ($0 ~ /^  REPLACE_STOP_MYSQL_CMD:/) { print "  REPLACE_STOP_MYSQL_CMD: " replace_stop_mysql_cmd; next }
+    if ($0 ~ /^  REPLACE_UNINSTALL_MYSQL_CMD:/) { print "  REPLACE_UNINSTALL_MYSQL_CMD: " replace_uninstall_mysql_cmd; next }
+    if ($0 ~ /^  REPLACE_TARGET_OS:/) { print "  REPLACE_TARGET_OS: " replace_target_os; next }
+    if ($0 ~ /^  REPLACE_INSTALL_MARIADB_CMD:/) { next }
+    if ($0 ~ /^  REPLACE_MARIADB_VERSION:/) { print "  REPLACE_MARIADB_VERSION: " replace_mariadb_version; next }
+    if ($0 ~ /^  REPLACE_START_MARIADB_CMD:/) { print "  REPLACE_START_MARIADB_CMD: " replace_start_mariadb_cmd; next }
+    if ($0 ~ /^  REPLACE_DELETE_OLD_MYSQL_DATA:/) { print "  REPLACE_DELETE_OLD_MYSQL_DATA: " replace_delete_old_mysql_data; next }
+    if ($0 ~ /^  REPLACE_CLEANUP_CMD:/) { print "  REPLACE_CLEANUP_CMD: " replace_cleanup_cmd; next }
   }
   print
 }
@@ -357,6 +460,14 @@ if [[ -n "${INPLACE_STOP_CMD:-}" ]]; then export INPLACE_STOP_CMD; fi
 if [[ -n "${INPLACE_INSTALL_CMD:-}" ]]; then export INPLACE_INSTALL_CMD; fi
 if [[ -n "${INPLACE_START_CMD:-}" ]]; then export INPLACE_START_CMD; fi
 if [[ -n "${INPLACE_UPGRADE_CMD:-}" ]]; then export INPLACE_UPGRADE_CMD; fi
+if [[ -n "${REPLACE_BACKUP_CMD:-}" ]]; then export REPLACE_BACKUP_CMD; fi
+if [[ -n "${REPLACE_STOP_MYSQL_CMD:-}" ]]; then export REPLACE_STOP_MYSQL_CMD; fi
+if [[ -n "${REPLACE_UNINSTALL_MYSQL_CMD:-}" ]]; then export REPLACE_UNINSTALL_MYSQL_CMD; fi
+if [[ -n "${REPLACE_TARGET_OS:-}" ]]; then export REPLACE_TARGET_OS; fi
+if [[ -n "${REPLACE_MARIADB_VERSION:-}" ]]; then export REPLACE_MARIADB_VERSION; fi
+if [[ -n "${REPLACE_START_MARIADB_CMD:-}" ]]; then export REPLACE_START_MARIADB_CMD; fi
+if [[ -n "${REPLACE_DELETE_OLD_MYSQL_DATA:-}" ]]; then export REPLACE_DELETE_OLD_MYSQL_DATA; fi
+if [[ -n "${REPLACE_CLEANUP_CMD:-}" ]]; then export REPLACE_CLEANUP_CMD; fi
 
 if [[ -n "$TGT_SSH_HOST" ]]; then export TGT_SSH_HOST; fi
 if [[ -n "$TGT_SSH_USER" ]]; then export TGT_SSH_USER; fi
@@ -397,7 +508,7 @@ if [[ -f "$RUN_SIG_FILE" ]]; then
   LAST_SIG="$(cat "$RUN_SIG_FILE")"
 fi
 
-if [[ "$MODE" == "binlog" && -n "$RUN_DIR" && -d "$RUN_DIR" && -f "$RUN_DIR/state.json" && "${FORCE_NEW_RUN:-0}" != "1" ]]; then
+if [[ ( "$MODE" == "binlog" || "$MODE" == "replace_slave" ) && -n "$RUN_DIR" && -d "$RUN_DIR" && -f "$RUN_DIR/state.json" && "${FORCE_NEW_RUN:-0}" != "1" ]]; then
   echo "==> Resuming: $MODE (out: $RUN_DIR)"
   python3 -m orchestrator.migrationctl resume --config config/migration.yaml --mode "$MODE" --out "$RUN_DIR"
   STATUS=$?

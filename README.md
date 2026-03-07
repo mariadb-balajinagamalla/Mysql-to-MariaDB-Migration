@@ -87,6 +87,13 @@ Best for low-downtime cutover.
 - Starts MariaDB replication from MySQL binlog using `REPL_USER`/`REPL_PASS`.
 - Verifies replication thread health and lag after start.
 
+### Replace MySQL slave (same host)
+Best for replacing an existing MySQL slave host with MariaDB.
+- Verifies source primary and current slave status on target host.
+- Backs up current slave host, stops MySQL, installs/starts MariaDB using command hooks.
+- Seeds MariaDB and configures replication from MySQL source.
+- Supports optional cleanup of old MySQL data after successful validation.
+
 ## Orchestrator usage
 Interactive (recommended):
 ```bash
@@ -157,6 +164,28 @@ Replication:
 - Optional: `BINLOG_COORD_FILE` (default: `artifacts/binlog_coords.env`)
 - Optional: `BINLOG_MAX_LAG_SECS` (default: `30`)
 
+## Replace-slave required envs (config/migration.yaml)
+Source:
+- `SRC_HOST`, `SRC_PORT`, `SRC_ADMIN_USER`, `SRC_ADMIN_PASS`
+- `SRC_DB` (single DB) or `SRC_DBS` (comma-separated)
+
+Target:
+- `TGT_HOST`, `TGT_PORT`, `TGT_ADMIN_USER`, `TGT_ADMIN_PASS`
+- `TGT_SSH_HOST`, `TGT_SSH_USER`, `TGT_SSH_OPTS`
+
+Replication:
+- `REPL_USER`, `REPL_PASS`
+
+Target host command hooks:
+- `REPLACE_BACKUP_CMD`
+- `REPLACE_STOP_MYSQL_CMD`
+- `REPLACE_UNINSTALL_MYSQL_CMD` (optional)
+- `REPLACE_TARGET_OS` (required)
+- `REPLACE_MARIADB_VERSION` (required, for example `11.8`)
+- `REPLACE_START_MARIADB_CMD`
+- `REPLACE_DELETE_OLD_MYSQL_DATA` (`0` or `1`)
+- `REPLACE_CLEANUP_CMD` (required when delete flag is `1`)
+
 
 ## Multi-DB example
 ```yaml
@@ -165,5 +194,5 @@ SRC_DBS: "sakila,world"
 
 ## Notes
 - Use a fresh `--out` directory per run to avoid step skips.
-- Orchestrator mode: `python -m orchestrator.migrationctl plan/run --config config/migration.yaml --mode <one_step|two_step|binlog> --out artifacts/<dir>`
+- Orchestrator mode: `python -m orchestrator.migrationctl plan/run --config config/migration.yaml --mode <one_step|two_step|binlog|replace_slave> --out artifacts/<dir>`
 - Safety default: migration fails if target DB already exists. Set `ALLOW_TARGET_DB_OVERWRITE=1` only when overwrite is intentional.
